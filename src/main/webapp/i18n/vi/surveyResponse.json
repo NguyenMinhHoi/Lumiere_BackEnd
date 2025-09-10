@@ -1,0 +1,30 @@
+{
+  "lumiApp": {
+    "surveyResponse": {
+      "home": {
+        "title": "Survey Responses",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Survey Response",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Survey Response",
+        "search": "Tìm Survey Response",
+        "notFound": "No Survey Responses found"
+      },
+      "created": "Một Survey Response mới được tạo với định danh {{ param }}",
+      "updated": "Một Survey Response cập nhật với định danh {{ param }}",
+      "deleted": "Một Survey Response đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Survey Response {{ id }}?"
+      },
+      "detail": {
+        "title": "Survey Response"
+      },
+      "id": "ID",
+      "respondedAt": "Responded At",
+      "score": "Score",
+      "comment": "Comment",
+      "survey": "Survey",
+      "customer": "Customer",
+      "ticket": "Ticket"
+    }
+  }
+}

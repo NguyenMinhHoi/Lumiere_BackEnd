@@ -1,0 +1,29 @@
+{
+  "lumiApp": {
+    "integrationWebhook": {
+      "home": {
+        "title": "Integration Webhooks",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Integration Webhook",
+        "createOrEditLabel": "Create or edit a Integration Webhook",
+        "search": "Search for Integration Webhook",
+        "notFound": "No Integration Webhooks found"
+      },
+      "created": "A new Integration Webhook is created with identifier {{ param }}",
+      "updated": "A Integration Webhook is updated with identifier {{ param }}",
+      "deleted": "A Integration Webhook is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Integration Webhook {{ id }}?"
+      },
+      "detail": {
+        "title": "Integration Webhook"
+      },
+      "id": "ID",
+      "name": "Name",
+      "targetUrl": "Target Url",
+      "secret": "Secret",
+      "isActive": "Is Active",
+      "subscribedEvents": "Subscribed Events"
+    }
+  }
+}

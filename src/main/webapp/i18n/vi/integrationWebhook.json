@@ -1,0 +1,29 @@
+{
+  "lumiApp": {
+    "integrationWebhook": {
+      "home": {
+        "title": "Integration Webhooks",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Integration Webhook",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Integration Webhook",
+        "search": "Tìm Integration Webhook",
+        "notFound": "No Integration Webhooks found"
+      },
+      "created": "Một Integration Webhook mới được tạo với định danh {{ param }}",
+      "updated": "Một Integration Webhook cập nhật với định danh {{ param }}",
+      "deleted": "Một Integration Webhook đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Integration Webhook {{ id }}?"
+      },
+      "detail": {
+        "title": "Integration Webhook"
+      },
+      "id": "ID",
+      "name": "Name",
+      "targetUrl": "Target Url",
+      "secret": "Secret",
+      "isActive": "Is Active",
+      "subscribedEvents": "Subscribed Events"
+    }
+  }
+}

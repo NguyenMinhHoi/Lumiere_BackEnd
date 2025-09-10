@@ -1,0 +1,11 @@
+{
+  "lumiApp": {
+    "FulfillmentStatus": {
+      "null": "",
+      "UNFULFILLED": "UNFULFILLED",
+      "PARTIALLY_FULFILLED": "PARTIALLY_FULFILLED",
+      "FULFILLED": "FULFILLED",
+      "RETURNED": "RETURNED"
+    }
+  }
+}

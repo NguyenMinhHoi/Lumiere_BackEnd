@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "changelogDate": "20250908083831"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "128",
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "slug",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "128",
+      "fieldValidateRulesMinlength": "2"
+    }
+  ],
+  "name": "KnowledgeCategory",
+  "relationships": [],
+  "service": "serviceClass"
+}

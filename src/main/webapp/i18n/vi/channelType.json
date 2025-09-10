@@ -1,0 +1,12 @@
+{
+  "lumiApp": {
+    "ChannelType": {
+      "null": "",
+      "WEB": "WEB",
+      "EMAIL": "EMAIL",
+      "CHAT": "CHAT",
+      "CALL": "CALL",
+      "SOCIAL": "SOCIAL"
+    }
+  }
+}

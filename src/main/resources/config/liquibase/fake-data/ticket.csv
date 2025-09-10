@@ -1,0 +1,11 @@
+id;code;subject;description;status;priority;channel;opened_at;first_response_at;resolved_at;sla_due_at
+1;sinceX;resolve considering ordinary;../fake-data/blob/hipster.txt;CLOSED;LOW;SOCIAL;2025-09-08T06:40:59;2025-09-08T04:34:22;2025-09-07T16:46:05;2025-09-07T09:10:47
+2;huzzah;slipper;../fake-data/blob/hipster.txt;WAITING_THIRD_PARTY;MEDIUM;SOCIAL;2025-09-07T09:08:27;2025-09-07T09:30:43;2025-09-08T02:47:07;2025-09-07T09:15:56
+3;sansXX;surprise enlist;../fake-data/blob/hipster.txt;CLOSED;URGENT;EMAIL;2025-09-07T08:53:48;2025-09-08T03:49:05;2025-09-07T17:25:22;2025-09-08T08:28:43
+4;awful outside;crossly;../fake-data/blob/hipster.txt;CLOSED;HIGH;CHAT;2025-09-08T01:58:45;2025-09-07T21:55:11;2025-09-07T11:45:46;2025-09-07T10:03:38
+5;inconsequential valuable fork;instance practical;../fake-data/blob/hipster.txt;IN_PROGRESS;LOW;SOCIAL;2025-09-08T04:36:36;2025-09-08T01:43:54;2025-09-08T07:21:50;2025-09-07T17:10:26
+6;dismal underneath torn;out thorough;../fake-data/blob/hipster.txt;RESOLVED;MEDIUM;WEB;2025-09-08T02:42:27;2025-09-08T02:36:43;2025-09-08T00:21:51;2025-09-07T23:42:27
+7;uncommon;rapidly save;../fake-data/blob/hipster.txt;WAITING_CUSTOMER;LOW;EMAIL;2025-09-08T05:34:20;2025-09-07T14:57:52;2025-09-07T15:06:51;2025-09-07T16:16:27
+8;ribbon bore croon;boo;../fake-data/blob/hipster.txt;CLOSED;MEDIUM;EMAIL;2025-09-08T04:24:36;2025-09-07T12:09:07;2025-09-08T02:06:34;2025-09-08T05:13:00
+9;bah out;breakable colorfully vaguely;../fake-data/blob/hipster.txt;OPEN;HIGH;WEB;2025-09-07T18:52:59;2025-09-07T17:16:58;2025-09-07T14:21:37;2025-09-07T10:11:47
+10;downXX;hold remarkable aboard;../fake-data/blob/hipster.txt;CLOSED;LOW;EMAIL;2025-09-08T04:51:02;2025-09-08T08:37:36;2025-09-07T19:26:14;2025-09-08T03:50:31

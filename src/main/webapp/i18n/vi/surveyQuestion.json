@@ -1,0 +1,31 @@
+{
+  "lumiApp": {
+    "surveyQuestion": {
+      "home": {
+        "title": "Survey Questions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Survey Question",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Survey Question",
+        "search": "Tìm Survey Question",
+        "notFound": "No Survey Questions found"
+      },
+      "created": "Một Survey Question mới được tạo với định danh {{ param }}",
+      "updated": "Một Survey Question cập nhật với định danh {{ param }}",
+      "deleted": "Một Survey Question đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Survey Question {{ id }}?"
+      },
+      "detail": {
+        "title": "Survey Question"
+      },
+      "id": "ID",
+      "text": "Text",
+      "questionType": "Question Type",
+      "scaleMin": "Scale Min",
+      "scaleMax": "Scale Max",
+      "isNeed": "Is Need",
+      "orderNo": "Order No",
+      "survey": "Survey"
+    }
+  }
+}

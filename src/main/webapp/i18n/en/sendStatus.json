@@ -1,0 +1,11 @@
+{
+  "lumiApp": {
+    "SendStatus": {
+      "null": "",
+      "PENDING": "PENDING",
+      "SENT": "SENT",
+      "FAILED": "FAILED",
+      "RETRYING": "RETRYING"
+    }
+  }
+}

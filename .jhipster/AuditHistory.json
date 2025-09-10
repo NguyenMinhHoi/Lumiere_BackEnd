@@ -1,0 +1,57 @@
+{
+  "annotations": {
+    "changelogDate": "20250908160631"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "entityName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "128"
+    },
+    {
+      "fieldName": "entityId",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "action",
+      "fieldType": "AuditAction",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "CREATE,UPDATE,DELETE,LOGIN,LOGOUT"
+    },
+    {
+      "fieldName": "oldValue",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "newValue",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "performedBy",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "performedAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "ipAddress",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "45"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "AuditHistory",
+  "pagination": "pagination",
+  "relationships": [],
+  "service": "serviceClass"
+}

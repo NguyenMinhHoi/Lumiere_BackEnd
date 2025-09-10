@@ -1,0 +1,11 @@
+id;direction;content;sent_at;external_message_id
+1;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T20:43:50;whereas hype peaceful
+2;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T20:21:06;wonderfully
+3;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T14:23:31;next gestate
+4;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T17:45:42;longingly pharmacopoeia uh-huh
+5;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T16:05:58;schnitzel
+6;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T12:45:43;psst
+7;INBOUND;../fake-data/blob/hipster.txt;2025-09-08T08:12:56;forenenst
+8;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T21:27:58;utterly vivid draft
+9;INBOUND;../fake-data/blob/hipster.txt;2025-09-08T04:43:51;misspend cake
+10;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T17:54:27;madly

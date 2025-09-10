@@ -1,0 +1,10 @@
+{
+  "lumiApp": {
+    "FileStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "ARCHIVED": "ARCHIVED",
+      "DELETED": "DELETED"
+    }
+  }
+}

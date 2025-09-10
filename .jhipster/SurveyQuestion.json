@@ -1,0 +1,52 @@
+{
+  "annotations": {
+    "changelogDate": "20250908083836"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "text",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "300",
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "questionType",
+      "fieldType": "QuestionType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "SCALE,SINGLE_CHOICE,MULTI_CHOICE,TEXT"
+    },
+    {
+      "fieldName": "scaleMin",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "scaleMax",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "isNeed",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "orderNo",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    }
+  ],
+  "name": "SurveyQuestion",
+  "relationships": [
+    {
+      "otherEntityField": "title",
+      "otherEntityName": "survey",
+      "relationshipName": "survey",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

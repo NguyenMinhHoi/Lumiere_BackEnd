@@ -1,0 +1,11 @@
+id;text;question_type;scale_min;scale_max;is_need;order_no
+1;before who;SINGLE_CHOICE;28935;5527;false;20186
+2;nor mechanically why;SCALE;9000;27885;false;12834
+3;whoa;SCALE;29845;5314;true;22830
+4;harvest when;SCALE;7455;29792;true;3432
+5;truthfully;MULTI_CHOICE;31809;362;false;7607
+6;yippee decouple until;SCALE;8649;17913;true;14472
+7;planula;SINGLE_CHOICE;13472;31697;true;30092
+8;telescope tensely gah;SCALE;18968;3814;false;8720
+9;yearningly;SCALE;20816;24547;false;4808
+10;gray innocently;MULTI_CHOICE;1143;6421;true;32284

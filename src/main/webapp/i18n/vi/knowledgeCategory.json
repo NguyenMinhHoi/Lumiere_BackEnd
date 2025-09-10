@@ -1,0 +1,26 @@
+{
+  "lumiApp": {
+    "knowledgeCategory": {
+      "home": {
+        "title": "Knowledge Categories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Knowledge Category",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Knowledge Category",
+        "search": "Tìm Knowledge Category",
+        "notFound": "No Knowledge Categories found"
+      },
+      "created": "Một Knowledge Category mới được tạo với định danh {{ param }}",
+      "updated": "Một Knowledge Category cập nhật với định danh {{ param }}",
+      "deleted": "Một Knowledge Category đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Knowledge Category {{ id }}?"
+      },
+      "detail": {
+        "title": "Knowledge Category"
+      },
+      "id": "ID",
+      "name": "Name",
+      "slug": "Slug"
+    }
+  }
+}
