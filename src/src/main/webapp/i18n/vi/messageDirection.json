@@ -1,9 +1,0 @@
-{
-  "lumiApp": {
-    "MessageDirection": {
-      "null": "",
-      "INBOUND": "INBOUND",
-      "OUTBOUND": "OUTBOUND"
-    }
-  }
-}

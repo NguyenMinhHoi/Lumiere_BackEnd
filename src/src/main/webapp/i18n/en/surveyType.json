@@ -1,9 +1,0 @@
-{
-  "lumiApp": {
-    "SurveyType": {
-      "null": "",
-      "CSAT": "CSAT",
-      "NPS": "NPS"
-    }
-  }
-}
