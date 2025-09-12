@@ -48,6 +48,8 @@ public class OrderItemAsserts {
     public static void assertOrderItemUpdatableFieldsEquals(OrderItem expected, OrderItem actual) {
         assertThat(actual)
             .as("Verify OrderItem relevant properties")
+            .satisfies(a -> assertThat(a.getOrderId()).as("check orderId").isEqualTo(expected.getOrderId()))
+            .satisfies(a -> assertThat(a.getVariantId()).as("check variantId").isEqualTo(expected.getVariantId()))
             .satisfies(a -> assertThat(a.getQuantity()).as("check quantity").isEqualTo(expected.getQuantity()))
             .satisfies(a ->
                 assertThat(a.getUnitPrice()).as("check unitPrice").usingComparator(bigDecimalCompareTo).isEqualTo(expected.getUnitPrice())
@@ -69,9 +71,6 @@ public class OrderItemAsserts {
      * @param actual the actual entity
      */
     public static void assertOrderItemUpdatableRelationshipsEquals(OrderItem expected, OrderItem actual) {
-        assertThat(actual)
-            .as("Verify OrderItem relationships")
-            .satisfies(a -> assertThat(a.getOrder()).as("check order").isEqualTo(expected.getOrder()))
-            .satisfies(a -> assertThat(a.getVariant()).as("check variant").isEqualTo(expected.getVariant()));
+        // empty method
     }
 }

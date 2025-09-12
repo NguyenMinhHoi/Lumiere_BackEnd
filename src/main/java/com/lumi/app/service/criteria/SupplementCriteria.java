@@ -24,6 +24,10 @@ public class SupplementCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter productId;
+
+    private LongFilter supplierId;
+
     private BigDecimalFilter supplyPrice;
 
     private StringFilter currency;
@@ -38,16 +42,14 @@ public class SupplementCriteria implements Serializable, Criteria {
 
     private InstantFilter updatedAt;
 
-    private LongFilter productId;
-
-    private LongFilter supplierId;
-
     private Boolean distinct;
 
     public SupplementCriteria() {}
 
     public SupplementCriteria(SupplementCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.productId = other.optionalProductId().map(LongFilter::copy).orElse(null);
+        this.supplierId = other.optionalSupplierId().map(LongFilter::copy).orElse(null);
         this.supplyPrice = other.optionalSupplyPrice().map(BigDecimalFilter::copy).orElse(null);
         this.currency = other.optionalCurrency().map(StringFilter::copy).orElse(null);
         this.leadTimeDays = other.optionalLeadTimeDays().map(IntegerFilter::copy).orElse(null);
@@ -55,8 +57,6 @@ public class SupplementCriteria implements Serializable, Criteria {
         this.isPreferred = other.optionalIsPreferred().map(BooleanFilter::copy).orElse(null);
         this.createdAt = other.optionalCreatedAt().map(InstantFilter::copy).orElse(null);
         this.updatedAt = other.optionalUpdatedAt().map(InstantFilter::copy).orElse(null);
-        this.productId = other.optionalProductId().map(LongFilter::copy).orElse(null);
-        this.supplierId = other.optionalSupplierId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -82,6 +82,44 @@ public class SupplementCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getProductId() {
+        return productId;
+    }
+
+    public Optional<LongFilter> optionalProductId() {
+        return Optional.ofNullable(productId);
+    }
+
+    public LongFilter productId() {
+        if (productId == null) {
+            setProductId(new LongFilter());
+        }
+        return productId;
+    }
+
+    public void setProductId(LongFilter productId) {
+        this.productId = productId;
+    }
+
+    public LongFilter getSupplierId() {
+        return supplierId;
+    }
+
+    public Optional<LongFilter> optionalSupplierId() {
+        return Optional.ofNullable(supplierId);
+    }
+
+    public LongFilter supplierId() {
+        if (supplierId == null) {
+            setSupplierId(new LongFilter());
+        }
+        return supplierId;
+    }
+
+    public void setSupplierId(LongFilter supplierId) {
+        this.supplierId = supplierId;
     }
 
     public BigDecimalFilter getSupplyPrice() {
@@ -217,44 +255,6 @@ public class SupplementCriteria implements Serializable, Criteria {
         this.updatedAt = updatedAt;
     }
 
-    public LongFilter getProductId() {
-        return productId;
-    }
-
-    public Optional<LongFilter> optionalProductId() {
-        return Optional.ofNullable(productId);
-    }
-
-    public LongFilter productId() {
-        if (productId == null) {
-            setProductId(new LongFilter());
-        }
-        return productId;
-    }
-
-    public void setProductId(LongFilter productId) {
-        this.productId = productId;
-    }
-
-    public LongFilter getSupplierId() {
-        return supplierId;
-    }
-
-    public Optional<LongFilter> optionalSupplierId() {
-        return Optional.ofNullable(supplierId);
-    }
-
-    public LongFilter supplierId() {
-        if (supplierId == null) {
-            setSupplierId(new LongFilter());
-        }
-        return supplierId;
-    }
-
-    public void setSupplierId(LongFilter supplierId) {
-        this.supplierId = supplierId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -285,6 +285,8 @@ public class SupplementCriteria implements Serializable, Criteria {
         final SupplementCriteria that = (SupplementCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(productId, that.productId) &&
+            Objects.equals(supplierId, that.supplierId) &&
             Objects.equals(supplyPrice, that.supplyPrice) &&
             Objects.equals(currency, that.currency) &&
             Objects.equals(leadTimeDays, that.leadTimeDays) &&
@@ -292,8 +294,6 @@ public class SupplementCriteria implements Serializable, Criteria {
             Objects.equals(isPreferred, that.isPreferred) &&
             Objects.equals(createdAt, that.createdAt) &&
             Objects.equals(updatedAt, that.updatedAt) &&
-            Objects.equals(productId, that.productId) &&
-            Objects.equals(supplierId, that.supplierId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -302,6 +302,8 @@ public class SupplementCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
+            productId,
+            supplierId,
             supplyPrice,
             currency,
             leadTimeDays,
@@ -309,8 +311,6 @@ public class SupplementCriteria implements Serializable, Criteria {
             isPreferred,
             createdAt,
             updatedAt,
-            productId,
-            supplierId,
             distinct
         );
     }
@@ -320,6 +320,8 @@ public class SupplementCriteria implements Serializable, Criteria {
     public String toString() {
         return "SupplementCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalProductId().map(f -> "productId=" + f + ", ").orElse("") +
+            optionalSupplierId().map(f -> "supplierId=" + f + ", ").orElse("") +
             optionalSupplyPrice().map(f -> "supplyPrice=" + f + ", ").orElse("") +
             optionalCurrency().map(f -> "currency=" + f + ", ").orElse("") +
             optionalLeadTimeDays().map(f -> "leadTimeDays=" + f + ", ").orElse("") +
@@ -327,8 +329,6 @@ public class SupplementCriteria implements Serializable, Criteria {
             optionalIsPreferred().map(f -> "isPreferred=" + f + ", ").orElse("") +
             optionalCreatedAt().map(f -> "createdAt=" + f + ", ").orElse("") +
             optionalUpdatedAt().map(f -> "updatedAt=" + f + ", ").orElse("") +
-            optionalProductId().map(f -> "productId=" + f + ", ").orElse("") +
-            optionalSupplierId().map(f -> "supplierId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

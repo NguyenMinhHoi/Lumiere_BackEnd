@@ -47,6 +47,9 @@ public class NotificationAsserts {
     public static void assertNotificationUpdatableFieldsEquals(Notification expected, Notification actual) {
         assertThat(actual)
             .as("Verify Notification relevant properties")
+            .satisfies(a -> assertThat(a.getTicketId()).as("check ticketId").isEqualTo(expected.getTicketId()))
+            .satisfies(a -> assertThat(a.getCustomerId()).as("check customerId").isEqualTo(expected.getCustomerId()))
+            .satisfies(a -> assertThat(a.getSurveyId()).as("check surveyId").isEqualTo(expected.getSurveyId()))
             .satisfies(a -> assertThat(a.getType()).as("check type").isEqualTo(expected.getType()))
             .satisfies(a -> assertThat(a.getChannel()).as("check channel").isEqualTo(expected.getChannel()))
             .satisfies(a -> assertThat(a.getSubject()).as("check subject").isEqualTo(expected.getSubject()))
@@ -64,10 +67,6 @@ public class NotificationAsserts {
      * @param actual the actual entity
      */
     public static void assertNotificationUpdatableRelationshipsEquals(Notification expected, Notification actual) {
-        assertThat(actual)
-            .as("Verify Notification relationships")
-            .satisfies(a -> assertThat(a.getTicket()).as("check ticket").isEqualTo(expected.getTicket()))
-            .satisfies(a -> assertThat(a.getCustomer()).as("check customer").isEqualTo(expected.getCustomer()))
-            .satisfies(a -> assertThat(a.getSurvey()).as("check survey").isEqualTo(expected.getSurvey()));
+        // empty method
     }
 }

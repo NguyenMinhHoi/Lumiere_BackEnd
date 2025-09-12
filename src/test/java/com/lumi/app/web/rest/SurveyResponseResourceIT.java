@@ -14,13 +14,11 @@ import com.lumi.app.IntegrationTest;
 import com.lumi.app.domain.SurveyResponse;
 import com.lumi.app.repository.SurveyResponseRepository;
 import com.lumi.app.repository.search.SurveyResponseSearchRepository;
-import com.lumi.app.service.SurveyResponseService;
 import com.lumi.app.service.dto.SurveyResponseDTO;
 import com.lumi.app.service.mapper.SurveyResponseMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -29,13 +27,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -46,10 +39,18 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link SurveyResponseResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class SurveyResponseResourceIT {
+
+    private static final Long DEFAULT_SURVEY_ID = 1L;
+    private static final Long UPDATED_SURVEY_ID = 2L;
+
+    private static final Long DEFAULT_CUSTOMER_ID = 1L;
+    private static final Long UPDATED_CUSTOMER_ID = 2L;
+
+    private static final Long DEFAULT_TICKET_ID = 1L;
+    private static final Long UPDATED_TICKET_ID = 2L;
 
     private static final Instant DEFAULT_RESPONDED_AT = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_RESPONDED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
@@ -73,14 +74,8 @@ class SurveyResponseResourceIT {
     @Autowired
     private SurveyResponseRepository surveyResponseRepository;
 
-    @Mock
-    private SurveyResponseRepository surveyResponseRepositoryMock;
-
     @Autowired
     private SurveyResponseMapper surveyResponseMapper;
-
-    @Mock
-    private SurveyResponseService surveyResponseServiceMock;
 
     @Autowired
     private SurveyResponseSearchRepository surveyResponseSearchRepository;
@@ -102,7 +97,13 @@ class SurveyResponseResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static SurveyResponse createEntity() {
-        return new SurveyResponse().respondedAt(DEFAULT_RESPONDED_AT).score(DEFAULT_SCORE).comment(DEFAULT_COMMENT);
+        return new SurveyResponse()
+            .surveyId(DEFAULT_SURVEY_ID)
+            .customerId(DEFAULT_CUSTOMER_ID)
+            .ticketId(DEFAULT_TICKET_ID)
+            .respondedAt(DEFAULT_RESPONDED_AT)
+            .score(DEFAULT_SCORE)
+            .comment(DEFAULT_COMMENT);
     }
 
     /**
@@ -112,7 +113,13 @@ class SurveyResponseResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static SurveyResponse createUpdatedEntity() {
-        return new SurveyResponse().respondedAt(UPDATED_RESPONDED_AT).score(UPDATED_SCORE).comment(UPDATED_COMMENT);
+        return new SurveyResponse()
+            .surveyId(UPDATED_SURVEY_ID)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .ticketId(UPDATED_TICKET_ID)
+            .respondedAt(UPDATED_RESPONDED_AT)
+            .score(UPDATED_SCORE)
+            .comment(UPDATED_COMMENT);
     }
 
     @BeforeEach
@@ -184,6 +191,27 @@ class SurveyResponseResourceIT {
 
     @Test
     @Transactional
+    void checkSurveyIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(surveyResponseSearchRepository.findAll());
+        // set the field null
+        surveyResponse.setSurveyId(null);
+
+        // Create the SurveyResponse, which fails.
+        SurveyResponseDTO surveyResponseDTO = surveyResponseMapper.toDto(surveyResponse);
+
+        restSurveyResponseMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(surveyResponseDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(surveyResponseSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
     void checkRespondedAtIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(surveyResponseSearchRepository.findAll());
@@ -215,26 +243,12 @@ class SurveyResponseResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(surveyResponse.getId().intValue())))
+            .andExpect(jsonPath("$.[*].surveyId").value(hasItem(DEFAULT_SURVEY_ID.intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
             .andExpect(jsonPath("$.[*].respondedAt").value(hasItem(DEFAULT_RESPONDED_AT.toString())))
             .andExpect(jsonPath("$.[*].score").value(hasItem(DEFAULT_SCORE)))
             .andExpect(jsonPath("$.[*].comment").value(hasItem(DEFAULT_COMMENT)));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSurveyResponsesWithEagerRelationshipsIsEnabled() throws Exception {
-        when(surveyResponseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSurveyResponseMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(surveyResponseServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSurveyResponsesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(surveyResponseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSurveyResponseMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(surveyResponseRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -249,6 +263,9 @@ class SurveyResponseResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(surveyResponse.getId().intValue()))
+            .andExpect(jsonPath("$.surveyId").value(DEFAULT_SURVEY_ID.intValue()))
+            .andExpect(jsonPath("$.customerId").value(DEFAULT_CUSTOMER_ID.intValue()))
+            .andExpect(jsonPath("$.ticketId").value(DEFAULT_TICKET_ID.intValue()))
             .andExpect(jsonPath("$.respondedAt").value(DEFAULT_RESPONDED_AT.toString()))
             .andExpect(jsonPath("$.score").value(DEFAULT_SCORE))
             .andExpect(jsonPath("$.comment").value(DEFAULT_COMMENT));
@@ -275,7 +292,13 @@ class SurveyResponseResourceIT {
         SurveyResponse updatedSurveyResponse = surveyResponseRepository.findById(surveyResponse.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedSurveyResponse are not directly saved in db
         em.detach(updatedSurveyResponse);
-        updatedSurveyResponse.respondedAt(UPDATED_RESPONDED_AT).score(UPDATED_SCORE).comment(UPDATED_COMMENT);
+        updatedSurveyResponse
+            .surveyId(UPDATED_SURVEY_ID)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .ticketId(UPDATED_TICKET_ID)
+            .respondedAt(UPDATED_RESPONDED_AT)
+            .score(UPDATED_SCORE)
+            .comment(UPDATED_COMMENT);
         SurveyResponseDTO surveyResponseDTO = surveyResponseMapper.toDto(updatedSurveyResponse);
 
         restSurveyResponseMockMvc
@@ -385,7 +408,12 @@ class SurveyResponseResourceIT {
         SurveyResponse partialUpdatedSurveyResponse = new SurveyResponse();
         partialUpdatedSurveyResponse.setId(surveyResponse.getId());
 
-        partialUpdatedSurveyResponse.respondedAt(UPDATED_RESPONDED_AT).comment(UPDATED_COMMENT);
+        partialUpdatedSurveyResponse
+            .surveyId(UPDATED_SURVEY_ID)
+            .ticketId(UPDATED_TICKET_ID)
+            .respondedAt(UPDATED_RESPONDED_AT)
+            .score(UPDATED_SCORE)
+            .comment(UPDATED_COMMENT);
 
         restSurveyResponseMockMvc
             .perform(
@@ -416,7 +444,13 @@ class SurveyResponseResourceIT {
         SurveyResponse partialUpdatedSurveyResponse = new SurveyResponse();
         partialUpdatedSurveyResponse.setId(surveyResponse.getId());
 
-        partialUpdatedSurveyResponse.respondedAt(UPDATED_RESPONDED_AT).score(UPDATED_SCORE).comment(UPDATED_COMMENT);
+        partialUpdatedSurveyResponse
+            .surveyId(UPDATED_SURVEY_ID)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .ticketId(UPDATED_TICKET_ID)
+            .respondedAt(UPDATED_RESPONDED_AT)
+            .score(UPDATED_SCORE)
+            .comment(UPDATED_COMMENT);
 
         restSurveyResponseMockMvc
             .perform(
@@ -539,6 +573,9 @@ class SurveyResponseResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(surveyResponse.getId().intValue())))
+            .andExpect(jsonPath("$.[*].surveyId").value(hasItem(DEFAULT_SURVEY_ID.intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
             .andExpect(jsonPath("$.[*].respondedAt").value(hasItem(DEFAULT_RESPONDED_AT.toString())))
             .andExpect(jsonPath("$.[*].score").value(hasItem(DEFAULT_SCORE)))
             .andExpect(jsonPath("$.[*].comment").value(hasItem(DEFAULT_COMMENT.toString())));

@@ -68,7 +68,9 @@ public class AttachmentGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"name\": \"SAMPLE_TEXT\"" +
+                                "\"ticketId\": 0" +
+                                ", \"commentId\": 0" +
+                                ", \"name\": \"SAMPLE_TEXT\"" +
                                 ", \"url\": \"SAMPLE_TEXT\"" +
                                 ", \"contentType\": \"SAMPLE_TEXT\"" +
                                 ", \"size\": 0" +

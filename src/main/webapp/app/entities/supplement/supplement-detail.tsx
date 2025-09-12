@@ -33,6 +33,18 @@ export const SupplementDetail = () => {
           </dt>
           <dd>{supplementEntity.id}</dd>
           <dt>
+            <span id="productId">
+              <Translate contentKey="lumiApp.supplement.productId">Product Id</Translate>
+            </span>
+          </dt>
+          <dd>{supplementEntity.productId}</dd>
+          <dt>
+            <span id="supplierId">
+              <Translate contentKey="lumiApp.supplement.supplierId">Supplier Id</Translate>
+            </span>
+          </dt>
+          <dd>{supplementEntity.supplierId}</dd>
+          <dt>
             <span id="supplyPrice">
               <Translate contentKey="lumiApp.supplement.supplyPrice">Supply Price</Translate>
             </span>
@@ -78,14 +90,6 @@ export const SupplementDetail = () => {
           <dd>
             {supplementEntity.updatedAt ? <TextFormat value={supplementEntity.updatedAt} type="date" format={APP_DATE_FORMAT} /> : null}
           </dd>
-          <dt>
-            <Translate contentKey="lumiApp.supplement.product">Product</Translate>
-          </dt>
-          <dd>{supplementEntity.product ? supplementEntity.product.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.supplement.supplier">Supplier</Translate>
-          </dt>
-          <dd>{supplementEntity.supplier ? supplementEntity.supplier.code : ''}</dd>
         </dl>
         <Button tag={Link} to="/supplement" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

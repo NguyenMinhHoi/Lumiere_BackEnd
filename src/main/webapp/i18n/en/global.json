@@ -29,7 +29,22 @@
         "orderItem": "Order Item",
         "supplier": "Supplier",
         "supplement": "Supplement",
-        "auditHistory": "Audit History"
+        "auditHistory": "Audit History",
+        "ticketTag": "Ticket Tag",
+        "articleTag": "Article Tag",
+        "appConfig": "App Config",
+        "companyConfig": "Company Config",
+        "companyConfigAdditional": "Company Config Additional",
+        "voucher": "Voucher",
+        "voucherRedemption": "Voucher Redemption",
+        "cart": "Cart",
+        "cartItem": "Cart Item",
+        "warehouse": "Warehouse",
+        "inventory": "Inventory",
+        "stockMovement": "Stock Movement",
+        "campaign": "Campaign",
+        "integrationLog": "Integration Log",
+        "employee": "Employee"
       },
       "account": {
         "main": "Account",

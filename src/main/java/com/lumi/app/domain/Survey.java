@@ -26,6 +26,9 @@ public class Survey implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "customer_id")
+    private Long customerId;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "survey_type", nullable = false)
@@ -49,9 +52,6 @@ public class Survey implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Boolean)
     private Boolean isActive;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -65,6 +65,19 @@ public class Survey implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCustomerId() {
+        return this.customerId;
+    }
+
+    public Survey customerId(Long customerId) {
+        this.setCustomerId(customerId);
+        return this;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public SurveyType getSurveyType() {
@@ -132,19 +145,6 @@ public class Survey implements Serializable {
         this.isActive = isActive;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Survey customer(Customer customer) {
-        this.setCustomer(customer);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -169,6 +169,7 @@ public class Survey implements Serializable {
     public String toString() {
         return "Survey{" +
             "id=" + getId() +
+            ", customerId=" + getCustomerId() +
             ", surveyType='" + getSurveyType() + "'" +
             ", title='" + getTitle() + "'" +
             ", sentAt='" + getSentAt() + "'" +

@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import static com.lumi.app.domain.CustomerTestSamples.*;
 import static com.lumi.app.domain.OrdersTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,17 +20,5 @@ class OrdersTest {
 
         orders2 = getOrdersSample2();
         assertThat(orders1).isNotEqualTo(orders2);
-    }
-
-    @Test
-    void customerTest() {
-        Orders orders = getOrdersRandomSampleGenerator();
-        Customer customerBack = getCustomerRandomSampleGenerator();
-
-        orders.setCustomer(customerBack);
-        assertThat(orders.getCustomer()).isEqualTo(customerBack);
-
-        orders.customer(null);
-        assertThat(orders.getCustomer()).isNull();
     }
 }

@@ -68,7 +68,10 @@ public class NotificationGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"type\": \"TICKET_UPDATE\"" +
+                                "\"ticketId\": 0" +
+                                ", \"customerId\": 0" +
+                                ", \"surveyId\": 0" +
+                                ", \"type\": \"TICKET_UPDATE\"" +
                                 ", \"channel\": \"EMAIL\"" +
                                 ", \"subject\": \"SAMPLE_TEXT\"" +
                                 ", \"payload\": null" +

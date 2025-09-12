@@ -68,7 +68,8 @@ public class SurveyQuestionGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"text\": \"SAMPLE_TEXT\"" +
+                                "\"surveyId\": 0" +
+                                ", \"text\": \"SAMPLE_TEXT\"" +
                                 ", \"questionType\": \"SCALE\"" +
                                 ", \"scaleMin\": 0" +
                                 ", \"scaleMax\": 0" +

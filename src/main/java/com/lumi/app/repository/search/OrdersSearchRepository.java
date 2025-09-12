@@ -57,7 +57,7 @@ class OrdersSearchRepositoryInternalImpl implements OrdersSearchRepositoryIntern
 
     @Override
     public void index(Orders entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

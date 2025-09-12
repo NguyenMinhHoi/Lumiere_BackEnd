@@ -1,7 +1,6 @@
 package com.lumi.app.domain;
 
 import static com.lumi.app.domain.SurveyQuestionTestSamples.*;
-import static com.lumi.app.domain.SurveyTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lumi.app.web.rest.TestUtil;
@@ -21,17 +20,5 @@ class SurveyQuestionTest {
 
         surveyQuestion2 = getSurveyQuestionSample2();
         assertThat(surveyQuestion1).isNotEqualTo(surveyQuestion2);
-    }
-
-    @Test
-    void surveyTest() {
-        SurveyQuestion surveyQuestion = getSurveyQuestionRandomSampleGenerator();
-        Survey surveyBack = getSurveyRandomSampleGenerator();
-
-        surveyQuestion.setSurvey(surveyBack);
-        assertThat(surveyQuestion.getSurvey()).isEqualTo(surveyBack);
-
-        surveyQuestion.survey(null);
-        assertThat(surveyQuestion.getSurvey()).isNull();
     }
 }

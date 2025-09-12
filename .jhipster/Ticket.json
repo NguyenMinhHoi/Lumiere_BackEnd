@@ -6,6 +6,23 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "customerId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "slaPlanId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "orderId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "assigneeEmployeeId",
+      "fieldType": "Long"
+    },
+    {
       "fieldName": "code",
       "fieldType": "String",
       "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
@@ -62,44 +79,6 @@
   "jpaMetamodelFiltering": true,
   "name": "Ticket",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "customer",
-      "relationshipName": "customer",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "login",
-      "otherEntityName": "user",
-      "relationshipName": "assignee",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one",
-      "relationshipWithBuiltInEntity": true
-    },
-    {
-      "otherEntityField": "name",
-      "otherEntityName": "slaPlan",
-      "relationshipName": "slaPlan",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "orders",
-      "relationshipName": "order",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "name",
-      "otherEntityName": "tag",
-      "otherEntityRelationshipName": "tickets",
-      "relationshipName": "tags",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-many"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

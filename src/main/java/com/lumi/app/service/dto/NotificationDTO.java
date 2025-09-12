@@ -17,6 +17,12 @@ public class NotificationDTO implements Serializable {
 
     private Long id;
 
+    private Long ticketId;
+
+    private Long customerId;
+
+    private Long surveyId;
+
     @NotNull
     private NotificationType type;
 
@@ -41,18 +47,36 @@ public class NotificationDTO implements Serializable {
     @NotNull
     private Instant createdAt;
 
-    private TicketDTO ticket;
-
-    private CustomerDTO customer;
-
-    private SurveyDTO survey;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getSurveyId() {
+        return surveyId;
+    }
+
+    public void setSurveyId(Long surveyId) {
+        this.surveyId = surveyId;
     }
 
     public NotificationType getType() {
@@ -119,30 +143,6 @@ public class NotificationDTO implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(TicketDTO ticket) {
-        this.ticket = ticket;
-    }
-
-    public CustomerDTO getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerDTO customer) {
-        this.customer = customer;
-    }
-
-    public SurveyDTO getSurvey() {
-        return survey;
-    }
-
-    public void setSurvey(SurveyDTO survey) {
-        this.survey = survey;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -169,6 +169,9 @@ public class NotificationDTO implements Serializable {
     public String toString() {
         return "NotificationDTO{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", customerId=" + getCustomerId() +
+            ", surveyId=" + getSurveyId() +
             ", type='" + getType() + "'" +
             ", channel='" + getChannel() + "'" +
             ", subject='" + getSubject() + "'" +
@@ -177,9 +180,6 @@ public class NotificationDTO implements Serializable {
             ", retryCount=" + getRetryCount() +
             ", lastTriedAt='" + getLastTriedAt() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
-            ", ticket=" + getTicket() +
-            ", customer=" + getCustomer() +
-            ", survey=" + getSurvey() +
             "}";
     }
 }

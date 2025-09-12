@@ -14,6 +14,12 @@ public class OrderItemDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private Long orderId;
+
+    @NotNull
+    private Long variantId;
+
+    @NotNull
     @Min(value = 1L)
     private Long quantity;
 
@@ -31,16 +37,28 @@ public class OrderItemDTO implements Serializable {
     @Size(max = 64)
     private String skuSnapshot;
 
-    private OrdersDTO order;
-
-    private ProductVariantDTO variant;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public Long getVariantId() {
+        return variantId;
+    }
+
+    public void setVariantId(Long variantId) {
+        this.variantId = variantId;
     }
 
     public Long getQuantity() {
@@ -83,22 +101,6 @@ public class OrderItemDTO implements Serializable {
         this.skuSnapshot = skuSnapshot;
     }
 
-    public OrdersDTO getOrder() {
-        return order;
-    }
-
-    public void setOrder(OrdersDTO order) {
-        this.order = order;
-    }
-
-    public ProductVariantDTO getVariant() {
-        return variant;
-    }
-
-    public void setVariant(ProductVariantDTO variant) {
-        this.variant = variant;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -125,13 +127,13 @@ public class OrderItemDTO implements Serializable {
     public String toString() {
         return "OrderItemDTO{" +
             "id=" + getId() +
+            ", orderId=" + getOrderId() +
+            ", variantId=" + getVariantId() +
             ", quantity=" + getQuantity() +
             ", unitPrice=" + getUnitPrice() +
             ", totalPrice=" + getTotalPrice() +
             ", nameSnapshot='" + getNameSnapshot() + "'" +
             ", skuSnapshot='" + getSkuSnapshot() + "'" +
-            ", order=" + getOrder() +
-            ", variant=" + getVariant() +
             "}";
     }
 }

@@ -48,6 +48,8 @@ public class SupplementAsserts {
     public static void assertSupplementUpdatableFieldsEquals(Supplement expected, Supplement actual) {
         assertThat(actual)
             .as("Verify Supplement relevant properties")
+            .satisfies(a -> assertThat(a.getProductId()).as("check productId").isEqualTo(expected.getProductId()))
+            .satisfies(a -> assertThat(a.getSupplierId()).as("check supplierId").isEqualTo(expected.getSupplierId()))
             .satisfies(a ->
                 assertThat(a.getSupplyPrice())
                     .as("check supplyPrice")
@@ -69,9 +71,6 @@ public class SupplementAsserts {
      * @param actual the actual entity
      */
     public static void assertSupplementUpdatableRelationshipsEquals(Supplement expected, Supplement actual) {
-        assertThat(actual)
-            .as("Verify Supplement relationships")
-            .satisfies(a -> assertThat(a.getProduct()).as("check product").isEqualTo(expected.getProduct()))
-            .satisfies(a -> assertThat(a.getSupplier()).as("check supplier").isEqualTo(expected.getSupplier()));
+        // empty method
     }
 }

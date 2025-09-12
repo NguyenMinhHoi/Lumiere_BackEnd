@@ -177,6 +177,10 @@ export const Survey = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.survey.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('customerId')}>
+                  <Translate contentKey="lumiApp.survey.customerId">Customer Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('customerId')} />
+                </th>
                 <th className="hand" onClick={sort('surveyType')}>
                   <Translate contentKey="lumiApp.survey.surveyType">Survey Type</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('surveyType')} />
@@ -195,9 +199,6 @@ export const Survey = () => {
                   <Translate contentKey="lumiApp.survey.isActive">Is Active</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('isActive')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.survey.customer">Customer</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -209,6 +210,7 @@ export const Survey = () => {
                       {survey.id}
                     </Button>
                   </td>
+                  <td>{survey.customerId}</td>
                   <td>
                     <Translate contentKey={`lumiApp.SurveyType.${survey.surveyType}`} />
                   </td>
@@ -216,7 +218,6 @@ export const Survey = () => {
                   <td>{survey.sentAt ? <TextFormat type="date" value={survey.sentAt} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{survey.dueAt ? <TextFormat type="date" value={survey.dueAt} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{survey.isActive ? 'true' : 'false'}</td>
-                  <td>{survey.customer ? <Link to={`/customer/${survey.customer.id}`}>{survey.customer.code}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/survey/${survey.id}`} color="info" size="sm" data-cy="entityDetailsButton">

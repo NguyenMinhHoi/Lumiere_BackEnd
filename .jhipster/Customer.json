@@ -67,5 +67,5 @@
   "name": "Customer",
   "pagination": "pagination",
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }

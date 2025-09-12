@@ -15,6 +15,13 @@ public class SurveyResponseDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private Long surveyId;
+
+    private Long customerId;
+
+    private Long ticketId;
+
+    @NotNull
     private Instant respondedAt;
 
     private Integer score;
@@ -22,18 +29,36 @@ public class SurveyResponseDTO implements Serializable {
     @Lob
     private String comment;
 
-    private SurveyDTO survey;
-
-    private CustomerDTO customer;
-
-    private TicketDTO ticket;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getSurveyId() {
+        return surveyId;
+    }
+
+    public void setSurveyId(Long surveyId) {
+        this.surveyId = surveyId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
     }
 
     public Instant getRespondedAt() {
@@ -58,30 +83,6 @@ public class SurveyResponseDTO implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public SurveyDTO getSurvey() {
-        return survey;
-    }
-
-    public void setSurvey(SurveyDTO survey) {
-        this.survey = survey;
-    }
-
-    public CustomerDTO getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerDTO customer) {
-        this.customer = customer;
-    }
-
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(TicketDTO ticket) {
-        this.ticket = ticket;
     }
 
     @Override
@@ -110,12 +111,12 @@ public class SurveyResponseDTO implements Serializable {
     public String toString() {
         return "SurveyResponseDTO{" +
             "id=" + getId() +
+            ", surveyId=" + getSurveyId() +
+            ", customerId=" + getCustomerId() +
+            ", ticketId=" + getTicketId() +
             ", respondedAt='" + getRespondedAt() + "'" +
             ", score=" + getScore() +
             ", comment='" + getComment() + "'" +
-            ", survey=" + getSurvey() +
-            ", customer=" + getCustomer() +
-            ", ticket=" + getTicket() +
             "}";
     }
 }

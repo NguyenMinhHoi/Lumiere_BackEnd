@@ -177,6 +177,14 @@ export const TicketFile = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.ticketFile.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('ticketId')}>
+                  <Translate contentKey="lumiApp.ticketFile.ticketId">Ticket Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('ticketId')} />
+                </th>
+                <th className="hand" onClick={sort('uploaderId')}>
+                  <Translate contentKey="lumiApp.ticketFile.uploaderId">Uploader Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('uploaderId')} />
+                </th>
                 <th className="hand" onClick={sort('fileName')}>
                   <Translate contentKey="lumiApp.ticketFile.fileName">File Name</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('fileName')} />
@@ -215,12 +223,6 @@ export const TicketFile = () => {
                   <Translate contentKey="lumiApp.ticketFile.uploadedAt">Uploaded At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('uploadedAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticketFile.ticket">Ticket</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticketFile.uploader">Uploader</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -232,6 +234,8 @@ export const TicketFile = () => {
                       {ticketFile.id}
                     </Button>
                   </td>
+                  <td>{ticketFile.ticketId}</td>
+                  <td>{ticketFile.uploaderId}</td>
                   <td>{ticketFile.fileName}</td>
                   <td>{ticketFile.originalName}</td>
                   <td>{ticketFile.contentType}</td>
@@ -248,8 +252,6 @@ export const TicketFile = () => {
                   <td>
                     {ticketFile.uploadedAt ? <TextFormat type="date" value={ticketFile.uploadedAt} format={APP_DATE_FORMAT} /> : null}
                   </td>
-                  <td>{ticketFile.ticket ? <Link to={`/ticket/${ticketFile.ticket.id}`}>{ticketFile.ticket.code}</Link> : ''}</td>
-                  <td>{ticketFile.uploader ? ticketFile.uploader.login : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/ticket-file/${ticketFile.id}`} color="info" size="sm" data-cy="entityDetailsButton">

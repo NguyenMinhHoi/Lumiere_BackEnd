@@ -19,13 +19,13 @@
         "title": "Survey Question"
       },
       "id": "ID",
+      "surveyId": "Survey Id",
       "text": "Text",
       "questionType": "Question Type",
       "scaleMin": "Scale Min",
       "scaleMax": "Scale Max",
       "isNeed": "Is Need",
-      "orderNo": "Order No",
-      "survey": "Survey"
+      "orderNo": "Order No"
     }
   }
 }

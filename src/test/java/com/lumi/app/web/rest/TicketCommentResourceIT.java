@@ -14,15 +14,12 @@ import com.lumi.app.IntegrationTest;
 import com.lumi.app.domain.TicketComment;
 import com.lumi.app.domain.enumeration.Visibility;
 import com.lumi.app.repository.TicketCommentRepository;
-import com.lumi.app.repository.UserRepository;
 import com.lumi.app.repository.search.TicketCommentSearchRepository;
-import com.lumi.app.service.TicketCommentService;
 import com.lumi.app.service.dto.TicketCommentDTO;
 import com.lumi.app.service.mapper.TicketCommentMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -31,13 +28,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -48,10 +40,15 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link TicketCommentResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class TicketCommentResourceIT {
+
+    private static final Long DEFAULT_TICKET_ID = 1L;
+    private static final Long UPDATED_TICKET_ID = 2L;
+
+    private static final Long DEFAULT_AUTHOR_ID = 1L;
+    private static final Long UPDATED_AUTHOR_ID = 2L;
 
     private static final String DEFAULT_BODY = "AAAAAAAAAA";
     private static final String UPDATED_BODY = "BBBBBBBBBB";
@@ -76,16 +73,7 @@ class TicketCommentResourceIT {
     private TicketCommentRepository ticketCommentRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Mock
-    private TicketCommentRepository ticketCommentRepositoryMock;
-
-    @Autowired
     private TicketCommentMapper ticketCommentMapper;
-
-    @Mock
-    private TicketCommentService ticketCommentServiceMock;
 
     @Autowired
     private TicketCommentSearchRepository ticketCommentSearchRepository;
@@ -107,7 +95,12 @@ class TicketCommentResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static TicketComment createEntity() {
-        return new TicketComment().body(DEFAULT_BODY).visibility(DEFAULT_VISIBILITY).createdAt(DEFAULT_CREATED_AT);
+        return new TicketComment()
+            .ticketId(DEFAULT_TICKET_ID)
+            .authorId(DEFAULT_AUTHOR_ID)
+            .body(DEFAULT_BODY)
+            .visibility(DEFAULT_VISIBILITY)
+            .createdAt(DEFAULT_CREATED_AT);
     }
 
     /**
@@ -117,7 +110,12 @@ class TicketCommentResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static TicketComment createUpdatedEntity() {
-        return new TicketComment().body(UPDATED_BODY).visibility(UPDATED_VISIBILITY).createdAt(UPDATED_CREATED_AT);
+        return new TicketComment()
+            .ticketId(UPDATED_TICKET_ID)
+            .authorId(UPDATED_AUTHOR_ID)
+            .body(UPDATED_BODY)
+            .visibility(UPDATED_VISIBILITY)
+            .createdAt(UPDATED_CREATED_AT);
     }
 
     @BeforeEach
@@ -189,6 +187,48 @@ class TicketCommentResourceIT {
 
     @Test
     @Transactional
+    void checkTicketIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(ticketCommentSearchRepository.findAll());
+        // set the field null
+        ticketComment.setTicketId(null);
+
+        // Create the TicketComment, which fails.
+        TicketCommentDTO ticketCommentDTO = ticketCommentMapper.toDto(ticketComment);
+
+        restTicketCommentMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(ticketCommentDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(ticketCommentSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkAuthorIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(ticketCommentSearchRepository.findAll());
+        // set the field null
+        ticketComment.setAuthorId(null);
+
+        // Create the TicketComment, which fails.
+        TicketCommentDTO ticketCommentDTO = ticketCommentMapper.toDto(ticketComment);
+
+        restTicketCommentMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(ticketCommentDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(ticketCommentSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
     void checkVisibilityIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(ticketCommentSearchRepository.findAll());
@@ -241,26 +281,11 @@ class TicketCommentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticketComment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].authorId").value(hasItem(DEFAULT_AUTHOR_ID.intValue())))
             .andExpect(jsonPath("$.[*].body").value(hasItem(DEFAULT_BODY)))
             .andExpect(jsonPath("$.[*].visibility").value(hasItem(DEFAULT_VISIBILITY.toString())))
             .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllTicketCommentsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(ticketCommentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restTicketCommentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(ticketCommentServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllTicketCommentsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(ticketCommentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restTicketCommentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(ticketCommentRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -275,6 +300,8 @@ class TicketCommentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(ticketComment.getId().intValue()))
+            .andExpect(jsonPath("$.ticketId").value(DEFAULT_TICKET_ID.intValue()))
+            .andExpect(jsonPath("$.authorId").value(DEFAULT_AUTHOR_ID.intValue()))
             .andExpect(jsonPath("$.body").value(DEFAULT_BODY))
             .andExpect(jsonPath("$.visibility").value(DEFAULT_VISIBILITY.toString()))
             .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()));
@@ -301,7 +328,12 @@ class TicketCommentResourceIT {
         TicketComment updatedTicketComment = ticketCommentRepository.findById(ticketComment.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedTicketComment are not directly saved in db
         em.detach(updatedTicketComment);
-        updatedTicketComment.body(UPDATED_BODY).visibility(UPDATED_VISIBILITY).createdAt(UPDATED_CREATED_AT);
+        updatedTicketComment
+            .ticketId(UPDATED_TICKET_ID)
+            .authorId(UPDATED_AUTHOR_ID)
+            .body(UPDATED_BODY)
+            .visibility(UPDATED_VISIBILITY)
+            .createdAt(UPDATED_CREATED_AT);
         TicketCommentDTO ticketCommentDTO = ticketCommentMapper.toDto(updatedTicketComment);
 
         restTicketCommentMockMvc
@@ -411,7 +443,7 @@ class TicketCommentResourceIT {
         TicketComment partialUpdatedTicketComment = new TicketComment();
         partialUpdatedTicketComment.setId(ticketComment.getId());
 
-        partialUpdatedTicketComment.createdAt(UPDATED_CREATED_AT);
+        partialUpdatedTicketComment.body(UPDATED_BODY).visibility(UPDATED_VISIBILITY).createdAt(UPDATED_CREATED_AT);
 
         restTicketCommentMockMvc
             .perform(
@@ -442,7 +474,12 @@ class TicketCommentResourceIT {
         TicketComment partialUpdatedTicketComment = new TicketComment();
         partialUpdatedTicketComment.setId(ticketComment.getId());
 
-        partialUpdatedTicketComment.body(UPDATED_BODY).visibility(UPDATED_VISIBILITY).createdAt(UPDATED_CREATED_AT);
+        partialUpdatedTicketComment
+            .ticketId(UPDATED_TICKET_ID)
+            .authorId(UPDATED_AUTHOR_ID)
+            .body(UPDATED_BODY)
+            .visibility(UPDATED_VISIBILITY)
+            .createdAt(UPDATED_CREATED_AT);
 
         restTicketCommentMockMvc
             .perform(
@@ -565,6 +602,8 @@ class TicketCommentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticketComment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].authorId").value(hasItem(DEFAULT_AUTHOR_ID.intValue())))
             .andExpect(jsonPath("$.[*].body").value(hasItem(DEFAULT_BODY.toString())))
             .andExpect(jsonPath("$.[*].visibility").value(hasItem(DEFAULT_VISIBILITY.toString())))
             .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));

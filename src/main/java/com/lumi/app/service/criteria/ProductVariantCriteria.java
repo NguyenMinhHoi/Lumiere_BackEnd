@@ -24,6 +24,8 @@ public class ProductVariantCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter productId;
+
     private StringFilter sku;
 
     private StringFilter name;
@@ -50,14 +52,13 @@ public class ProductVariantCriteria implements Serializable, Criteria {
 
     private InstantFilter updatedAt;
 
-    private LongFilter productId;
-
     private Boolean distinct;
 
     public ProductVariantCriteria() {}
 
     public ProductVariantCriteria(ProductVariantCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.productId = other.optionalProductId().map(LongFilter::copy).orElse(null);
         this.sku = other.optionalSku().map(StringFilter::copy).orElse(null);
         this.name = other.optionalName().map(StringFilter::copy).orElse(null);
         this.price = other.optionalPrice().map(BigDecimalFilter::copy).orElse(null);
@@ -71,7 +72,6 @@ public class ProductVariantCriteria implements Serializable, Criteria {
         this.isDefault = other.optionalIsDefault().map(BooleanFilter::copy).orElse(null);
         this.createdAt = other.optionalCreatedAt().map(InstantFilter::copy).orElse(null);
         this.updatedAt = other.optionalUpdatedAt().map(InstantFilter::copy).orElse(null);
-        this.productId = other.optionalProductId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -97,6 +97,25 @@ public class ProductVariantCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getProductId() {
+        return productId;
+    }
+
+    public Optional<LongFilter> optionalProductId() {
+        return Optional.ofNullable(productId);
+    }
+
+    public LongFilter productId() {
+        if (productId == null) {
+            setProductId(new LongFilter());
+        }
+        return productId;
+    }
+
+    public void setProductId(LongFilter productId) {
+        this.productId = productId;
     }
 
     public StringFilter getSku() {
@@ -346,25 +365,6 @@ public class ProductVariantCriteria implements Serializable, Criteria {
         this.updatedAt = updatedAt;
     }
 
-    public LongFilter getProductId() {
-        return productId;
-    }
-
-    public Optional<LongFilter> optionalProductId() {
-        return Optional.ofNullable(productId);
-    }
-
-    public LongFilter productId() {
-        if (productId == null) {
-            setProductId(new LongFilter());
-        }
-        return productId;
-    }
-
-    public void setProductId(LongFilter productId) {
-        this.productId = productId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -395,6 +395,7 @@ public class ProductVariantCriteria implements Serializable, Criteria {
         final ProductVariantCriteria that = (ProductVariantCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(productId, that.productId) &&
             Objects.equals(sku, that.sku) &&
             Objects.equals(name, that.name) &&
             Objects.equals(price, that.price) &&
@@ -408,7 +409,6 @@ public class ProductVariantCriteria implements Serializable, Criteria {
             Objects.equals(isDefault, that.isDefault) &&
             Objects.equals(createdAt, that.createdAt) &&
             Objects.equals(updatedAt, that.updatedAt) &&
-            Objects.equals(productId, that.productId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -417,6 +417,7 @@ public class ProductVariantCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
+            productId,
             sku,
             name,
             price,
@@ -430,7 +431,6 @@ public class ProductVariantCriteria implements Serializable, Criteria {
             isDefault,
             createdAt,
             updatedAt,
-            productId,
             distinct
         );
     }
@@ -440,6 +440,7 @@ public class ProductVariantCriteria implements Serializable, Criteria {
     public String toString() {
         return "ProductVariantCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalProductId().map(f -> "productId=" + f + ", ").orElse("") +
             optionalSku().map(f -> "sku=" + f + ", ").orElse("") +
             optionalName().map(f -> "name=" + f + ", ").orElse("") +
             optionalPrice().map(f -> "price=" + f + ", ").orElse("") +
@@ -453,7 +454,6 @@ public class ProductVariantCriteria implements Serializable, Criteria {
             optionalIsDefault().map(f -> "isDefault=" + f + ", ").orElse("") +
             optionalCreatedAt().map(f -> "createdAt=" + f + ", ").orElse("") +
             optionalUpdatedAt().map(f -> "updatedAt=" + f + ", ").orElse("") +
-            optionalProductId().map(f -> "productId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

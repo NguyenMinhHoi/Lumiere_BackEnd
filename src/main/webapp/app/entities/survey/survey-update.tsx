@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getCustomers } from 'app/entities/customer/customer.reducer';
 import { SurveyType } from 'app/shared/model/enumerations/survey-type.model';
 import { createEntity, getEntity, reset, updateEntity } from './survey.reducer';
 
@@ -19,7 +18,6 @@ export const SurveyUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const customers = useAppSelector(state => state.customer.entities);
   const surveyEntity = useAppSelector(state => state.survey.entity);
   const loading = useAppSelector(state => state.survey.loading);
   const updating = useAppSelector(state => state.survey.updating);
@@ -36,8 +34,6 @@ export const SurveyUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getCustomers({}));
   }, []);
 
   useEffect(() => {
@@ -50,13 +46,15 @@ export const SurveyUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.customerId !== undefined && typeof values.customerId !== 'number') {
+      values.customerId = Number(values.customerId);
+    }
     values.sentAt = convertDateTimeToServer(values.sentAt);
     values.dueAt = convertDateTimeToServer(values.dueAt);
 
     const entity = {
       ...surveyEntity,
       ...values,
-      customer: customers.find(it => it.id.toString() === values.customer?.toString()),
     };
 
     if (isNew) {
@@ -77,7 +75,6 @@ export const SurveyUpdate = () => {
           ...surveyEntity,
           sentAt: convertDateTimeFromServer(surveyEntity.sentAt),
           dueAt: convertDateTimeFromServer(surveyEntity.dueAt),
-          customer: surveyEntity?.customer?.id,
         };
 
   return (
@@ -105,6 +102,13 @@ export const SurveyUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.survey.customerId')}
+                id="survey-customerId"
+                name="customerId"
+                data-cy="customerId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.survey.surveyType')}
                 id="survey-surveyType"
@@ -154,22 +158,6 @@ export const SurveyUpdate = () => {
                 check
                 type="checkbox"
               />
-              <ValidatedField
-                id="survey-customer"
-                name="customer"
-                data-cy="customer"
-                label={translate('lumiApp.survey.customer')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {customers
-                  ? customers.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/survey" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

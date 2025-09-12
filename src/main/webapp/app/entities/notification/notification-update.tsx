@@ -7,9 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getTickets } from 'app/entities/ticket/ticket.reducer';
-import { getEntities as getCustomers } from 'app/entities/customer/customer.reducer';
-import { getEntities as getSurveys } from 'app/entities/survey/survey.reducer';
 import { NotificationType } from 'app/shared/model/enumerations/notification-type.model';
 import { DeliveryChannel } from 'app/shared/model/enumerations/delivery-channel.model';
 import { SendStatus } from 'app/shared/model/enumerations/send-status.model';
@@ -23,9 +20,6 @@ export const NotificationUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const tickets = useAppSelector(state => state.ticket.entities);
-  const customers = useAppSelector(state => state.customer.entities);
-  const surveys = useAppSelector(state => state.survey.entities);
   const notificationEntity = useAppSelector(state => state.notification.entity);
   const loading = useAppSelector(state => state.notification.loading);
   const updating = useAppSelector(state => state.notification.updating);
@@ -44,10 +38,6 @@ export const NotificationUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getTickets({}));
-    dispatch(getCustomers({}));
-    dispatch(getSurveys({}));
   }, []);
 
   useEffect(() => {
@@ -60,6 +50,15 @@ export const NotificationUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.ticketId !== undefined && typeof values.ticketId !== 'number') {
+      values.ticketId = Number(values.ticketId);
+    }
+    if (values.customerId !== undefined && typeof values.customerId !== 'number') {
+      values.customerId = Number(values.customerId);
+    }
+    if (values.surveyId !== undefined && typeof values.surveyId !== 'number') {
+      values.surveyId = Number(values.surveyId);
+    }
     if (values.retryCount !== undefined && typeof values.retryCount !== 'number') {
       values.retryCount = Number(values.retryCount);
     }
@@ -69,9 +68,6 @@ export const NotificationUpdate = () => {
     const entity = {
       ...notificationEntity,
       ...values,
-      ticket: tickets.find(it => it.id.toString() === values.ticket?.toString()),
-      customer: customers.find(it => it.id.toString() === values.customer?.toString()),
-      survey: surveys.find(it => it.id.toString() === values.survey?.toString()),
     };
 
     if (isNew) {
@@ -94,9 +90,6 @@ export const NotificationUpdate = () => {
           ...notificationEntity,
           lastTriedAt: convertDateTimeFromServer(notificationEntity.lastTriedAt),
           createdAt: convertDateTimeFromServer(notificationEntity.createdAt),
-          ticket: notificationEntity?.ticket?.id,
-          customer: notificationEntity?.customer?.id,
-          survey: notificationEntity?.survey?.id,
         };
 
   return (
@@ -124,6 +117,27 @@ export const NotificationUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.notification.ticketId')}
+                id="notification-ticketId"
+                name="ticketId"
+                data-cy="ticketId"
+                type="text"
+              />
+              <ValidatedField
+                label={translate('lumiApp.notification.customerId')}
+                id="notification-customerId"
+                name="customerId"
+                data-cy="customerId"
+                type="text"
+              />
+              <ValidatedField
+                label={translate('lumiApp.notification.surveyId')}
+                id="notification-surveyId"
+                name="surveyId"
+                data-cy="surveyId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.notification.type')}
                 id="notification-type"
@@ -214,54 +228,6 @@ export const NotificationUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
-              <ValidatedField
-                id="notification-ticket"
-                name="ticket"
-                data-cy="ticket"
-                label={translate('lumiApp.notification.ticket')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {tickets
-                  ? tickets.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="notification-customer"
-                name="customer"
-                data-cy="customer"
-                label={translate('lumiApp.notification.customer')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {customers
-                  ? customers.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="notification-survey"
-                name="survey"
-                data-cy="survey"
-                label={translate('lumiApp.notification.survey')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {surveys
-                  ? surveys.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.title}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/notification" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

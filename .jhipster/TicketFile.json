@@ -6,6 +6,15 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "ticketId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "uploaderId",
+      "fieldType": "Long"
+    },
+    {
       "fieldName": "fileName",
       "fieldType": "String",
       "fieldValidateRules": ["required", "maxlength"],
@@ -68,22 +77,6 @@
   "jpaMetamodelFiltering": true,
   "name": "TicketFile",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "ticket",
-      "relationshipName": "ticket",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "login",
-      "otherEntityName": "user",
-      "relationshipName": "uploader",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one",
-      "relationshipWithBuiltInEntity": true
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

@@ -33,6 +33,18 @@ export const AttachmentDetail = () => {
           </dt>
           <dd>{attachmentEntity.id}</dd>
           <dt>
+            <span id="ticketId">
+              <Translate contentKey="lumiApp.attachment.ticketId">Ticket Id</Translate>
+            </span>
+          </dt>
+          <dd>{attachmentEntity.ticketId}</dd>
+          <dt>
+            <span id="commentId">
+              <Translate contentKey="lumiApp.attachment.commentId">Comment Id</Translate>
+            </span>
+          </dt>
+          <dd>{attachmentEntity.commentId}</dd>
+          <dt>
             <span id="name">
               <Translate contentKey="lumiApp.attachment.name">Name</Translate>
             </span>
@@ -64,14 +76,6 @@ export const AttachmentDetail = () => {
           <dd>
             {attachmentEntity.uploadedAt ? <TextFormat value={attachmentEntity.uploadedAt} type="date" format={APP_DATE_FORMAT} /> : null}
           </dd>
-          <dt>
-            <Translate contentKey="lumiApp.attachment.ticket">Ticket</Translate>
-          </dt>
-          <dd>{attachmentEntity.ticket ? attachmentEntity.ticket.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.attachment.comment">Comment</Translate>
-          </dt>
-          <dd>{attachmentEntity.comment ? attachmentEntity.comment.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/attachment" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

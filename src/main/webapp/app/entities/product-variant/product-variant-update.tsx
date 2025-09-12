@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getProducts } from 'app/entities/product/product.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './product-variant.reducer';
 
 export const ProductVariantUpdate = () => {
@@ -18,7 +17,6 @@ export const ProductVariantUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const products = useAppSelector(state => state.product.entities);
   const productVariantEntity = useAppSelector(state => state.productVariant.entity);
   const loading = useAppSelector(state => state.productVariant.loading);
   const updating = useAppSelector(state => state.productVariant.updating);
@@ -34,8 +32,6 @@ export const ProductVariantUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getProducts({}));
   }, []);
 
   useEffect(() => {
@@ -47,6 +43,9 @@ export const ProductVariantUpdate = () => {
   const saveEntity = values => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
+    }
+    if (values.productId !== undefined && typeof values.productId !== 'number') {
+      values.productId = Number(values.productId);
     }
     if (values.price !== undefined && typeof values.price !== 'number') {
       values.price = Number(values.price);
@@ -75,7 +74,6 @@ export const ProductVariantUpdate = () => {
     const entity = {
       ...productVariantEntity,
       ...values,
-      product: products.find(it => it.id.toString() === values.product?.toString()),
     };
 
     if (isNew) {
@@ -95,7 +93,6 @@ export const ProductVariantUpdate = () => {
           ...productVariantEntity,
           createdAt: convertDateTimeFromServer(productVariantEntity.createdAt),
           updatedAt: convertDateTimeFromServer(productVariantEntity.updatedAt),
-          product: productVariantEntity?.product?.id,
         };
 
   return (
@@ -123,6 +120,17 @@ export const ProductVariantUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.productVariant.productId')}
+                id="product-variant-productId"
+                name="productId"
+                data-cy="productId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
               <ValidatedField
                 label={translate('lumiApp.productVariant.sku')}
                 id="product-variant-sku"
@@ -243,22 +251,6 @@ export const ProductVariantUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField
-                id="product-variant-product"
-                name="product"
-                data-cy="product"
-                label={translate('lumiApp.productVariant.product')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {products
-                  ? products.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/product-variant" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

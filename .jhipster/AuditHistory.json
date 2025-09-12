@@ -53,5 +53,5 @@
   "name": "AuditHistory",
   "pagination": "pagination",
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }

@@ -9,14 +9,17 @@ public class TicketCommentTestSamples {
     private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     public static TicketComment getTicketCommentSample1() {
-        return new TicketComment().id(1L);
+        return new TicketComment().id(1L).ticketId(1L).authorId(1L);
     }
 
     public static TicketComment getTicketCommentSample2() {
-        return new TicketComment().id(2L);
+        return new TicketComment().id(2L).ticketId(2L).authorId(2L);
     }
 
     public static TicketComment getTicketCommentRandomSampleGenerator() {
-        return new TicketComment().id(longCount.incrementAndGet());
+        return new TicketComment()
+            .id(longCount.incrementAndGet())
+            .ticketId(longCount.incrementAndGet())
+            .authorId(longCount.incrementAndGet());
     }
 }

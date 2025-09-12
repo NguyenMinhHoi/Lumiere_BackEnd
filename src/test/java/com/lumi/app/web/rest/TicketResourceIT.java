@@ -11,25 +11,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
-import com.lumi.app.domain.Customer;
-import com.lumi.app.domain.Orders;
-import com.lumi.app.domain.SlaPlan;
-import com.lumi.app.domain.Tag;
 import com.lumi.app.domain.Ticket;
-import com.lumi.app.domain.User;
 import com.lumi.app.domain.enumeration.ChannelType;
 import com.lumi.app.domain.enumeration.Priority;
 import com.lumi.app.domain.enumeration.TicketStatus;
 import com.lumi.app.repository.TicketRepository;
-import com.lumi.app.repository.UserRepository;
 import com.lumi.app.repository.search.TicketSearchRepository;
-import com.lumi.app.service.TicketService;
 import com.lumi.app.service.dto.TicketDTO;
 import com.lumi.app.service.mapper.TicketMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -38,13 +30,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -55,10 +42,25 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link TicketResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class TicketResourceIT {
+
+    private static final Long DEFAULT_CUSTOMER_ID = 1L;
+    private static final Long UPDATED_CUSTOMER_ID = 2L;
+    private static final Long SMALLER_CUSTOMER_ID = 1L - 1L;
+
+    private static final Long DEFAULT_SLA_PLAN_ID = 1L;
+    private static final Long UPDATED_SLA_PLAN_ID = 2L;
+    private static final Long SMALLER_SLA_PLAN_ID = 1L - 1L;
+
+    private static final Long DEFAULT_ORDER_ID = 1L;
+    private static final Long UPDATED_ORDER_ID = 2L;
+    private static final Long SMALLER_ORDER_ID = 1L - 1L;
+
+    private static final Long DEFAULT_ASSIGNEE_EMPLOYEE_ID = 1L;
+    private static final Long UPDATED_ASSIGNEE_EMPLOYEE_ID = 2L;
+    private static final Long SMALLER_ASSIGNEE_EMPLOYEE_ID = 1L - 1L;
 
     private static final String DEFAULT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_CODE = "BBBBBBBBBB";
@@ -104,16 +106,7 @@ class TicketResourceIT {
     private TicketRepository ticketRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Mock
-    private TicketRepository ticketRepositoryMock;
-
-    @Autowired
     private TicketMapper ticketMapper;
-
-    @Mock
-    private TicketService ticketServiceMock;
 
     @Autowired
     private TicketSearchRepository ticketSearchRepository;
@@ -136,6 +129,10 @@ class TicketResourceIT {
      */
     public static Ticket createEntity() {
         return new Ticket()
+            .customerId(DEFAULT_CUSTOMER_ID)
+            .slaPlanId(DEFAULT_SLA_PLAN_ID)
+            .orderId(DEFAULT_ORDER_ID)
+            .assigneeEmployeeId(DEFAULT_ASSIGNEE_EMPLOYEE_ID)
             .code(DEFAULT_CODE)
             .subject(DEFAULT_SUBJECT)
             .description(DEFAULT_DESCRIPTION)
@@ -156,6 +153,10 @@ class TicketResourceIT {
      */
     public static Ticket createUpdatedEntity() {
         return new Ticket()
+            .customerId(UPDATED_CUSTOMER_ID)
+            .slaPlanId(UPDATED_SLA_PLAN_ID)
+            .orderId(UPDATED_ORDER_ID)
+            .assigneeEmployeeId(UPDATED_ASSIGNEE_EMPLOYEE_ID)
             .code(UPDATED_CODE)
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
@@ -231,6 +232,27 @@ class TicketResourceIT {
 
         // Validate the Ticket in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(ticketSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkCustomerIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(ticketSearchRepository.findAll());
+        // set the field null
+        ticket.setCustomerId(null);
+
+        // Create the Ticket, which fails.
+        TicketDTO ticketDTO = ticketMapper.toDto(ticket);
+
+        restTicketMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(ticketDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
         int searchDatabaseSizeAfter = IterableUtil.sizeOf(ticketSearchRepository.findAll());
         assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
     }
@@ -373,6 +395,10 @@ class TicketResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticket.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].slaPlanId").value(hasItem(DEFAULT_SLA_PLAN_ID.intValue())))
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].assigneeEmployeeId").value(hasItem(DEFAULT_ASSIGNEE_EMPLOYEE_ID.intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
@@ -383,23 +409,6 @@ class TicketResourceIT {
             .andExpect(jsonPath("$.[*].firstResponseAt").value(hasItem(DEFAULT_FIRST_RESPONSE_AT.toString())))
             .andExpect(jsonPath("$.[*].resolvedAt").value(hasItem(DEFAULT_RESOLVED_AT.toString())))
             .andExpect(jsonPath("$.[*].slaDueAt").value(hasItem(DEFAULT_SLA_DUE_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllTicketsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(ticketServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restTicketMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(ticketServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllTicketsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(ticketServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restTicketMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(ticketRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -414,6 +423,10 @@ class TicketResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(ticket.getId().intValue()))
+            .andExpect(jsonPath("$.customerId").value(DEFAULT_CUSTOMER_ID.intValue()))
+            .andExpect(jsonPath("$.slaPlanId").value(DEFAULT_SLA_PLAN_ID.intValue()))
+            .andExpect(jsonPath("$.orderId").value(DEFAULT_ORDER_ID.intValue()))
+            .andExpect(jsonPath("$.assigneeEmployeeId").value(DEFAULT_ASSIGNEE_EMPLOYEE_ID.intValue()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.subject").value(DEFAULT_SUBJECT))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
@@ -439,6 +452,310 @@ class TicketResourceIT {
         defaultTicketFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultTicketFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByCustomerIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where customerId equals to
+        defaultTicketFiltering("customerId.equals=" + DEFAULT_CUSTOMER_ID, "customerId.equals=" + UPDATED_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByCustomerIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where customerId in
+        defaultTicketFiltering("customerId.in=" + DEFAULT_CUSTOMER_ID + "," + UPDATED_CUSTOMER_ID, "customerId.in=" + UPDATED_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByCustomerIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where customerId is not null
+        defaultTicketFiltering("customerId.specified=true", "customerId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByCustomerIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where customerId is greater than or equal to
+        defaultTicketFiltering(
+            "customerId.greaterThanOrEqual=" + DEFAULT_CUSTOMER_ID,
+            "customerId.greaterThanOrEqual=" + UPDATED_CUSTOMER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByCustomerIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where customerId is less than or equal to
+        defaultTicketFiltering("customerId.lessThanOrEqual=" + DEFAULT_CUSTOMER_ID, "customerId.lessThanOrEqual=" + SMALLER_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByCustomerIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where customerId is less than
+        defaultTicketFiltering("customerId.lessThan=" + UPDATED_CUSTOMER_ID, "customerId.lessThan=" + DEFAULT_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByCustomerIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where customerId is greater than
+        defaultTicketFiltering("customerId.greaterThan=" + SMALLER_CUSTOMER_ID, "customerId.greaterThan=" + DEFAULT_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsBySlaPlanIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where slaPlanId equals to
+        defaultTicketFiltering("slaPlanId.equals=" + DEFAULT_SLA_PLAN_ID, "slaPlanId.equals=" + UPDATED_SLA_PLAN_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsBySlaPlanIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where slaPlanId in
+        defaultTicketFiltering("slaPlanId.in=" + DEFAULT_SLA_PLAN_ID + "," + UPDATED_SLA_PLAN_ID, "slaPlanId.in=" + UPDATED_SLA_PLAN_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsBySlaPlanIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where slaPlanId is not null
+        defaultTicketFiltering("slaPlanId.specified=true", "slaPlanId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsBySlaPlanIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where slaPlanId is greater than or equal to
+        defaultTicketFiltering(
+            "slaPlanId.greaterThanOrEqual=" + DEFAULT_SLA_PLAN_ID,
+            "slaPlanId.greaterThanOrEqual=" + UPDATED_SLA_PLAN_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsBySlaPlanIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where slaPlanId is less than or equal to
+        defaultTicketFiltering("slaPlanId.lessThanOrEqual=" + DEFAULT_SLA_PLAN_ID, "slaPlanId.lessThanOrEqual=" + SMALLER_SLA_PLAN_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsBySlaPlanIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where slaPlanId is less than
+        defaultTicketFiltering("slaPlanId.lessThan=" + UPDATED_SLA_PLAN_ID, "slaPlanId.lessThan=" + DEFAULT_SLA_PLAN_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsBySlaPlanIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where slaPlanId is greater than
+        defaultTicketFiltering("slaPlanId.greaterThan=" + SMALLER_SLA_PLAN_ID, "slaPlanId.greaterThan=" + DEFAULT_SLA_PLAN_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByOrderIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where orderId equals to
+        defaultTicketFiltering("orderId.equals=" + DEFAULT_ORDER_ID, "orderId.equals=" + UPDATED_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByOrderIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where orderId in
+        defaultTicketFiltering("orderId.in=" + DEFAULT_ORDER_ID + "," + UPDATED_ORDER_ID, "orderId.in=" + UPDATED_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByOrderIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where orderId is not null
+        defaultTicketFiltering("orderId.specified=true", "orderId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByOrderIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where orderId is greater than or equal to
+        defaultTicketFiltering("orderId.greaterThanOrEqual=" + DEFAULT_ORDER_ID, "orderId.greaterThanOrEqual=" + UPDATED_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByOrderIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where orderId is less than or equal to
+        defaultTicketFiltering("orderId.lessThanOrEqual=" + DEFAULT_ORDER_ID, "orderId.lessThanOrEqual=" + SMALLER_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByOrderIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where orderId is less than
+        defaultTicketFiltering("orderId.lessThan=" + UPDATED_ORDER_ID, "orderId.lessThan=" + DEFAULT_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByOrderIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where orderId is greater than
+        defaultTicketFiltering("orderId.greaterThan=" + SMALLER_ORDER_ID, "orderId.greaterThan=" + DEFAULT_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByAssigneeEmployeeIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where assigneeEmployeeId equals to
+        defaultTicketFiltering(
+            "assigneeEmployeeId.equals=" + DEFAULT_ASSIGNEE_EMPLOYEE_ID,
+            "assigneeEmployeeId.equals=" + UPDATED_ASSIGNEE_EMPLOYEE_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByAssigneeEmployeeIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where assigneeEmployeeId in
+        defaultTicketFiltering(
+            "assigneeEmployeeId.in=" + DEFAULT_ASSIGNEE_EMPLOYEE_ID + "," + UPDATED_ASSIGNEE_EMPLOYEE_ID,
+            "assigneeEmployeeId.in=" + UPDATED_ASSIGNEE_EMPLOYEE_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByAssigneeEmployeeIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where assigneeEmployeeId is not null
+        defaultTicketFiltering("assigneeEmployeeId.specified=true", "assigneeEmployeeId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByAssigneeEmployeeIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where assigneeEmployeeId is greater than or equal to
+        defaultTicketFiltering(
+            "assigneeEmployeeId.greaterThanOrEqual=" + DEFAULT_ASSIGNEE_EMPLOYEE_ID,
+            "assigneeEmployeeId.greaterThanOrEqual=" + UPDATED_ASSIGNEE_EMPLOYEE_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByAssigneeEmployeeIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where assigneeEmployeeId is less than or equal to
+        defaultTicketFiltering(
+            "assigneeEmployeeId.lessThanOrEqual=" + DEFAULT_ASSIGNEE_EMPLOYEE_ID,
+            "assigneeEmployeeId.lessThanOrEqual=" + SMALLER_ASSIGNEE_EMPLOYEE_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByAssigneeEmployeeIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where assigneeEmployeeId is less than
+        defaultTicketFiltering(
+            "assigneeEmployeeId.lessThan=" + UPDATED_ASSIGNEE_EMPLOYEE_ID,
+            "assigneeEmployeeId.lessThan=" + DEFAULT_ASSIGNEE_EMPLOYEE_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketsByAssigneeEmployeeIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicket = ticketRepository.saveAndFlush(ticket);
+
+        // Get all the ticketList where assigneeEmployeeId is greater than
+        defaultTicketFiltering(
+            "assigneeEmployeeId.greaterThan=" + SMALLER_ASSIGNEE_EMPLOYEE_ID,
+            "assigneeEmployeeId.greaterThan=" + DEFAULT_ASSIGNEE_EMPLOYEE_ID
+        );
     }
 
     @Test
@@ -757,116 +1074,6 @@ class TicketResourceIT {
         defaultTicketFiltering("slaDueAt.specified=true", "slaDueAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllTicketsByCustomerIsEqualToSomething() throws Exception {
-        Customer customer;
-        if (TestUtil.findAll(em, Customer.class).isEmpty()) {
-            ticketRepository.saveAndFlush(ticket);
-            customer = CustomerResourceIT.createEntity();
-        } else {
-            customer = TestUtil.findAll(em, Customer.class).get(0);
-        }
-        em.persist(customer);
-        em.flush();
-        ticket.setCustomer(customer);
-        ticketRepository.saveAndFlush(ticket);
-        Long customerId = customer.getId();
-        // Get all the ticketList where customer equals to customerId
-        defaultTicketShouldBeFound("customerId.equals=" + customerId);
-
-        // Get all the ticketList where customer equals to (customerId + 1)
-        defaultTicketShouldNotBeFound("customerId.equals=" + (customerId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllTicketsByAssigneeIsEqualToSomething() throws Exception {
-        User assignee;
-        if (TestUtil.findAll(em, User.class).isEmpty()) {
-            ticketRepository.saveAndFlush(ticket);
-            assignee = UserResourceIT.createEntity();
-        } else {
-            assignee = TestUtil.findAll(em, User.class).get(0);
-        }
-        em.persist(assignee);
-        em.flush();
-        ticket.setAssignee(assignee);
-        ticketRepository.saveAndFlush(ticket);
-        Long assigneeId = assignee.getId();
-        // Get all the ticketList where assignee equals to assigneeId
-        defaultTicketShouldBeFound("assigneeId.equals=" + assigneeId);
-
-        // Get all the ticketList where assignee equals to (assigneeId + 1)
-        defaultTicketShouldNotBeFound("assigneeId.equals=" + (assigneeId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllTicketsBySlaPlanIsEqualToSomething() throws Exception {
-        SlaPlan slaPlan;
-        if (TestUtil.findAll(em, SlaPlan.class).isEmpty()) {
-            ticketRepository.saveAndFlush(ticket);
-            slaPlan = SlaPlanResourceIT.createEntity();
-        } else {
-            slaPlan = TestUtil.findAll(em, SlaPlan.class).get(0);
-        }
-        em.persist(slaPlan);
-        em.flush();
-        ticket.setSlaPlan(slaPlan);
-        ticketRepository.saveAndFlush(ticket);
-        Long slaPlanId = slaPlan.getId();
-        // Get all the ticketList where slaPlan equals to slaPlanId
-        defaultTicketShouldBeFound("slaPlanId.equals=" + slaPlanId);
-
-        // Get all the ticketList where slaPlan equals to (slaPlanId + 1)
-        defaultTicketShouldNotBeFound("slaPlanId.equals=" + (slaPlanId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllTicketsByOrderIsEqualToSomething() throws Exception {
-        Orders order;
-        if (TestUtil.findAll(em, Orders.class).isEmpty()) {
-            ticketRepository.saveAndFlush(ticket);
-            order = OrdersResourceIT.createEntity();
-        } else {
-            order = TestUtil.findAll(em, Orders.class).get(0);
-        }
-        em.persist(order);
-        em.flush();
-        ticket.setOrder(order);
-        ticketRepository.saveAndFlush(ticket);
-        Long orderId = order.getId();
-        // Get all the ticketList where order equals to orderId
-        defaultTicketShouldBeFound("orderId.equals=" + orderId);
-
-        // Get all the ticketList where order equals to (orderId + 1)
-        defaultTicketShouldNotBeFound("orderId.equals=" + (orderId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllTicketsByTagsIsEqualToSomething() throws Exception {
-        Tag tags;
-        if (TestUtil.findAll(em, Tag.class).isEmpty()) {
-            ticketRepository.saveAndFlush(ticket);
-            tags = TagResourceIT.createEntity();
-        } else {
-            tags = TestUtil.findAll(em, Tag.class).get(0);
-        }
-        em.persist(tags);
-        em.flush();
-        ticket.addTags(tags);
-        ticketRepository.saveAndFlush(ticket);
-        Long tagsId = tags.getId();
-        // Get all the ticketList where tags equals to tagsId
-        defaultTicketShouldBeFound("tagsId.equals=" + tagsId);
-
-        // Get all the ticketList where tags equals to (tagsId + 1)
-        defaultTicketShouldNotBeFound("tagsId.equals=" + (tagsId + 1));
-    }
-
     private void defaultTicketFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultTicketShouldBeFound(shouldBeFound);
         defaultTicketShouldNotBeFound(shouldNotBeFound);
@@ -881,6 +1088,10 @@ class TicketResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticket.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].slaPlanId").value(hasItem(DEFAULT_SLA_PLAN_ID.intValue())))
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].assigneeEmployeeId").value(hasItem(DEFAULT_ASSIGNEE_EMPLOYEE_ID.intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
@@ -941,6 +1152,10 @@ class TicketResourceIT {
         // Disconnect from session so that the updates on updatedTicket are not directly saved in db
         em.detach(updatedTicket);
         updatedTicket
+            .customerId(UPDATED_CUSTOMER_ID)
+            .slaPlanId(UPDATED_SLA_PLAN_ID)
+            .orderId(UPDATED_ORDER_ID)
+            .assigneeEmployeeId(UPDATED_ASSIGNEE_EMPLOYEE_ID)
             .code(UPDATED_CODE)
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
@@ -1057,13 +1272,15 @@ class TicketResourceIT {
         partialUpdatedTicket.setId(ticket.getId());
 
         partialUpdatedTicket
-            .code(UPDATED_CODE)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .slaPlanId(UPDATED_SLA_PLAN_ID)
+            .orderId(UPDATED_ORDER_ID)
+            .assigneeEmployeeId(UPDATED_ASSIGNEE_EMPLOYEE_ID)
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
-            .status(UPDATED_STATUS)
+            .priority(UPDATED_PRIORITY)
             .channel(UPDATED_CHANNEL)
             .openedAt(UPDATED_OPENED_AT)
-            .resolvedAt(UPDATED_RESOLVED_AT)
             .slaDueAt(UPDATED_SLA_DUE_AT);
 
         restTicketMockMvc
@@ -1093,6 +1310,10 @@ class TicketResourceIT {
         partialUpdatedTicket.setId(ticket.getId());
 
         partialUpdatedTicket
+            .customerId(UPDATED_CUSTOMER_ID)
+            .slaPlanId(UPDATED_SLA_PLAN_ID)
+            .orderId(UPDATED_ORDER_ID)
+            .assigneeEmployeeId(UPDATED_ASSIGNEE_EMPLOYEE_ID)
             .code(UPDATED_CODE)
             .subject(UPDATED_SUBJECT)
             .description(UPDATED_DESCRIPTION)
@@ -1225,6 +1446,10 @@ class TicketResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticket.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].slaPlanId").value(hasItem(DEFAULT_SLA_PLAN_ID.intValue())))
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].assigneeEmployeeId").value(hasItem(DEFAULT_ASSIGNEE_EMPLOYEE_ID.intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))

@@ -1,18 +1,12 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
-import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
+import { Translate, ValidatedField, ValidatedForm, isNumber, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
-import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getCustomers } from 'app/entities/customer/customer.reducer';
-import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
-import { getEntities as getSlaPlans } from 'app/entities/sla-plan/sla-plan.reducer';
-import { getEntities as getOrders } from 'app/entities/orders/orders.reducer';
-import { getEntities as getTags } from 'app/entities/tag/tag.reducer';
 import { TicketStatus } from 'app/shared/model/enumerations/ticket-status.model';
 import { Priority } from 'app/shared/model/enumerations/priority.model';
 import { ChannelType } from 'app/shared/model/enumerations/channel-type.model';
@@ -26,11 +20,6 @@ export const TicketUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const customers = useAppSelector(state => state.customer.entities);
-  const users = useAppSelector(state => state.userManagement.users);
-  const slaPlans = useAppSelector(state => state.slaPlan.entities);
-  const orders = useAppSelector(state => state.orders.entities);
-  const tags = useAppSelector(state => state.tag.entities);
   const ticketEntity = useAppSelector(state => state.ticket.entity);
   const loading = useAppSelector(state => state.ticket.loading);
   const updating = useAppSelector(state => state.ticket.updating);
@@ -49,12 +38,6 @@ export const TicketUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getCustomers({}));
-    dispatch(getUsers({}));
-    dispatch(getSlaPlans({}));
-    dispatch(getOrders({}));
-    dispatch(getTags({}));
   }, []);
 
   useEffect(() => {
@@ -67,6 +50,18 @@ export const TicketUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.customerId !== undefined && typeof values.customerId !== 'number') {
+      values.customerId = Number(values.customerId);
+    }
+    if (values.slaPlanId !== undefined && typeof values.slaPlanId !== 'number') {
+      values.slaPlanId = Number(values.slaPlanId);
+    }
+    if (values.orderId !== undefined && typeof values.orderId !== 'number') {
+      values.orderId = Number(values.orderId);
+    }
+    if (values.assigneeEmployeeId !== undefined && typeof values.assigneeEmployeeId !== 'number') {
+      values.assigneeEmployeeId = Number(values.assigneeEmployeeId);
+    }
     values.openedAt = convertDateTimeToServer(values.openedAt);
     values.firstResponseAt = convertDateTimeToServer(values.firstResponseAt);
     values.resolvedAt = convertDateTimeToServer(values.resolvedAt);
@@ -75,11 +70,6 @@ export const TicketUpdate = () => {
     const entity = {
       ...ticketEntity,
       ...values,
-      customer: customers.find(it => it.id.toString() === values.customer?.toString()),
-      assignee: users.find(it => it.id.toString() === values.assignee?.toString()),
-      slaPlan: slaPlans.find(it => it.id.toString() === values.slaPlan?.toString()),
-      order: orders.find(it => it.id.toString() === values.order?.toString()),
-      tags: mapIdList(values.tags),
     };
 
     if (isNew) {
@@ -106,11 +96,6 @@ export const TicketUpdate = () => {
           firstResponseAt: convertDateTimeFromServer(ticketEntity.firstResponseAt),
           resolvedAt: convertDateTimeFromServer(ticketEntity.resolvedAt),
           slaDueAt: convertDateTimeFromServer(ticketEntity.slaDueAt),
-          customer: ticketEntity?.customer?.id,
-          assignee: ticketEntity?.assignee?.id,
-          slaPlan: ticketEntity?.slaPlan?.id,
-          order: ticketEntity?.order?.id,
-          tags: ticketEntity?.tags?.map(e => e.id.toString()),
         };
 
   return (
@@ -138,6 +123,38 @@ export const TicketUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.ticket.customerId')}
+                id="ticket-customerId"
+                name="customerId"
+                data-cy="customerId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('lumiApp.ticket.slaPlanId')}
+                id="ticket-slaPlanId"
+                name="slaPlanId"
+                data-cy="slaPlanId"
+                type="text"
+              />
+              <ValidatedField
+                label={translate('lumiApp.ticket.orderId')}
+                id="ticket-orderId"
+                name="orderId"
+                data-cy="orderId"
+                type="text"
+              />
+              <ValidatedField
+                label={translate('lumiApp.ticket.assigneeEmployeeId')}
+                id="ticket-assigneeEmployeeId"
+                name="assigneeEmployeeId"
+                data-cy="assigneeEmployeeId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.ticket.code')}
                 id="ticket-code"
@@ -237,74 +254,6 @@ export const TicketUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField
-                id="ticket-customer"
-                name="customer"
-                data-cy="customer"
-                label={translate('lumiApp.ticket.customer')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {customers
-                  ? customers.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="ticket-assignee"
-                name="assignee"
-                data-cy="assignee"
-                label={translate('lumiApp.ticket.assignee')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {users
-                  ? users.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.login}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="ticket-slaPlan"
-                name="slaPlan"
-                data-cy="slaPlan"
-                label={translate('lumiApp.ticket.slaPlan')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {slaPlans
-                  ? slaPlans.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.name}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField id="ticket-order" name="order" data-cy="order" label={translate('lumiApp.ticket.order')} type="select">
-                <option value="" key="0" />
-                {orders
-                  ? orders.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField label={translate('lumiApp.ticket.tags')} id="ticket-tags" data-cy="tags" type="select" multiple name="tags">
-                <option value="" key="0" />
-                {tags
-                  ? tags.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.name}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/ticket" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

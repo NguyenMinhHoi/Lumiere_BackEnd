@@ -37,32 +37,6 @@ export const TagDetail = () => {
             </span>
           </dt>
           <dd>{tagEntity.name}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.tag.tickets">Tickets</Translate>
-          </dt>
-          <dd>
-            {tagEntity.tickets
-              ? tagEntity.tickets.map((val, i) => (
-                  <span key={val.id}>
-                    <a>{val.id}</a>
-                    {tagEntity.tickets && i === tagEntity.tickets.length - 1 ? '' : ', '}
-                  </span>
-                ))
-              : null}
-          </dd>
-          <dt>
-            <Translate contentKey="lumiApp.tag.articles">Articles</Translate>
-          </dt>
-          <dd>
-            {tagEntity.articles
-              ? tagEntity.articles.map((val, i) => (
-                  <span key={val.id}>
-                    <a>{val.id}</a>
-                    {tagEntity.articles && i === tagEntity.articles.length - 1 ? '' : ', '}
-                  </span>
-                ))
-              : null}
-          </dd>
         </dl>
         <Button tag={Link} to="/tag" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

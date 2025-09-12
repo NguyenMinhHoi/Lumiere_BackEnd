@@ -6,6 +6,16 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "ticketId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "authorId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "body",
       "fieldType": "TextBlob",
       "fieldValidateRules": ["required"]
@@ -24,22 +34,6 @@
   ],
   "name": "TicketComment",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "ticket",
-      "relationshipName": "ticket",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "login",
-      "otherEntityName": "user",
-      "relationshipName": "author",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one",
-      "relationshipWithBuiltInEntity": true
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

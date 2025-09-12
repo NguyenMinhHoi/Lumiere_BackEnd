@@ -47,6 +47,7 @@ public class SurveyQuestionAsserts {
     public static void assertSurveyQuestionUpdatableFieldsEquals(SurveyQuestion expected, SurveyQuestion actual) {
         assertThat(actual)
             .as("Verify SurveyQuestion relevant properties")
+            .satisfies(a -> assertThat(a.getSurveyId()).as("check surveyId").isEqualTo(expected.getSurveyId()))
             .satisfies(a -> assertThat(a.getText()).as("check text").isEqualTo(expected.getText()))
             .satisfies(a -> assertThat(a.getQuestionType()).as("check questionType").isEqualTo(expected.getQuestionType()))
             .satisfies(a -> assertThat(a.getScaleMin()).as("check scaleMin").isEqualTo(expected.getScaleMin()))
@@ -62,8 +63,6 @@ public class SurveyQuestionAsserts {
      * @param actual the actual entity
      */
     public static void assertSurveyQuestionUpdatableRelationshipsEquals(SurveyQuestion expected, SurveyQuestion actual) {
-        assertThat(actual)
-            .as("Verify SurveyQuestion relationships")
-            .satisfies(a -> assertThat(a.getSurvey()).as("check survey").isEqualTo(expected.getSurvey()));
+        // empty method
     }
 }

@@ -15,6 +15,12 @@ public class SupplementDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private Long productId;
+
+    @NotNull
+    private Long supplierId;
+
+    @NotNull
     @DecimalMin(value = "0")
     private BigDecimal supplyPrice;
 
@@ -35,16 +41,28 @@ public class SupplementDTO implements Serializable {
 
     private Instant updatedAt;
 
-    private ProductDTO product;
-
-    private SupplierDTO supplier;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
     }
 
     public BigDecimal getSupplyPrice() {
@@ -103,22 +121,6 @@ public class SupplementDTO implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public ProductDTO getProduct() {
-        return product;
-    }
-
-    public void setProduct(ProductDTO product) {
-        this.product = product;
-    }
-
-    public SupplierDTO getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(SupplierDTO supplier) {
-        this.supplier = supplier;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -145,6 +147,8 @@ public class SupplementDTO implements Serializable {
     public String toString() {
         return "SupplementDTO{" +
             "id=" + getId() +
+            ", productId=" + getProductId() +
+            ", supplierId=" + getSupplierId() +
             ", supplyPrice=" + getSupplyPrice() +
             ", currency='" + getCurrency() + "'" +
             ", leadTimeDays=" + getLeadTimeDays() +
@@ -152,8 +156,6 @@ public class SupplementDTO implements Serializable {
             ", isPreferred='" + getIsPreferred() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
             ", updatedAt='" + getUpdatedAt() + "'" +
-            ", product=" + getProduct() +
-            ", supplier=" + getSupplier() +
             "}";
     }
 }

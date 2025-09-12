@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lumi.app.domain.enumeration.Visibility;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -27,9 +26,18 @@ public class TicketComment implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "content", nullable = true)
+    @NotNull
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId;
+
+    @NotNull
+    @Column(name = "author_id", nullable = false)
+    private Long authorId;
+
+    @Lob
+    @Column(name = "body", nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
-    private String content;
+    private String body;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -40,13 +48,6 @@ public class TicketComment implements Serializable {
     @NotNull
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer", "assignee", "slaPlan", "order", "tags" }, allowSetters = true)
-    private Ticket ticket;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User author;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -63,8 +64,34 @@ public class TicketComment implements Serializable {
         this.id = id;
     }
 
+    public Long getTicketId() {
+        return this.ticketId;
+    }
+
+    public TicketComment ticketId(Long ticketId) {
+        this.setTicketId(ticketId);
+        return this;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getAuthorId() {
+        return this.authorId;
+    }
+
+    public TicketComment authorId(Long authorId) {
+        this.setAuthorId(authorId);
+        return this;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+
     public String getBody() {
-        return this.content;
+        return this.body;
     }
 
     public TicketComment body(String body) {
@@ -73,7 +100,7 @@ public class TicketComment implements Serializable {
     }
 
     public void setBody(String body) {
-        this.content= body;
+        this.body = body;
     }
 
     public Visibility getVisibility() {
@@ -102,32 +129,6 @@ public class TicketComment implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Ticket getTicket() {
-        return this.ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public TicketComment ticket(Ticket ticket) {
-        this.setTicket(ticket);
-        return this;
-    }
-
-    public User getAuthor() {
-        return this.author;
-    }
-
-    public void setAuthor(User user) {
-        this.author = user;
-    }
-
-    public TicketComment author(User user) {
-        this.setAuthor(user);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -152,6 +153,8 @@ public class TicketComment implements Serializable {
     public String toString() {
         return "TicketComment{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", authorId=" + getAuthorId() +
             ", body='" + getBody() + "'" +
             ", visibility='" + getVisibility() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +

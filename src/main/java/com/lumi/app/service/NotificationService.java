@@ -1,137 +1,60 @@
 package com.lumi.app.service;
 
-import com.lumi.app.domain.Notification;
-import com.lumi.app.repository.NotificationRepository;
-import com.lumi.app.repository.search.NotificationSearchRepository;
 import com.lumi.app.service.dto.NotificationDTO;
-import com.lumi.app.service.mapper.NotificationMapper;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service Implementation for managing {@link com.lumi.app.domain.Notification}.
+ * Service Interface for managing {@link com.lumi.app.domain.Notification}.
  */
-@Service
-@Transactional
-public class NotificationService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(NotificationService.class);
-
-    private final NotificationRepository notificationRepository;
-
-    private final NotificationMapper notificationMapper;
-
-    private final NotificationSearchRepository notificationSearchRepository;
-
-    public NotificationService(
-        NotificationRepository notificationRepository,
-        NotificationMapper notificationMapper,
-        NotificationSearchRepository notificationSearchRepository
-    ) {
-        this.notificationRepository = notificationRepository;
-        this.notificationMapper = notificationMapper;
-        this.notificationSearchRepository = notificationSearchRepository;
-    }
-
+public interface NotificationService {
     /**
      * Save a notification.
      *
      * @param notificationDTO the entity to save.
      * @return the persisted entity.
      */
-    public NotificationDTO save(NotificationDTO notificationDTO) {
-        LOG.debug("Request to save Notification : {}", notificationDTO);
-        Notification notification = notificationMapper.toEntity(notificationDTO);
-        notification = notificationRepository.save(notification);
-        notificationSearchRepository.index(notification);
-        return notificationMapper.toDto(notification);
-    }
+    NotificationDTO save(NotificationDTO notificationDTO);
 
     /**
-     * Update a notification.
+     * Updates a notification.
      *
-     * @param notificationDTO the entity to save.
+     * @param notificationDTO the entity to update.
      * @return the persisted entity.
      */
-    public NotificationDTO update(NotificationDTO notificationDTO) {
-        LOG.debug("Request to update Notification : {}", notificationDTO);
-        Notification notification = notificationMapper.toEntity(notificationDTO);
-        notification = notificationRepository.save(notification);
-        notificationSearchRepository.index(notification);
-        return notificationMapper.toDto(notification);
-    }
+    NotificationDTO update(NotificationDTO notificationDTO);
 
     /**
-     * Partially update a notification.
+     * Partially updates a notification.
      *
      * @param notificationDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<NotificationDTO> partialUpdate(NotificationDTO notificationDTO) {
-        LOG.debug("Request to partially update Notification : {}", notificationDTO);
-
-        return notificationRepository
-            .findById(notificationDTO.getId())
-            .map(existingNotification -> {
-                notificationMapper.partialUpdate(existingNotification, notificationDTO);
-
-                return existingNotification;
-            })
-            .map(notificationRepository::save)
-            .map(savedNotification -> {
-                notificationSearchRepository.index(savedNotification);
-                return savedNotification;
-            })
-            .map(notificationMapper::toDto);
-    }
+    Optional<NotificationDTO> partialUpdate(NotificationDTO notificationDTO);
 
     /**
-     * Get all the notifications with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Page<NotificationDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return notificationRepository.findAllWithEagerRelationships(pageable).map(notificationMapper::toDto);
-    }
-
-    /**
-     * Get one notification by id.
+     * Get the "id" notification.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
-    public Optional<NotificationDTO> findOne(Long id) {
-        LOG.debug("Request to get Notification : {}", id);
-        return notificationRepository.findOneWithEagerRelationships(id).map(notificationMapper::toDto);
-    }
+    Optional<NotificationDTO> findOne(Long id);
 
     /**
-     * Delete the notification by id.
+     * Delete the "id" notification.
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
-        LOG.debug("Request to delete Notification : {}", id);
-        notificationRepository.deleteById(id);
-        notificationSearchRepository.deleteFromIndexById(id);
-    }
+    void delete(Long id);
 
     /**
      * Search for the notification corresponding to the query.
      *
      * @param query the query of the search.
+     *
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public Page<NotificationDTO> search(String query, Pageable pageable) {
-        LOG.debug("Request to search for a page of Notifications for query {}", query);
-        return notificationSearchRepository.search(query, pageable).map(notificationMapper::toDto);
-    }
+    Page<NotificationDTO> search(String query, Pageable pageable);
 }

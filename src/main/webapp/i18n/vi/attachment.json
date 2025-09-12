@@ -19,13 +19,13 @@
         "title": "Attachment"
       },
       "id": "ID",
+      "ticketId": "Ticket Id",
+      "commentId": "Comment Id",
       "name": "Name",
       "url": "Url",
       "contentType": "Content Type",
       "size": "Size",
-      "uploadedAt": "Uploaded At",
-      "ticket": "Ticket",
-      "comment": "Comment"
+      "uploadedAt": "Uploaded At"
     }
   }
 }

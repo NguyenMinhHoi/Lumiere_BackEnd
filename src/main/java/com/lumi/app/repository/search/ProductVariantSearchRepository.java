@@ -58,7 +58,7 @@ class ProductVariantSearchRepositoryInternalImpl implements ProductVariantSearch
 
     @Override
     public void index(ProductVariant entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

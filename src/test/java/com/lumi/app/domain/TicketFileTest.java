@@ -1,7 +1,6 @@
 package com.lumi.app.domain;
 
 import static com.lumi.app.domain.TicketFileTestSamples.*;
-import static com.lumi.app.domain.TicketTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lumi.app.web.rest.TestUtil;
@@ -21,17 +20,5 @@ class TicketFileTest {
 
         ticketFile2 = getTicketFileSample2();
         assertThat(ticketFile1).isNotEqualTo(ticketFile2);
-    }
-
-    @Test
-    void ticketTest() {
-        TicketFile ticketFile = getTicketFileRandomSampleGenerator();
-        Ticket ticketBack = getTicketRandomSampleGenerator();
-
-        ticketFile.setTicket(ticketBack);
-        assertThat(ticketFile.getTicket()).isEqualTo(ticketBack);
-
-        ticketFile.ticket(null);
-        assertThat(ticketFile.getTicket()).isNull();
     }
 }

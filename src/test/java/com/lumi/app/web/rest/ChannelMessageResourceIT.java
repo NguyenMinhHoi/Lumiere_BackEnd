@@ -14,15 +14,12 @@ import com.lumi.app.IntegrationTest;
 import com.lumi.app.domain.ChannelMessage;
 import com.lumi.app.domain.enumeration.MessageDirection;
 import com.lumi.app.repository.ChannelMessageRepository;
-import com.lumi.app.repository.UserRepository;
 import com.lumi.app.repository.search.ChannelMessageSearchRepository;
-import com.lumi.app.service.ChannelMessageService;
 import com.lumi.app.service.dto.ChannelMessageDTO;
 import com.lumi.app.service.mapper.ChannelMessageMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -31,13 +28,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -48,10 +40,15 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link ChannelMessageResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class ChannelMessageResourceIT {
+
+    private static final Long DEFAULT_TICKET_ID = 1L;
+    private static final Long UPDATED_TICKET_ID = 2L;
+
+    private static final Long DEFAULT_AUTHOR_ID = 1L;
+    private static final Long UPDATED_AUTHOR_ID = 2L;
 
     private static final MessageDirection DEFAULT_DIRECTION = MessageDirection.INBOUND;
     private static final MessageDirection UPDATED_DIRECTION = MessageDirection.OUTBOUND;
@@ -79,16 +76,7 @@ class ChannelMessageResourceIT {
     private ChannelMessageRepository channelMessageRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Mock
-    private ChannelMessageRepository channelMessageRepositoryMock;
-
-    @Autowired
     private ChannelMessageMapper channelMessageMapper;
-
-    @Mock
-    private ChannelMessageService channelMessageServiceMock;
 
     @Autowired
     private ChannelMessageSearchRepository channelMessageSearchRepository;
@@ -111,6 +99,8 @@ class ChannelMessageResourceIT {
      */
     public static ChannelMessage createEntity() {
         return new ChannelMessage()
+            .ticketId(DEFAULT_TICKET_ID)
+            .authorId(DEFAULT_AUTHOR_ID)
             .direction(DEFAULT_DIRECTION)
             .content(DEFAULT_CONTENT)
             .sentAt(DEFAULT_SENT_AT)
@@ -125,6 +115,8 @@ class ChannelMessageResourceIT {
      */
     public static ChannelMessage createUpdatedEntity() {
         return new ChannelMessage()
+            .ticketId(UPDATED_TICKET_ID)
+            .authorId(UPDATED_AUTHOR_ID)
             .direction(UPDATED_DIRECTION)
             .content(UPDATED_CONTENT)
             .sentAt(UPDATED_SENT_AT)
@@ -200,6 +192,27 @@ class ChannelMessageResourceIT {
 
     @Test
     @Transactional
+    void checkTicketIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(channelMessageSearchRepository.findAll());
+        // set the field null
+        channelMessage.setTicketId(null);
+
+        // Create the ChannelMessage, which fails.
+        ChannelMessageDTO channelMessageDTO = channelMessageMapper.toDto(channelMessage);
+
+        restChannelMessageMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(channelMessageDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(channelMessageSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
     void checkDirectionIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(channelMessageSearchRepository.findAll());
@@ -252,27 +265,12 @@ class ChannelMessageResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(channelMessage.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].authorId").value(hasItem(DEFAULT_AUTHOR_ID.intValue())))
             .andExpect(jsonPath("$.[*].direction").value(hasItem(DEFAULT_DIRECTION.toString())))
             .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
             .andExpect(jsonPath("$.[*].sentAt").value(hasItem(DEFAULT_SENT_AT.toString())))
             .andExpect(jsonPath("$.[*].externalMessageId").value(hasItem(DEFAULT_EXTERNAL_MESSAGE_ID)));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllChannelMessagesWithEagerRelationshipsIsEnabled() throws Exception {
-        when(channelMessageServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restChannelMessageMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(channelMessageServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllChannelMessagesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(channelMessageServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restChannelMessageMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(channelMessageRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -287,6 +285,8 @@ class ChannelMessageResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(channelMessage.getId().intValue()))
+            .andExpect(jsonPath("$.ticketId").value(DEFAULT_TICKET_ID.intValue()))
+            .andExpect(jsonPath("$.authorId").value(DEFAULT_AUTHOR_ID.intValue()))
             .andExpect(jsonPath("$.direction").value(DEFAULT_DIRECTION.toString()))
             .andExpect(jsonPath("$.content").value(DEFAULT_CONTENT))
             .andExpect(jsonPath("$.sentAt").value(DEFAULT_SENT_AT.toString()))
@@ -315,6 +315,8 @@ class ChannelMessageResourceIT {
         // Disconnect from session so that the updates on updatedChannelMessage are not directly saved in db
         em.detach(updatedChannelMessage);
         updatedChannelMessage
+            .ticketId(UPDATED_TICKET_ID)
+            .authorId(UPDATED_AUTHOR_ID)
             .direction(UPDATED_DIRECTION)
             .content(UPDATED_CONTENT)
             .sentAt(UPDATED_SENT_AT)
@@ -428,7 +430,7 @@ class ChannelMessageResourceIT {
         ChannelMessage partialUpdatedChannelMessage = new ChannelMessage();
         partialUpdatedChannelMessage.setId(channelMessage.getId());
 
-        partialUpdatedChannelMessage.content(UPDATED_CONTENT);
+        partialUpdatedChannelMessage.authorId(UPDATED_AUTHOR_ID).sentAt(UPDATED_SENT_AT).externalMessageId(UPDATED_EXTERNAL_MESSAGE_ID);
 
         restChannelMessageMockMvc
             .perform(
@@ -460,6 +462,8 @@ class ChannelMessageResourceIT {
         partialUpdatedChannelMessage.setId(channelMessage.getId());
 
         partialUpdatedChannelMessage
+            .ticketId(UPDATED_TICKET_ID)
+            .authorId(UPDATED_AUTHOR_ID)
             .direction(UPDATED_DIRECTION)
             .content(UPDATED_CONTENT)
             .sentAt(UPDATED_SENT_AT)
@@ -586,6 +590,8 @@ class ChannelMessageResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(channelMessage.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].authorId").value(hasItem(DEFAULT_AUTHOR_ID.intValue())))
             .andExpect(jsonPath("$.[*].direction").value(hasItem(DEFAULT_DIRECTION.toString())))
             .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT.toString())))
             .andExpect(jsonPath("$.[*].sentAt").value(hasItem(DEFAULT_SENT_AT.toString())))

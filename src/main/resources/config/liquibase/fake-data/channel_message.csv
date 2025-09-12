@@ -1,11 +1,11 @@
-id;direction;content;sent_at;external_message_id
-1;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T20:43:50;whereas hype peaceful
-2;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T20:21:06;wonderfully
-3;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T14:23:31;next gestate
-4;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T17:45:42;longingly pharmacopoeia uh-huh
-5;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T16:05:58;schnitzel
-6;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T12:45:43;psst
-7;INBOUND;../fake-data/blob/hipster.txt;2025-09-08T08:12:56;forenenst
-8;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T21:27:58;utterly vivid draft
-9;INBOUND;../fake-data/blob/hipster.txt;2025-09-08T04:43:51;misspend cake
-10;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T17:54:27;madly
+id;ticket_id;author_id;direction;content;sent_at;external_message_id
+1;26499;16505;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T09:03:19;shadowbox
+2;29991;7843;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T11:42:47;peaceful openly
+3;6233;3690;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T09:48:11;lampoon
+4;19763;14901;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T12:30:50;eek shyly
+5;4982;25648;INBOUND;../fake-data/blob/hipster.txt;2025-09-08T01:39:11;pace every
+6;1088;32231;INBOUND;../fake-data/blob/hipster.txt;2025-09-08T03:30:18;perp justly
+7;6398;32409;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T21:50:35;furthermore between
+8;25112;16415;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-07T16:05:10;truthfully
+9;19515;19060;OUTBOUND;../fake-data/blob/hipster.txt;2025-09-08T01:32:15;apparatus
+10;15657;25001;INBOUND;../fake-data/blob/hipster.txt;2025-09-07T11:21:13;garage headline

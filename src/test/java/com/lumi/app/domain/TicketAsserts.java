@@ -47,6 +47,11 @@ public class TicketAsserts {
     public static void assertTicketUpdatableFieldsEquals(Ticket expected, Ticket actual) {
         assertThat(actual)
             .as("Verify Ticket relevant properties")
+            .satisfies(a -> assertThat(a.getCustomerId()).as("check customerId").isEqualTo(expected.getCustomerId()))
+            .satisfies(a -> assertThat(a.getSlaPlanId()).as("check slaPlanId").isEqualTo(expected.getSlaPlanId()))
+            .satisfies(a -> assertThat(a.getOrderId()).as("check orderId").isEqualTo(expected.getOrderId()))
+            .satisfies(a -> assertThat(a.getAssigneeEmployeeId()).as("check assigneeEmployeeId").isEqualTo(expected.getAssigneeEmployeeId())
+            )
             .satisfies(a -> assertThat(a.getCode()).as("check code").isEqualTo(expected.getCode()))
             .satisfies(a -> assertThat(a.getSubject()).as("check subject").isEqualTo(expected.getSubject()))
             .satisfies(a -> assertThat(a.getDescription()).as("check description").isEqualTo(expected.getDescription()))
@@ -66,11 +71,6 @@ public class TicketAsserts {
      * @param actual the actual entity
      */
     public static void assertTicketUpdatableRelationshipsEquals(Ticket expected, Ticket actual) {
-        assertThat(actual)
-            .as("Verify Ticket relationships")
-            .satisfies(a -> assertThat(a.getCustomer()).as("check customer").isEqualTo(expected.getCustomer()))
-            .satisfies(a -> assertThat(a.getSlaPlan()).as("check slaPlan").isEqualTo(expected.getSlaPlan()))
-            .satisfies(a -> assertThat(a.getOrder()).as("check order").isEqualTo(expected.getOrder()))
-            .satisfies(a -> assertThat(a.getTags()).as("check tags").isEqualTo(expected.getTags()));
+        // empty method
     }
 }

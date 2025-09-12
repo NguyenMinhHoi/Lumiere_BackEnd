@@ -7,9 +7,7 @@ import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A DTO for the {@link com.lumi.app.domain.Ticket} entity.
@@ -18,6 +16,15 @@ import java.util.Set;
 public class TicketDTO implements Serializable {
 
     private Long id;
+
+    @NotNull
+    private Long customerId;
+
+    private Long slaPlanId;
+
+    private Long orderId;
+
+    private Long assigneeEmployeeId;
 
     @NotNull
     @Size(min = 6, max = 32)
@@ -48,22 +55,44 @@ public class TicketDTO implements Serializable {
 
     private Instant slaDueAt;
 
-    private CustomerDTO customer;
-
-    private UserDTO assignee;
-
-    private SlaPlanDTO slaPlan;
-
-    private OrdersDTO order;
-
-    private Set<TagDTO> tags = new HashSet<>();
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getSlaPlanId() {
+        return slaPlanId;
+    }
+
+    public void setSlaPlanId(Long slaPlanId) {
+        this.slaPlanId = slaPlanId;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public Long getAssigneeEmployeeId() {
+        return assigneeEmployeeId;
+    }
+
+    public void setAssigneeEmployeeId(Long assigneeEmployeeId) {
+        this.assigneeEmployeeId = assigneeEmployeeId;
     }
 
     public String getCode() {
@@ -146,46 +175,6 @@ public class TicketDTO implements Serializable {
         this.slaDueAt = slaDueAt;
     }
 
-    public CustomerDTO getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerDTO customer) {
-        this.customer = customer;
-    }
-
-    public UserDTO getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(UserDTO assignee) {
-        this.assignee = assignee;
-    }
-
-    public SlaPlanDTO getSlaPlan() {
-        return slaPlan;
-    }
-
-    public void setSlaPlan(SlaPlanDTO slaPlan) {
-        this.slaPlan = slaPlan;
-    }
-
-    public OrdersDTO getOrder() {
-        return order;
-    }
-
-    public void setOrder(OrdersDTO order) {
-        this.order = order;
-    }
-
-    public Set<TagDTO> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<TagDTO> tags) {
-        this.tags = tags;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -212,6 +201,10 @@ public class TicketDTO implements Serializable {
     public String toString() {
         return "TicketDTO{" +
             "id=" + getId() +
+            ", customerId=" + getCustomerId() +
+            ", slaPlanId=" + getSlaPlanId() +
+            ", orderId=" + getOrderId() +
+            ", assigneeEmployeeId=" + getAssigneeEmployeeId() +
             ", code='" + getCode() + "'" +
             ", subject='" + getSubject() + "'" +
             ", description='" + getDescription() + "'" +
@@ -222,11 +215,6 @@ public class TicketDTO implements Serializable {
             ", firstResponseAt='" + getFirstResponseAt() + "'" +
             ", resolvedAt='" + getResolvedAt() + "'" +
             ", slaDueAt='" + getSlaDueAt() + "'" +
-            ", customer=" + getCustomer() +
-            ", assignee=" + getAssignee() +
-            ", slaPlan=" + getSlaPlan() +
-            ", order=" + getOrder() +
-            ", tags=" + getTags() +
             "}";
     }
 }

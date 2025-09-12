@@ -57,7 +57,7 @@ class TicketSearchRepositoryInternalImpl implements TicketSearchRepositoryIntern
 
     @Override
     public void index(Ticket entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

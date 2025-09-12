@@ -19,9 +19,7 @@
         "title": "Tag"
       },
       "id": "ID",
-      "name": "Name",
-      "tickets": "Tickets",
-      "articles": "Articles"
+      "name": "Name"
     }
   }
 }

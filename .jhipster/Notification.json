@@ -6,6 +6,18 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "ticketId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "customerId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "surveyId",
+      "fieldType": "Long"
+    },
+    {
       "fieldName": "type",
       "fieldType": "NotificationType",
       "fieldValidateRules": ["required"],
@@ -53,28 +65,6 @@
   "jpaMetamodelFiltering": true,
   "name": "Notification",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "ticket",
-      "relationshipName": "ticket",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "customer",
-      "relationshipName": "customer",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "title",
-      "otherEntityName": "survey",
-      "relationshipName": "survey",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

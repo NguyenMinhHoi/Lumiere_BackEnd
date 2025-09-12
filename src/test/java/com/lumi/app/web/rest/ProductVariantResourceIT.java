@@ -12,18 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
-import com.lumi.app.domain.Product;
 import com.lumi.app.domain.ProductVariant;
 import com.lumi.app.repository.ProductVariantRepository;
 import com.lumi.app.repository.search.ProductVariantSearchRepository;
-import com.lumi.app.service.ProductVariantService;
 import com.lumi.app.service.dto.ProductVariantDTO;
 import com.lumi.app.service.mapper.ProductVariantMapper;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -32,13 +29,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -49,10 +41,13 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link ProductVariantResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class ProductVariantResourceIT {
+
+    private static final Long DEFAULT_PRODUCT_ID = 1L;
+    private static final Long UPDATED_PRODUCT_ID = 2L;
+    private static final Long SMALLER_PRODUCT_ID = 1L - 1L;
 
     private static final String DEFAULT_SKU = "AAAAAAAAAA";
     private static final String UPDATED_SKU = "BBBBBBBBBB";
@@ -113,14 +108,8 @@ class ProductVariantResourceIT {
     @Autowired
     private ProductVariantRepository productVariantRepository;
 
-    @Mock
-    private ProductVariantRepository productVariantRepositoryMock;
-
     @Autowired
     private ProductVariantMapper productVariantMapper;
-
-    @Mock
-    private ProductVariantService productVariantServiceMock;
 
     @Autowired
     private ProductVariantSearchRepository productVariantSearchRepository;
@@ -143,6 +132,7 @@ class ProductVariantResourceIT {
      */
     public static ProductVariant createEntity() {
         return new ProductVariant()
+            .productId(DEFAULT_PRODUCT_ID)
             .sku(DEFAULT_SKU)
             .name(DEFAULT_NAME)
             .price(DEFAULT_PRICE)
@@ -166,6 +156,7 @@ class ProductVariantResourceIT {
      */
     public static ProductVariant createUpdatedEntity() {
         return new ProductVariant()
+            .productId(UPDATED_PRODUCT_ID)
             .sku(UPDATED_SKU)
             .name(UPDATED_NAME)
             .price(UPDATED_PRICE)
@@ -244,6 +235,27 @@ class ProductVariantResourceIT {
 
         // Validate the ProductVariant in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(productVariantSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkProductIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(productVariantSearchRepository.findAll());
+        // set the field null
+        productVariant.setProductId(null);
+
+        // Create the ProductVariant, which fails.
+        ProductVariantDTO productVariantDTO = productVariantMapper.toDto(productVariant);
+
+        restProductVariantMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(productVariantDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
         int searchDatabaseSizeAfter = IterableUtil.sizeOf(productVariantSearchRepository.findAll());
         assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
     }
@@ -386,6 +398,7 @@ class ProductVariantResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productVariant.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
             .andExpect(jsonPath("$.[*].sku").value(hasItem(DEFAULT_SKU)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].price").value(hasItem(sameNumber(DEFAULT_PRICE))))
@@ -401,23 +414,6 @@ class ProductVariantResourceIT {
             .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
     }
 
-    @SuppressWarnings({ "unchecked" })
-    void getAllProductVariantsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(productVariantServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restProductVariantMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(productVariantServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllProductVariantsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(productVariantServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restProductVariantMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(productVariantRepositoryMock, times(1)).findAll(any(Pageable.class));
-    }
-
     @Test
     @Transactional
     void getProductVariant() throws Exception {
@@ -430,6 +426,7 @@ class ProductVariantResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(productVariant.getId().intValue()))
+            .andExpect(jsonPath("$.productId").value(DEFAULT_PRODUCT_ID.intValue()))
             .andExpect(jsonPath("$.sku").value(DEFAULT_SKU))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.price").value(sameNumber(DEFAULT_PRICE)))
@@ -458,6 +455,85 @@ class ProductVariantResourceIT {
         defaultProductVariantFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultProductVariantFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllProductVariantsByProductIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedProductVariant = productVariantRepository.saveAndFlush(productVariant);
+
+        // Get all the productVariantList where productId equals to
+        defaultProductVariantFiltering("productId.equals=" + DEFAULT_PRODUCT_ID, "productId.equals=" + UPDATED_PRODUCT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllProductVariantsByProductIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedProductVariant = productVariantRepository.saveAndFlush(productVariant);
+
+        // Get all the productVariantList where productId in
+        defaultProductVariantFiltering(
+            "productId.in=" + DEFAULT_PRODUCT_ID + "," + UPDATED_PRODUCT_ID,
+            "productId.in=" + UPDATED_PRODUCT_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllProductVariantsByProductIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedProductVariant = productVariantRepository.saveAndFlush(productVariant);
+
+        // Get all the productVariantList where productId is not null
+        defaultProductVariantFiltering("productId.specified=true", "productId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllProductVariantsByProductIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedProductVariant = productVariantRepository.saveAndFlush(productVariant);
+
+        // Get all the productVariantList where productId is greater than or equal to
+        defaultProductVariantFiltering(
+            "productId.greaterThanOrEqual=" + DEFAULT_PRODUCT_ID,
+            "productId.greaterThanOrEqual=" + UPDATED_PRODUCT_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllProductVariantsByProductIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedProductVariant = productVariantRepository.saveAndFlush(productVariant);
+
+        // Get all the productVariantList where productId is less than or equal to
+        defaultProductVariantFiltering(
+            "productId.lessThanOrEqual=" + DEFAULT_PRODUCT_ID,
+            "productId.lessThanOrEqual=" + SMALLER_PRODUCT_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllProductVariantsByProductIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedProductVariant = productVariantRepository.saveAndFlush(productVariant);
+
+        // Get all the productVariantList where productId is less than
+        defaultProductVariantFiltering("productId.lessThan=" + UPDATED_PRODUCT_ID, "productId.lessThan=" + DEFAULT_PRODUCT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllProductVariantsByProductIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedProductVariant = productVariantRepository.saveAndFlush(productVariant);
+
+        // Get all the productVariantList where productId is greater than
+        defaultProductVariantFiltering("productId.greaterThan=" + SMALLER_PRODUCT_ID, "productId.greaterThan=" + DEFAULT_PRODUCT_ID);
     }
 
     @Test
@@ -1232,28 +1308,6 @@ class ProductVariantResourceIT {
         defaultProductVariantFiltering("updatedAt.specified=true", "updatedAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllProductVariantsByProductIsEqualToSomething() throws Exception {
-        Product product;
-        if (TestUtil.findAll(em, Product.class).isEmpty()) {
-            productVariantRepository.saveAndFlush(productVariant);
-            product = ProductResourceIT.createEntity();
-        } else {
-            product = TestUtil.findAll(em, Product.class).get(0);
-        }
-        em.persist(product);
-        em.flush();
-        productVariant.setProduct(product);
-        productVariantRepository.saveAndFlush(productVariant);
-        Long productId = product.getId();
-        // Get all the productVariantList where product equals to productId
-        defaultProductVariantShouldBeFound("productId.equals=" + productId);
-
-        // Get all the productVariantList where product equals to (productId + 1)
-        defaultProductVariantShouldNotBeFound("productId.equals=" + (productId + 1));
-    }
-
     private void defaultProductVariantFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultProductVariantShouldBeFound(shouldBeFound);
         defaultProductVariantShouldNotBeFound(shouldNotBeFound);
@@ -1268,6 +1322,7 @@ class ProductVariantResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productVariant.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
             .andExpect(jsonPath("$.[*].sku").value(hasItem(DEFAULT_SKU)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].price").value(hasItem(sameNumber(DEFAULT_PRICE))))
@@ -1331,6 +1386,7 @@ class ProductVariantResourceIT {
         // Disconnect from session so that the updates on updatedProductVariant are not directly saved in db
         em.detach(updatedProductVariant);
         updatedProductVariant
+            .productId(UPDATED_PRODUCT_ID)
             .sku(UPDATED_SKU)
             .name(UPDATED_NAME)
             .price(UPDATED_PRICE)
@@ -1453,7 +1509,7 @@ class ProductVariantResourceIT {
         ProductVariant partialUpdatedProductVariant = new ProductVariant();
         partialUpdatedProductVariant.setId(productVariant.getId());
 
-        partialUpdatedProductVariant.price(UPDATED_PRICE).createdAt(UPDATED_CREATED_AT).updatedAt(UPDATED_UPDATED_AT);
+        partialUpdatedProductVariant.name(UPDATED_NAME).isDefault(UPDATED_IS_DEFAULT).createdAt(UPDATED_CREATED_AT);
 
         restProductVariantMockMvc
             .perform(
@@ -1485,6 +1541,7 @@ class ProductVariantResourceIT {
         partialUpdatedProductVariant.setId(productVariant.getId());
 
         partialUpdatedProductVariant
+            .productId(UPDATED_PRODUCT_ID)
             .sku(UPDATED_SKU)
             .name(UPDATED_NAME)
             .price(UPDATED_PRICE)
@@ -1620,6 +1677,7 @@ class ProductVariantResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productVariant.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
             .andExpect(jsonPath("$.[*].sku").value(hasItem(DEFAULT_SKU)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].price").value(hasItem(sameNumber(DEFAULT_PRICE))))

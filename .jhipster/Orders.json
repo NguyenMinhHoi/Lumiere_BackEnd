@@ -6,6 +6,10 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "customerId",
+      "fieldType": "Long"
+    },
+    {
       "fieldName": "code",
       "fieldType": "String",
       "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
@@ -60,14 +64,6 @@
   "jpaMetamodelFiltering": true,
   "name": "Orders",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "customer",
-      "relationshipName": "customer",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

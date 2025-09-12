@@ -78,6 +78,8 @@ public class OrdersCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter customerId;
+
     private StringFilter code;
 
     private OrderStatusFilter status;
@@ -96,14 +98,13 @@ public class OrdersCriteria implements Serializable, Criteria {
 
     private InstantFilter updatedAt;
 
-    private LongFilter customerId;
-
     private Boolean distinct;
 
     public OrdersCriteria() {}
 
     public OrdersCriteria(OrdersCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.customerId = other.optionalCustomerId().map(LongFilter::copy).orElse(null);
         this.code = other.optionalCode().map(StringFilter::copy).orElse(null);
         this.status = other.optionalStatus().map(OrderStatusFilter::copy).orElse(null);
         this.paymentStatus = other.optionalPaymentStatus().map(PaymentStatusFilter::copy).orElse(null);
@@ -113,7 +114,6 @@ public class OrdersCriteria implements Serializable, Criteria {
         this.note = other.optionalNote().map(StringFilter::copy).orElse(null);
         this.placedAt = other.optionalPlacedAt().map(InstantFilter::copy).orElse(null);
         this.updatedAt = other.optionalUpdatedAt().map(InstantFilter::copy).orElse(null);
-        this.customerId = other.optionalCustomerId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -139,6 +139,25 @@ public class OrdersCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getCustomerId() {
+        return customerId;
+    }
+
+    public Optional<LongFilter> optionalCustomerId() {
+        return Optional.ofNullable(customerId);
+    }
+
+    public LongFilter customerId() {
+        if (customerId == null) {
+            setCustomerId(new LongFilter());
+        }
+        return customerId;
+    }
+
+    public void setCustomerId(LongFilter customerId) {
+        this.customerId = customerId;
     }
 
     public StringFilter getCode() {
@@ -312,25 +331,6 @@ public class OrdersCriteria implements Serializable, Criteria {
         this.updatedAt = updatedAt;
     }
 
-    public LongFilter getCustomerId() {
-        return customerId;
-    }
-
-    public Optional<LongFilter> optionalCustomerId() {
-        return Optional.ofNullable(customerId);
-    }
-
-    public LongFilter customerId() {
-        if (customerId == null) {
-            setCustomerId(new LongFilter());
-        }
-        return customerId;
-    }
-
-    public void setCustomerId(LongFilter customerId) {
-        this.customerId = customerId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -361,6 +361,7 @@ public class OrdersCriteria implements Serializable, Criteria {
         final OrdersCriteria that = (OrdersCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(customerId, that.customerId) &&
             Objects.equals(code, that.code) &&
             Objects.equals(status, that.status) &&
             Objects.equals(paymentStatus, that.paymentStatus) &&
@@ -370,7 +371,6 @@ public class OrdersCriteria implements Serializable, Criteria {
             Objects.equals(note, that.note) &&
             Objects.equals(placedAt, that.placedAt) &&
             Objects.equals(updatedAt, that.updatedAt) &&
-            Objects.equals(customerId, that.customerId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -379,6 +379,7 @@ public class OrdersCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
+            customerId,
             code,
             status,
             paymentStatus,
@@ -388,7 +389,6 @@ public class OrdersCriteria implements Serializable, Criteria {
             note,
             placedAt,
             updatedAt,
-            customerId,
             distinct
         );
     }
@@ -398,6 +398,7 @@ public class OrdersCriteria implements Serializable, Criteria {
     public String toString() {
         return "OrdersCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalCustomerId().map(f -> "customerId=" + f + ", ").orElse("") +
             optionalCode().map(f -> "code=" + f + ", ").orElse("") +
             optionalStatus().map(f -> "status=" + f + ", ").orElse("") +
             optionalPaymentStatus().map(f -> "paymentStatus=" + f + ", ").orElse("") +
@@ -407,7 +408,6 @@ public class OrdersCriteria implements Serializable, Criteria {
             optionalNote().map(f -> "note=" + f + ", ").orElse("") +
             optionalPlacedAt().map(f -> "placedAt=" + f + ", ").orElse("") +
             optionalUpdatedAt().map(f -> "updatedAt=" + f + ", ").orElse("") +
-            optionalCustomerId().map(f -> "customerId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

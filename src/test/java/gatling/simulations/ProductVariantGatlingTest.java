@@ -68,7 +68,8 @@ public class ProductVariantGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"sku\": \"SAMPLE_TEXT\"" +
+                                "\"productId\": 0" +
+                                ", \"sku\": \"SAMPLE_TEXT\"" +
                                 ", \"name\": \"SAMPLE_TEXT\"" +
                                 ", \"price\": 0" +
                                 ", \"compareAtPrice\": 0" +

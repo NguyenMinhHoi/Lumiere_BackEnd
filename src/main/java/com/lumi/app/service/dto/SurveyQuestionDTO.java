@@ -14,6 +14,9 @@ public class SurveyQuestionDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private Long surveyId;
+
+    @NotNull
     @Size(min = 3, max = 300)
     private String text;
 
@@ -31,14 +34,20 @@ public class SurveyQuestionDTO implements Serializable {
     @Min(value = 1)
     private Integer orderNo;
 
-    private SurveyDTO survey;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getSurveyId() {
+        return surveyId;
+    }
+
+    public void setSurveyId(Long surveyId) {
+        this.surveyId = surveyId;
     }
 
     public String getText() {
@@ -89,14 +98,6 @@ public class SurveyQuestionDTO implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public SurveyDTO getSurvey() {
-        return survey;
-    }
-
-    public void setSurvey(SurveyDTO survey) {
-        this.survey = survey;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -123,13 +124,13 @@ public class SurveyQuestionDTO implements Serializable {
     public String toString() {
         return "SurveyQuestionDTO{" +
             "id=" + getId() +
+            ", surveyId=" + getSurveyId() +
             ", text='" + getText() + "'" +
             ", questionType='" + getQuestionType() + "'" +
             ", scaleMin=" + getScaleMin() +
             ", scaleMax=" + getScaleMax() +
             ", isNeed='" + getIsNeed() + "'" +
             ", orderNo=" + getOrderNo() +
-            ", survey=" + getSurvey() +
             "}";
     }
 }

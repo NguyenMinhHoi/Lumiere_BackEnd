@@ -10,14 +10,18 @@ public class ChannelMessageTestSamples {
     private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     public static ChannelMessage getChannelMessageSample1() {
-        return new ChannelMessage().id(1L).externalMessageId("externalMessageId1");
+        return new ChannelMessage().id(1L).ticketId(1L).authorId(1L).externalMessageId("externalMessageId1");
     }
 
     public static ChannelMessage getChannelMessageSample2() {
-        return new ChannelMessage().id(2L).externalMessageId("externalMessageId2");
+        return new ChannelMessage().id(2L).ticketId(2L).authorId(2L).externalMessageId("externalMessageId2");
     }
 
     public static ChannelMessage getChannelMessageRandomSampleGenerator() {
-        return new ChannelMessage().id(longCount.incrementAndGet()).externalMessageId(UUID.randomUUID().toString());
+        return new ChannelMessage()
+            .id(longCount.incrementAndGet())
+            .ticketId(longCount.incrementAndGet())
+            .authorId(longCount.incrementAndGet())
+            .externalMessageId(UUID.randomUUID().toString());
     }
 }

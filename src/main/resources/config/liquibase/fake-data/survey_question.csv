@@ -1,11 +1,11 @@
-id;text;question_type;scale_min;scale_max;is_need;order_no
-1;before who;SINGLE_CHOICE;28935;5527;false;20186
-2;nor mechanically why;SCALE;9000;27885;false;12834
-3;whoa;SCALE;29845;5314;true;22830
-4;harvest when;SCALE;7455;29792;true;3432
-5;truthfully;MULTI_CHOICE;31809;362;false;7607
-6;yippee decouple until;SCALE;8649;17913;true;14472
-7;planula;SINGLE_CHOICE;13472;31697;true;30092
-8;telescope tensely gah;SCALE;18968;3814;false;8720
-9;yearningly;SCALE;20816;24547;false;4808
-10;gray innocently;MULTI_CHOICE;1143;6421;true;32284
+id;survey_id;text;question_type;scale_min;scale_max;is_need;order_no
+1;21824;surface woot;TEXT;5527;27816;false;23071
+2;23288;bide yowza;TEXT;7562;3739;false;31907
+3;6573;fiddle;SCALE;27451;31587;true;4247
+4;29845;pfft;TEXT;15996;12881;false;433
+5;3975;incidentally whoa;SCALE;27446;18571;false;363
+6;18612;wonderfully;MULTI_CHOICE;2280;16505;false;9077
+7;21477;pfft cripple;MULTI_CHOICE;32356;22461;true;1104
+8;10294;duh little how;TEXT;9083;13202;false;15700
+9;15330;till;SCALE;25172;23394;true;32404
+10;5921;license likable;TEXT;9347;2140;true;20757

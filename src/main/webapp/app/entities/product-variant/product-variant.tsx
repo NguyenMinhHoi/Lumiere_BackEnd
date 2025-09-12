@@ -177,6 +177,10 @@ export const ProductVariant = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.productVariant.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('productId')}>
+                  <Translate contentKey="lumiApp.productVariant.productId">Product Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('productId')} />
+                </th>
                 <th className="hand" onClick={sort('sku')}>
                   <Translate contentKey="lumiApp.productVariant.sku">Sku</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('sku')} />
@@ -229,9 +233,6 @@ export const ProductVariant = () => {
                   <Translate contentKey="lumiApp.productVariant.updatedAt">Updated At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('updatedAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.productVariant.product">Product</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -243,6 +244,7 @@ export const ProductVariant = () => {
                       {productVariant.id}
                     </Button>
                   </td>
+                  <td>{productVariant.productId}</td>
                   <td>{productVariant.sku}</td>
                   <td>{productVariant.name}</td>
                   <td>{productVariant.price}</td>
@@ -259,9 +261,6 @@ export const ProductVariant = () => {
                   </td>
                   <td>
                     {productVariant.updatedAt ? <TextFormat type="date" value={productVariant.updatedAt} format={APP_DATE_FORMAT} /> : null}
-                  </td>
-                  <td>
-                    {productVariant.product ? <Link to={`/product/${productVariant.product.id}`}>{productVariant.product.code}</Link> : ''}
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">

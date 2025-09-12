@@ -24,6 +24,10 @@ public class OrderItemCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter orderId;
+
+    private LongFilter variantId;
+
     private LongFilter quantity;
 
     private BigDecimalFilter unitPrice;
@@ -34,23 +38,19 @@ public class OrderItemCriteria implements Serializable, Criteria {
 
     private StringFilter skuSnapshot;
 
-    private LongFilter orderId;
-
-    private LongFilter variantId;
-
     private Boolean distinct;
 
     public OrderItemCriteria() {}
 
     public OrderItemCriteria(OrderItemCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.orderId = other.optionalOrderId().map(LongFilter::copy).orElse(null);
+        this.variantId = other.optionalVariantId().map(LongFilter::copy).orElse(null);
         this.quantity = other.optionalQuantity().map(LongFilter::copy).orElse(null);
         this.unitPrice = other.optionalUnitPrice().map(BigDecimalFilter::copy).orElse(null);
         this.totalPrice = other.optionalTotalPrice().map(BigDecimalFilter::copy).orElse(null);
         this.nameSnapshot = other.optionalNameSnapshot().map(StringFilter::copy).orElse(null);
         this.skuSnapshot = other.optionalSkuSnapshot().map(StringFilter::copy).orElse(null);
-        this.orderId = other.optionalOrderId().map(LongFilter::copy).orElse(null);
-        this.variantId = other.optionalVariantId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -76,6 +76,44 @@ public class OrderItemCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getOrderId() {
+        return orderId;
+    }
+
+    public Optional<LongFilter> optionalOrderId() {
+        return Optional.ofNullable(orderId);
+    }
+
+    public LongFilter orderId() {
+        if (orderId == null) {
+            setOrderId(new LongFilter());
+        }
+        return orderId;
+    }
+
+    public void setOrderId(LongFilter orderId) {
+        this.orderId = orderId;
+    }
+
+    public LongFilter getVariantId() {
+        return variantId;
+    }
+
+    public Optional<LongFilter> optionalVariantId() {
+        return Optional.ofNullable(variantId);
+    }
+
+    public LongFilter variantId() {
+        if (variantId == null) {
+            setVariantId(new LongFilter());
+        }
+        return variantId;
+    }
+
+    public void setVariantId(LongFilter variantId) {
+        this.variantId = variantId;
     }
 
     public LongFilter getQuantity() {
@@ -173,44 +211,6 @@ public class OrderItemCriteria implements Serializable, Criteria {
         this.skuSnapshot = skuSnapshot;
     }
 
-    public LongFilter getOrderId() {
-        return orderId;
-    }
-
-    public Optional<LongFilter> optionalOrderId() {
-        return Optional.ofNullable(orderId);
-    }
-
-    public LongFilter orderId() {
-        if (orderId == null) {
-            setOrderId(new LongFilter());
-        }
-        return orderId;
-    }
-
-    public void setOrderId(LongFilter orderId) {
-        this.orderId = orderId;
-    }
-
-    public LongFilter getVariantId() {
-        return variantId;
-    }
-
-    public Optional<LongFilter> optionalVariantId() {
-        return Optional.ofNullable(variantId);
-    }
-
-    public LongFilter variantId() {
-        if (variantId == null) {
-            setVariantId(new LongFilter());
-        }
-        return variantId;
-    }
-
-    public void setVariantId(LongFilter variantId) {
-        this.variantId = variantId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -241,20 +241,20 @@ public class OrderItemCriteria implements Serializable, Criteria {
         final OrderItemCriteria that = (OrderItemCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(orderId, that.orderId) &&
+            Objects.equals(variantId, that.variantId) &&
             Objects.equals(quantity, that.quantity) &&
             Objects.equals(unitPrice, that.unitPrice) &&
             Objects.equals(totalPrice, that.totalPrice) &&
             Objects.equals(nameSnapshot, that.nameSnapshot) &&
             Objects.equals(skuSnapshot, that.skuSnapshot) &&
-            Objects.equals(orderId, that.orderId) &&
-            Objects.equals(variantId, that.variantId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, unitPrice, totalPrice, nameSnapshot, skuSnapshot, orderId, variantId, distinct);
+        return Objects.hash(id, orderId, variantId, quantity, unitPrice, totalPrice, nameSnapshot, skuSnapshot, distinct);
     }
 
     // prettier-ignore
@@ -262,13 +262,13 @@ public class OrderItemCriteria implements Serializable, Criteria {
     public String toString() {
         return "OrderItemCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalOrderId().map(f -> "orderId=" + f + ", ").orElse("") +
+            optionalVariantId().map(f -> "variantId=" + f + ", ").orElse("") +
             optionalQuantity().map(f -> "quantity=" + f + ", ").orElse("") +
             optionalUnitPrice().map(f -> "unitPrice=" + f + ", ").orElse("") +
             optionalTotalPrice().map(f -> "totalPrice=" + f + ", ").orElse("") +
             optionalNameSnapshot().map(f -> "nameSnapshot=" + f + ", ").orElse("") +
             optionalSkuSnapshot().map(f -> "skuSnapshot=" + f + ", ").orElse("") +
-            optionalOrderId().map(f -> "orderId=" + f + ", ").orElse("") +
-            optionalVariantId().map(f -> "variantId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

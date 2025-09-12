@@ -57,7 +57,7 @@ class SurveySearchRepositoryInternalImpl implements SurveySearchRepositoryIntern
 
     @Override
     public void index(Survey entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

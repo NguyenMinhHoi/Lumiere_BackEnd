@@ -141,21 +141,14 @@ public class SurveyResponseResource {
      * {@code GET  /survey-responses} : get all the surveyResponses.
      *
      * @param pageable the pagination information.
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of surveyResponses in body.
      */
     @GetMapping("")
     public ResponseEntity<List<SurveyResponseDTO>> getAllSurveyResponses(
-        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
-        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         LOG.debug("REST request to get a page of SurveyResponses");
-        Page<SurveyResponseDTO> page;
-        if (eagerload) {
-            page = surveyResponseService.findAllWithEagerRelationships(pageable);
-        } else {
-            page = surveyResponseService.findAll(pageable);
-        }
+        Page<SurveyResponseDTO> page = surveyResponseService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

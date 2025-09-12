@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lumi.app.domain.enumeration.ChannelType;
 import com.lumi.app.domain.enumeration.Priority;
 import com.lumi.app.domain.enumeration.TicketStatus;
@@ -8,8 +7,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -32,6 +29,19 @@ public class Ticket implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
+
+    @Column(name = "sla_plan_id")
+    private Long slaPlanId;
+
+    @Column(name = "order_id")
+    private Long orderId;
+
+    @Column(name = "assignee_employee_id")
+    private Long assigneeEmployeeId;
+
+    @NotNull
     @Size(min = 6, max = 32)
     @Column(name = "code", length = 32, nullable = false, unique = true)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
@@ -43,6 +53,7 @@ public class Ticket implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String subject;
 
+    @Lob
     @Column(name = "description")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String description;
@@ -78,25 +89,6 @@ public class Ticket implements Serializable {
     @Column(name = "sla_due_at")
     private Instant slaDueAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User assignee;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private SlaPlan slaPlan;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
-    private Orders order;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "rel_ticket__tags", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "tags_id"))
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "tickets", "articles" }, allowSetters = true)
-    private Set<Tag> tags = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -110,6 +102,58 @@ public class Ticket implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCustomerId() {
+        return this.customerId;
+    }
+
+    public Ticket customerId(Long customerId) {
+        this.setCustomerId(customerId);
+        return this;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getSlaPlanId() {
+        return this.slaPlanId;
+    }
+
+    public Ticket slaPlanId(Long slaPlanId) {
+        this.setSlaPlanId(slaPlanId);
+        return this;
+    }
+
+    public void setSlaPlanId(Long slaPlanId) {
+        this.slaPlanId = slaPlanId;
+    }
+
+    public Long getOrderId() {
+        return this.orderId;
+    }
+
+    public Ticket orderId(Long orderId) {
+        this.setOrderId(orderId);
+        return this;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public Long getAssigneeEmployeeId() {
+        return this.assigneeEmployeeId;
+    }
+
+    public Ticket assigneeEmployeeId(Long assigneeEmployeeId) {
+        this.setAssigneeEmployeeId(assigneeEmployeeId);
+        return this;
+    }
+
+    public void setAssigneeEmployeeId(Long assigneeEmployeeId) {
+        this.assigneeEmployeeId = assigneeEmployeeId;
     }
 
     public String getCode() {
@@ -242,81 +286,6 @@ public class Ticket implements Serializable {
         this.slaDueAt = slaDueAt;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Ticket customer(Customer customer) {
-        this.setCustomer(customer);
-        return this;
-    }
-
-    public User getAssignee() {
-        return this.assignee;
-    }
-
-    public void setAssignee(User user) {
-        this.assignee = user;
-    }
-
-    public Ticket assignee(User user) {
-        this.setAssignee(user);
-        return this;
-    }
-
-    public SlaPlan getSlaPlan() {
-        return this.slaPlan;
-    }
-
-    public void setSlaPlan(SlaPlan slaPlan) {
-        this.slaPlan = slaPlan;
-    }
-
-    public Ticket slaPlan(SlaPlan slaPlan) {
-        this.setSlaPlan(slaPlan);
-        return this;
-    }
-
-    public Orders getOrder() {
-        return this.order;
-    }
-
-    public void setOrder(Orders orders) {
-        this.order = orders;
-    }
-
-    public Ticket order(Orders orders) {
-        this.setOrder(orders);
-        return this;
-    }
-
-    public Set<Tag> getTags() {
-        return this.tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public Ticket tags(Set<Tag> tags) {
-        this.setTags(tags);
-        return this;
-    }
-
-    public Ticket addTags(Tag tag) {
-        this.tags.add(tag);
-        return this;
-    }
-
-    public Ticket removeTags(Tag tag) {
-        this.tags.remove(tag);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -341,6 +310,10 @@ public class Ticket implements Serializable {
     public String toString() {
         return "Ticket{" +
             "id=" + getId() +
+            ", customerId=" + getCustomerId() +
+            ", slaPlanId=" + getSlaPlanId() +
+            ", orderId=" + getOrderId() +
+            ", assigneeEmployeeId=" + getAssigneeEmployeeId() +
             ", code='" + getCode() + "'" +
             ", subject='" + getSubject() + "'" +
             ", description='" + getDescription() + "'" +

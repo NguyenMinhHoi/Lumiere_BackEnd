@@ -47,6 +47,8 @@ public class AttachmentAsserts {
     public static void assertAttachmentUpdatableFieldsEquals(Attachment expected, Attachment actual) {
         assertThat(actual)
             .as("Verify Attachment relevant properties")
+            .satisfies(a -> assertThat(a.getTicketId()).as("check ticketId").isEqualTo(expected.getTicketId()))
+            .satisfies(a -> assertThat(a.getCommentId()).as("check commentId").isEqualTo(expected.getCommentId()))
             .satisfies(a -> assertThat(a.getName()).as("check name").isEqualTo(expected.getName()))
             .satisfies(a -> assertThat(a.getUrl()).as("check url").isEqualTo(expected.getUrl()))
             .satisfies(a -> assertThat(a.getContentType()).as("check contentType").isEqualTo(expected.getContentType()))
@@ -61,9 +63,6 @@ public class AttachmentAsserts {
      * @param actual the actual entity
      */
     public static void assertAttachmentUpdatableRelationshipsEquals(Attachment expected, Attachment actual) {
-        assertThat(actual)
-            .as("Verify Attachment relationships")
-            .satisfies(a -> assertThat(a.getTicket()).as("check ticket").isEqualTo(expected.getTicket()))
-            .satisfies(a -> assertThat(a.getComment()).as("check comment").isEqualTo(expected.getComment()));
+        // empty method
     }
 }

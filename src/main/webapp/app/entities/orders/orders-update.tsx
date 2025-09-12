@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getCustomers } from 'app/entities/customer/customer.reducer';
 import { OrderStatus } from 'app/shared/model/enumerations/order-status.model';
 import { PaymentStatus } from 'app/shared/model/enumerations/payment-status.model';
 import { FulfillmentStatus } from 'app/shared/model/enumerations/fulfillment-status.model';
@@ -21,7 +20,6 @@ export const OrdersUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const customers = useAppSelector(state => state.customer.entities);
   const ordersEntity = useAppSelector(state => state.orders.entity);
   const loading = useAppSelector(state => state.orders.loading);
   const updating = useAppSelector(state => state.orders.updating);
@@ -40,8 +38,6 @@ export const OrdersUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getCustomers({}));
   }, []);
 
   useEffect(() => {
@@ -54,6 +50,9 @@ export const OrdersUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.customerId !== undefined && typeof values.customerId !== 'number') {
+      values.customerId = Number(values.customerId);
+    }
     if (values.totalAmount !== undefined && typeof values.totalAmount !== 'number') {
       values.totalAmount = Number(values.totalAmount);
     }
@@ -63,7 +62,6 @@ export const OrdersUpdate = () => {
     const entity = {
       ...ordersEntity,
       ...values,
-      customer: customers.find(it => it.id.toString() === values.customer?.toString()),
     };
 
     if (isNew) {
@@ -86,7 +84,6 @@ export const OrdersUpdate = () => {
           ...ordersEntity,
           placedAt: convertDateTimeFromServer(ordersEntity.placedAt),
           updatedAt: convertDateTimeFromServer(ordersEntity.updatedAt),
-          customer: ordersEntity?.customer?.id,
         };
 
   return (
@@ -114,6 +111,13 @@ export const OrdersUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.orders.customerId')}
+                id="orders-customerId"
+                name="customerId"
+                data-cy="customerId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.orders.code')}
                 id="orders-code"
@@ -207,22 +211,6 @@ export const OrdersUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField
-                id="orders-customer"
-                name="customer"
-                data-cy="customer"
-                label={translate('lumiApp.orders.customer')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {customers
-                  ? customers.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/orders" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

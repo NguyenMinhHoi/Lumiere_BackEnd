@@ -76,6 +76,8 @@ class TicketFileCriteriaTest {
 
     private static void setAllFilters(TicketFileCriteria ticketFileCriteria) {
         ticketFileCriteria.id();
+        ticketFileCriteria.ticketId();
+        ticketFileCriteria.uploaderId();
         ticketFileCriteria.fileName();
         ticketFileCriteria.originalName();
         ticketFileCriteria.contentType();
@@ -86,8 +88,6 @@ class TicketFileCriteriaTest {
         ticketFileCriteria.checksum();
         ticketFileCriteria.status();
         ticketFileCriteria.uploadedAt();
-        ticketFileCriteria.ticketId();
-        ticketFileCriteria.uploaderId();
         ticketFileCriteria.distinct();
     }
 
@@ -95,6 +95,8 @@ class TicketFileCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getTicketId()) &&
+                condition.apply(criteria.getUploaderId()) &&
                 condition.apply(criteria.getFileName()) &&
                 condition.apply(criteria.getOriginalName()) &&
                 condition.apply(criteria.getContentType()) &&
@@ -105,8 +107,6 @@ class TicketFileCriteriaTest {
                 condition.apply(criteria.getChecksum()) &&
                 condition.apply(criteria.getStatus()) &&
                 condition.apply(criteria.getUploadedAt()) &&
-                condition.apply(criteria.getTicketId()) &&
-                condition.apply(criteria.getUploaderId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -116,6 +116,8 @@ class TicketFileCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getTicketId(), copy.getTicketId()) &&
+                condition.apply(criteria.getUploaderId(), copy.getUploaderId()) &&
                 condition.apply(criteria.getFileName(), copy.getFileName()) &&
                 condition.apply(criteria.getOriginalName(), copy.getOriginalName()) &&
                 condition.apply(criteria.getContentType(), copy.getContentType()) &&
@@ -126,8 +128,6 @@ class TicketFileCriteriaTest {
                 condition.apply(criteria.getChecksum(), copy.getChecksum()) &&
                 condition.apply(criteria.getStatus(), copy.getStatus()) &&
                 condition.apply(criteria.getUploadedAt(), copy.getUploadedAt()) &&
-                condition.apply(criteria.getTicketId(), copy.getTicketId()) &&
-                condition.apply(criteria.getUploaderId(), copy.getUploaderId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

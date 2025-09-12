@@ -14,13 +14,11 @@ import com.lumi.app.IntegrationTest;
 import com.lumi.app.domain.Attachment;
 import com.lumi.app.repository.AttachmentRepository;
 import com.lumi.app.repository.search.AttachmentSearchRepository;
-import com.lumi.app.service.AttachmentService;
 import com.lumi.app.service.dto.AttachmentDTO;
 import com.lumi.app.service.mapper.AttachmentMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -29,13 +27,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -46,10 +39,15 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link AttachmentResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class AttachmentResourceIT {
+
+    private static final Long DEFAULT_TICKET_ID = 1L;
+    private static final Long UPDATED_TICKET_ID = 2L;
+
+    private static final Long DEFAULT_COMMENT_ID = 1L;
+    private static final Long UPDATED_COMMENT_ID = 2L;
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -79,14 +77,8 @@ class AttachmentResourceIT {
     @Autowired
     private AttachmentRepository attachmentRepository;
 
-    @Mock
-    private AttachmentRepository attachmentRepositoryMock;
-
     @Autowired
     private AttachmentMapper attachmentMapper;
-
-    @Mock
-    private AttachmentService attachmentServiceMock;
 
     @Autowired
     private AttachmentSearchRepository attachmentSearchRepository;
@@ -109,6 +101,8 @@ class AttachmentResourceIT {
      */
     public static Attachment createEntity() {
         return new Attachment()
+            .ticketId(DEFAULT_TICKET_ID)
+            .commentId(DEFAULT_COMMENT_ID)
             .name(DEFAULT_NAME)
             .url(DEFAULT_URL)
             .contentType(DEFAULT_CONTENT_TYPE)
@@ -124,6 +118,8 @@ class AttachmentResourceIT {
      */
     public static Attachment createUpdatedEntity() {
         return new Attachment()
+            .ticketId(UPDATED_TICKET_ID)
+            .commentId(UPDATED_COMMENT_ID)
             .name(UPDATED_NAME)
             .url(UPDATED_URL)
             .contentType(UPDATED_CONTENT_TYPE)
@@ -273,28 +269,13 @@ class AttachmentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(attachment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].commentId").value(hasItem(DEFAULT_COMMENT_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].url").value(hasItem(DEFAULT_URL)))
             .andExpect(jsonPath("$.[*].contentType").value(hasItem(DEFAULT_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.intValue())))
             .andExpect(jsonPath("$.[*].uploadedAt").value(hasItem(DEFAULT_UPLOADED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllAttachmentsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(attachmentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restAttachmentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(attachmentServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllAttachmentsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(attachmentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restAttachmentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(attachmentRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -309,6 +290,8 @@ class AttachmentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(attachment.getId().intValue()))
+            .andExpect(jsonPath("$.ticketId").value(DEFAULT_TICKET_ID.intValue()))
+            .andExpect(jsonPath("$.commentId").value(DEFAULT_COMMENT_ID.intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.url").value(DEFAULT_URL))
             .andExpect(jsonPath("$.contentType").value(DEFAULT_CONTENT_TYPE))
@@ -338,6 +321,8 @@ class AttachmentResourceIT {
         // Disconnect from session so that the updates on updatedAttachment are not directly saved in db
         em.detach(updatedAttachment);
         updatedAttachment
+            .ticketId(UPDATED_TICKET_ID)
+            .commentId(UPDATED_COMMENT_ID)
             .name(UPDATED_NAME)
             .url(UPDATED_URL)
             .contentType(UPDATED_CONTENT_TYPE)
@@ -452,7 +437,7 @@ class AttachmentResourceIT {
         Attachment partialUpdatedAttachment = new Attachment();
         partialUpdatedAttachment.setId(attachment.getId());
 
-        partialUpdatedAttachment.url(UPDATED_URL).size(UPDATED_SIZE).uploadedAt(UPDATED_UPLOADED_AT);
+        partialUpdatedAttachment.commentId(UPDATED_COMMENT_ID).url(UPDATED_URL).contentType(UPDATED_CONTENT_TYPE).size(UPDATED_SIZE);
 
         restAttachmentMockMvc
             .perform(
@@ -484,6 +469,8 @@ class AttachmentResourceIT {
         partialUpdatedAttachment.setId(attachment.getId());
 
         partialUpdatedAttachment
+            .ticketId(UPDATED_TICKET_ID)
+            .commentId(UPDATED_COMMENT_ID)
             .name(UPDATED_NAME)
             .url(UPDATED_URL)
             .contentType(UPDATED_CONTENT_TYPE)
@@ -611,6 +598,8 @@ class AttachmentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(attachment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].commentId").value(hasItem(DEFAULT_COMMENT_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].url").value(hasItem(DEFAULT_URL)))
             .andExpect(jsonPath("$.[*].contentType").value(hasItem(DEFAULT_CONTENT_TYPE)))

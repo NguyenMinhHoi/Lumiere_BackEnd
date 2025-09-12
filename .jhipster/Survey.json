@@ -6,6 +6,10 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "customerId",
+      "fieldType": "Long"
+    },
+    {
       "fieldName": "surveyType",
       "fieldType": "SurveyType",
       "fieldValidateRules": ["required"],
@@ -34,14 +38,6 @@
   ],
   "name": "Survey",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "customer",
-      "relationshipName": "customer",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

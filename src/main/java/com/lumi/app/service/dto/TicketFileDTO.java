@@ -16,6 +16,11 @@ public class TicketFileDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private Long ticketId;
+
+    private Long uploaderId;
+
+    @NotNull
     @Size(max = 255)
     private String fileName;
 
@@ -47,16 +52,28 @@ public class TicketFileDTO implements Serializable {
     @NotNull
     private Instant uploadedAt;
 
-    private TicketDTO ticket;
-
-    private UserDTO uploader;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getUploaderId() {
+        return uploaderId;
+    }
+
+    public void setUploaderId(Long uploaderId) {
+        this.uploaderId = uploaderId;
     }
 
     public String getFileName() {
@@ -139,22 +156,6 @@ public class TicketFileDTO implements Serializable {
         this.uploadedAt = uploadedAt;
     }
 
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(TicketDTO ticket) {
-        this.ticket = ticket;
-    }
-
-    public UserDTO getUploader() {
-        return uploader;
-    }
-
-    public void setUploader(UserDTO uploader) {
-        this.uploader = uploader;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -181,6 +182,8 @@ public class TicketFileDTO implements Serializable {
     public String toString() {
         return "TicketFileDTO{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", uploaderId=" + getUploaderId() +
             ", fileName='" + getFileName() + "'" +
             ", originalName='" + getOriginalName() + "'" +
             ", contentType='" + getContentType() + "'" +
@@ -191,8 +194,6 @@ public class TicketFileDTO implements Serializable {
             ", checksum='" + getChecksum() + "'" +
             ", status='" + getStatus() + "'" +
             ", uploadedAt='" + getUploadedAt() + "'" +
-            ", ticket=" + getTicket() +
-            ", uploader=" + getUploader() +
             "}";
     }
 }

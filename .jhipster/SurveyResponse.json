@@ -6,6 +6,19 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "surveyId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "customerId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "ticketId",
+      "fieldType": "Long"
+    },
+    {
       "fieldName": "respondedAt",
       "fieldType": "Instant",
       "fieldValidateRules": ["required"]
@@ -21,28 +34,6 @@
   ],
   "name": "SurveyResponse",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "title",
-      "otherEntityName": "survey",
-      "relationshipName": "survey",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "customer",
-      "relationshipName": "customer",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "ticket",
-      "relationshipName": "ticket",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

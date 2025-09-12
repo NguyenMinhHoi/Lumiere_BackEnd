@@ -33,6 +33,18 @@ export const TicketCommentDetail = () => {
           </dt>
           <dd>{ticketCommentEntity.id}</dd>
           <dt>
+            <span id="ticketId">
+              <Translate contentKey="lumiApp.ticketComment.ticketId">Ticket Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketCommentEntity.ticketId}</dd>
+          <dt>
+            <span id="authorId">
+              <Translate contentKey="lumiApp.ticketComment.authorId">Author Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketCommentEntity.authorId}</dd>
+          <dt>
             <span id="body">
               <Translate contentKey="lumiApp.ticketComment.body">Body</Translate>
             </span>
@@ -54,14 +66,6 @@ export const TicketCommentDetail = () => {
               <TextFormat value={ticketCommentEntity.createdAt} type="date" format={APP_DATE_FORMAT} />
             ) : null}
           </dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticketComment.ticket">Ticket</Translate>
-          </dt>
-          <dd>{ticketCommentEntity.ticket ? ticketCommentEntity.ticket.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticketComment.author">Author</Translate>
-          </dt>
-          <dd>{ticketCommentEntity.author ? ticketCommentEntity.author.login : ''}</dd>
         </dl>
         <Button tag={Link} to="/ticket-comment" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

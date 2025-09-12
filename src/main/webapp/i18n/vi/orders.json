@@ -19,6 +19,7 @@
         "title": "Orders"
       },
       "id": "ID",
+      "customerId": "Customer Id",
       "code": "Code",
       "status": "Status",
       "paymentStatus": "Payment Status",
@@ -27,8 +28,7 @@
       "currency": "Currency",
       "note": "Note",
       "placedAt": "Placed At",
-      "updatedAt": "Updated At",
-      "customer": "Customer"
+      "updatedAt": "Updated At"
     }
   }
 }

@@ -48,6 +48,7 @@ public class OrdersAsserts {
     public static void assertOrdersUpdatableFieldsEquals(Orders expected, Orders actual) {
         assertThat(actual)
             .as("Verify Orders relevant properties")
+            .satisfies(a -> assertThat(a.getCustomerId()).as("check customerId").isEqualTo(expected.getCustomerId()))
             .satisfies(a -> assertThat(a.getCode()).as("check code").isEqualTo(expected.getCode()))
             .satisfies(a -> assertThat(a.getStatus()).as("check status").isEqualTo(expected.getStatus()))
             .satisfies(a -> assertThat(a.getPaymentStatus()).as("check paymentStatus").isEqualTo(expected.getPaymentStatus()))
@@ -71,8 +72,6 @@ public class OrdersAsserts {
      * @param actual the actual entity
      */
     public static void assertOrdersUpdatableRelationshipsEquals(Orders expected, Orders actual) {
-        assertThat(actual)
-            .as("Verify Orders relationships")
-            .satisfies(a -> assertThat(a.getCustomer()).as("check customer").isEqualTo(expected.getCustomer()));
+        // empty method
     }
 }

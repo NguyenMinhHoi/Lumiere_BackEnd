@@ -11,22 +11,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
-import com.lumi.app.domain.Customer;
 import com.lumi.app.domain.Notification;
-import com.lumi.app.domain.Survey;
-import com.lumi.app.domain.Ticket;
 import com.lumi.app.domain.enumeration.DeliveryChannel;
 import com.lumi.app.domain.enumeration.NotificationType;
 import com.lumi.app.domain.enumeration.SendStatus;
 import com.lumi.app.repository.NotificationRepository;
 import com.lumi.app.repository.search.NotificationSearchRepository;
-import com.lumi.app.service.NotificationService;
 import com.lumi.app.service.dto.NotificationDTO;
 import com.lumi.app.service.mapper.NotificationMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -35,13 +30,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -52,10 +42,21 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link NotificationResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class NotificationResourceIT {
+
+    private static final Long DEFAULT_TICKET_ID = 1L;
+    private static final Long UPDATED_TICKET_ID = 2L;
+    private static final Long SMALLER_TICKET_ID = 1L - 1L;
+
+    private static final Long DEFAULT_CUSTOMER_ID = 1L;
+    private static final Long UPDATED_CUSTOMER_ID = 2L;
+    private static final Long SMALLER_CUSTOMER_ID = 1L - 1L;
+
+    private static final Long DEFAULT_SURVEY_ID = 1L;
+    private static final Long UPDATED_SURVEY_ID = 2L;
+    private static final Long SMALLER_SURVEY_ID = 1L - 1L;
 
     private static final NotificationType DEFAULT_TYPE = NotificationType.TICKET_UPDATE;
     private static final NotificationType UPDATED_TYPE = NotificationType.SURVEY;
@@ -95,14 +96,8 @@ class NotificationResourceIT {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    @Mock
-    private NotificationRepository notificationRepositoryMock;
-
     @Autowired
     private NotificationMapper notificationMapper;
-
-    @Mock
-    private NotificationService notificationServiceMock;
 
     @Autowired
     private NotificationSearchRepository notificationSearchRepository;
@@ -125,6 +120,9 @@ class NotificationResourceIT {
      */
     public static Notification createEntity() {
         return new Notification()
+            .ticketId(DEFAULT_TICKET_ID)
+            .customerId(DEFAULT_CUSTOMER_ID)
+            .surveyId(DEFAULT_SURVEY_ID)
             .type(DEFAULT_TYPE)
             .channel(DEFAULT_CHANNEL)
             .subject(DEFAULT_SUBJECT)
@@ -143,6 +141,9 @@ class NotificationResourceIT {
      */
     public static Notification createUpdatedEntity() {
         return new Notification()
+            .ticketId(UPDATED_TICKET_ID)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .surveyId(UPDATED_SURVEY_ID)
             .type(UPDATED_TYPE)
             .channel(UPDATED_CHANNEL)
             .subject(UPDATED_SUBJECT)
@@ -337,6 +338,9 @@ class NotificationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(notification.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].surveyId").value(hasItem(DEFAULT_SURVEY_ID.intValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].channel").value(hasItem(DEFAULT_CHANNEL.toString())))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))
@@ -345,23 +349,6 @@ class NotificationResourceIT {
             .andExpect(jsonPath("$.[*].retryCount").value(hasItem(DEFAULT_RETRY_COUNT)))
             .andExpect(jsonPath("$.[*].lastTriedAt").value(hasItem(DEFAULT_LAST_TRIED_AT.toString())))
             .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllNotificationsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(notificationServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restNotificationMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(notificationServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllNotificationsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(notificationServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restNotificationMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(notificationRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -376,6 +363,9 @@ class NotificationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(notification.getId().intValue()))
+            .andExpect(jsonPath("$.ticketId").value(DEFAULT_TICKET_ID.intValue()))
+            .andExpect(jsonPath("$.customerId").value(DEFAULT_CUSTOMER_ID.intValue()))
+            .andExpect(jsonPath("$.surveyId").value(DEFAULT_SURVEY_ID.intValue()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.channel").value(DEFAULT_CHANNEL.toString()))
             .andExpect(jsonPath("$.subject").value(DEFAULT_SUBJECT))
@@ -399,6 +389,231 @@ class NotificationResourceIT {
         defaultNotificationFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultNotificationFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByTicketIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where ticketId equals to
+        defaultNotificationFiltering("ticketId.equals=" + DEFAULT_TICKET_ID, "ticketId.equals=" + UPDATED_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByTicketIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where ticketId in
+        defaultNotificationFiltering("ticketId.in=" + DEFAULT_TICKET_ID + "," + UPDATED_TICKET_ID, "ticketId.in=" + UPDATED_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByTicketIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where ticketId is not null
+        defaultNotificationFiltering("ticketId.specified=true", "ticketId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByTicketIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where ticketId is greater than or equal to
+        defaultNotificationFiltering(
+            "ticketId.greaterThanOrEqual=" + DEFAULT_TICKET_ID,
+            "ticketId.greaterThanOrEqual=" + UPDATED_TICKET_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByTicketIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where ticketId is less than or equal to
+        defaultNotificationFiltering("ticketId.lessThanOrEqual=" + DEFAULT_TICKET_ID, "ticketId.lessThanOrEqual=" + SMALLER_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByTicketIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where ticketId is less than
+        defaultNotificationFiltering("ticketId.lessThan=" + UPDATED_TICKET_ID, "ticketId.lessThan=" + DEFAULT_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByTicketIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where ticketId is greater than
+        defaultNotificationFiltering("ticketId.greaterThan=" + SMALLER_TICKET_ID, "ticketId.greaterThan=" + DEFAULT_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByCustomerIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where customerId equals to
+        defaultNotificationFiltering("customerId.equals=" + DEFAULT_CUSTOMER_ID, "customerId.equals=" + UPDATED_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByCustomerIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where customerId in
+        defaultNotificationFiltering(
+            "customerId.in=" + DEFAULT_CUSTOMER_ID + "," + UPDATED_CUSTOMER_ID,
+            "customerId.in=" + UPDATED_CUSTOMER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByCustomerIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where customerId is not null
+        defaultNotificationFiltering("customerId.specified=true", "customerId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByCustomerIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where customerId is greater than or equal to
+        defaultNotificationFiltering(
+            "customerId.greaterThanOrEqual=" + DEFAULT_CUSTOMER_ID,
+            "customerId.greaterThanOrEqual=" + UPDATED_CUSTOMER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByCustomerIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where customerId is less than or equal to
+        defaultNotificationFiltering(
+            "customerId.lessThanOrEqual=" + DEFAULT_CUSTOMER_ID,
+            "customerId.lessThanOrEqual=" + SMALLER_CUSTOMER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByCustomerIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where customerId is less than
+        defaultNotificationFiltering("customerId.lessThan=" + UPDATED_CUSTOMER_ID, "customerId.lessThan=" + DEFAULT_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsByCustomerIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where customerId is greater than
+        defaultNotificationFiltering("customerId.greaterThan=" + SMALLER_CUSTOMER_ID, "customerId.greaterThan=" + DEFAULT_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsBySurveyIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where surveyId equals to
+        defaultNotificationFiltering("surveyId.equals=" + DEFAULT_SURVEY_ID, "surveyId.equals=" + UPDATED_SURVEY_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsBySurveyIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where surveyId in
+        defaultNotificationFiltering("surveyId.in=" + DEFAULT_SURVEY_ID + "," + UPDATED_SURVEY_ID, "surveyId.in=" + UPDATED_SURVEY_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsBySurveyIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where surveyId is not null
+        defaultNotificationFiltering("surveyId.specified=true", "surveyId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsBySurveyIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where surveyId is greater than or equal to
+        defaultNotificationFiltering(
+            "surveyId.greaterThanOrEqual=" + DEFAULT_SURVEY_ID,
+            "surveyId.greaterThanOrEqual=" + UPDATED_SURVEY_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsBySurveyIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where surveyId is less than or equal to
+        defaultNotificationFiltering("surveyId.lessThanOrEqual=" + DEFAULT_SURVEY_ID, "surveyId.lessThanOrEqual=" + SMALLER_SURVEY_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsBySurveyIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where surveyId is less than
+        defaultNotificationFiltering("surveyId.lessThan=" + UPDATED_SURVEY_ID, "surveyId.lessThan=" + DEFAULT_SURVEY_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllNotificationsBySurveyIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedNotification = notificationRepository.saveAndFlush(notification);
+
+        // Get all the notificationList where surveyId is greater than
+        defaultNotificationFiltering("surveyId.greaterThan=" + SMALLER_SURVEY_ID, "surveyId.greaterThan=" + DEFAULT_SURVEY_ID);
     }
 
     @Test
@@ -686,72 +901,6 @@ class NotificationResourceIT {
         defaultNotificationFiltering("createdAt.specified=true", "createdAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllNotificationsByTicketIsEqualToSomething() throws Exception {
-        Ticket ticket;
-        if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
-            notificationRepository.saveAndFlush(notification);
-            ticket = TicketResourceIT.createEntity();
-        } else {
-            ticket = TestUtil.findAll(em, Ticket.class).get(0);
-        }
-        em.persist(ticket);
-        em.flush();
-        notification.setTicket(ticket);
-        notificationRepository.saveAndFlush(notification);
-        Long ticketId = ticket.getId();
-        // Get all the notificationList where ticket equals to ticketId
-        defaultNotificationShouldBeFound("ticketId.equals=" + ticketId);
-
-        // Get all the notificationList where ticket equals to (ticketId + 1)
-        defaultNotificationShouldNotBeFound("ticketId.equals=" + (ticketId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllNotificationsByCustomerIsEqualToSomething() throws Exception {
-        Customer customer;
-        if (TestUtil.findAll(em, Customer.class).isEmpty()) {
-            notificationRepository.saveAndFlush(notification);
-            customer = CustomerResourceIT.createEntity();
-        } else {
-            customer = TestUtil.findAll(em, Customer.class).get(0);
-        }
-        em.persist(customer);
-        em.flush();
-        notification.setCustomer(customer);
-        notificationRepository.saveAndFlush(notification);
-        Long customerId = customer.getId();
-        // Get all the notificationList where customer equals to customerId
-        defaultNotificationShouldBeFound("customerId.equals=" + customerId);
-
-        // Get all the notificationList where customer equals to (customerId + 1)
-        defaultNotificationShouldNotBeFound("customerId.equals=" + (customerId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllNotificationsBySurveyIsEqualToSomething() throws Exception {
-        Survey survey;
-        if (TestUtil.findAll(em, Survey.class).isEmpty()) {
-            notificationRepository.saveAndFlush(notification);
-            survey = SurveyResourceIT.createEntity();
-        } else {
-            survey = TestUtil.findAll(em, Survey.class).get(0);
-        }
-        em.persist(survey);
-        em.flush();
-        notification.setSurvey(survey);
-        notificationRepository.saveAndFlush(notification);
-        Long surveyId = survey.getId();
-        // Get all the notificationList where survey equals to surveyId
-        defaultNotificationShouldBeFound("surveyId.equals=" + surveyId);
-
-        // Get all the notificationList where survey equals to (surveyId + 1)
-        defaultNotificationShouldNotBeFound("surveyId.equals=" + (surveyId + 1));
-    }
-
     private void defaultNotificationFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultNotificationShouldBeFound(shouldBeFound);
         defaultNotificationShouldNotBeFound(shouldNotBeFound);
@@ -766,6 +915,9 @@ class NotificationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(notification.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].surveyId").value(hasItem(DEFAULT_SURVEY_ID.intValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].channel").value(hasItem(DEFAULT_CHANNEL.toString())))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))
@@ -824,6 +976,9 @@ class NotificationResourceIT {
         // Disconnect from session so that the updates on updatedNotification are not directly saved in db
         em.detach(updatedNotification);
         updatedNotification
+            .ticketId(UPDATED_TICKET_ID)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .surveyId(UPDATED_SURVEY_ID)
             .type(UPDATED_TYPE)
             .channel(UPDATED_CHANNEL)
             .subject(UPDATED_SUBJECT)
@@ -942,9 +1097,10 @@ class NotificationResourceIT {
         partialUpdatedNotification.setId(notification.getId());
 
         partialUpdatedNotification
-            .channel(UPDATED_CHANNEL)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .surveyId(UPDATED_SURVEY_ID)
             .subject(UPDATED_SUBJECT)
-            .retryCount(UPDATED_RETRY_COUNT)
+            .sendStatus(UPDATED_SEND_STATUS)
             .createdAt(UPDATED_CREATED_AT);
 
         restNotificationMockMvc
@@ -977,6 +1133,9 @@ class NotificationResourceIT {
         partialUpdatedNotification.setId(notification.getId());
 
         partialUpdatedNotification
+            .ticketId(UPDATED_TICKET_ID)
+            .customerId(UPDATED_CUSTOMER_ID)
+            .surveyId(UPDATED_SURVEY_ID)
             .type(UPDATED_TYPE)
             .channel(UPDATED_CHANNEL)
             .subject(UPDATED_SUBJECT)
@@ -1107,6 +1266,9 @@ class NotificationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(notification.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].surveyId").value(hasItem(DEFAULT_SURVEY_ID.intValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].channel").value(hasItem(DEFAULT_CHANNEL.toString())))
             .andExpect(jsonPath("$.[*].subject").value(hasItem(DEFAULT_SUBJECT)))

@@ -4,11 +4,8 @@ import { Button, Col, Row } from 'reactstrap';
 import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getTickets } from 'app/entities/ticket/ticket.reducer';
-import { getEntities as getKnowledgeArticles } from 'app/entities/knowledge-article/knowledge-article.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './tag.reducer';
 
 export const TagUpdate = () => {
@@ -19,8 +16,6 @@ export const TagUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const tickets = useAppSelector(state => state.ticket.entities);
-  const knowledgeArticles = useAppSelector(state => state.knowledgeArticle.entities);
   const tagEntity = useAppSelector(state => state.tag.entity);
   const loading = useAppSelector(state => state.tag.loading);
   const updating = useAppSelector(state => state.tag.updating);
@@ -36,9 +31,6 @@ export const TagUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getTickets({}));
-    dispatch(getKnowledgeArticles({}));
   }, []);
 
   useEffect(() => {
@@ -55,8 +47,6 @@ export const TagUpdate = () => {
     const entity = {
       ...tagEntity,
       ...values,
-      tickets: mapIdList(values.tickets),
-      articles: mapIdList(values.articles),
     };
 
     if (isNew) {
@@ -71,8 +61,6 @@ export const TagUpdate = () => {
       ? {}
       : {
           ...tagEntity,
-          tickets: tagEntity?.tickets?.map(e => e.id.toString()),
-          articles: tagEntity?.articles?.map(e => e.id.toString()),
         };
 
   return (
@@ -112,40 +100,6 @@ export const TagUpdate = () => {
                   maxLength: { value: 64, message: translate('entity.validation.maxlength', { max: 64 }) },
                 }}
               />
-              <ValidatedField
-                label={translate('lumiApp.tag.tickets')}
-                id="tag-tickets"
-                data-cy="tickets"
-                type="select"
-                multiple
-                name="tickets"
-              >
-                <option value="" key="0" />
-                {tickets
-                  ? tickets.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                label={translate('lumiApp.tag.articles')}
-                id="tag-articles"
-                data-cy="articles"
-                type="select"
-                multiple
-                name="articles"
-              >
-                <option value="" key="0" />
-                {knowledgeArticles
-                  ? knowledgeArticles.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/tag" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

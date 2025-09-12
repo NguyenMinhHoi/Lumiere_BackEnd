@@ -78,6 +78,12 @@ public class NotificationCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter ticketId;
+
+    private LongFilter customerId;
+
+    private LongFilter surveyId;
+
     private NotificationTypeFilter type;
 
     private DeliveryChannelFilter channel;
@@ -92,18 +98,15 @@ public class NotificationCriteria implements Serializable, Criteria {
 
     private InstantFilter createdAt;
 
-    private LongFilter ticketId;
-
-    private LongFilter customerId;
-
-    private LongFilter surveyId;
-
     private Boolean distinct;
 
     public NotificationCriteria() {}
 
     public NotificationCriteria(NotificationCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.ticketId = other.optionalTicketId().map(LongFilter::copy).orElse(null);
+        this.customerId = other.optionalCustomerId().map(LongFilter::copy).orElse(null);
+        this.surveyId = other.optionalSurveyId().map(LongFilter::copy).orElse(null);
         this.type = other.optionalType().map(NotificationTypeFilter::copy).orElse(null);
         this.channel = other.optionalChannel().map(DeliveryChannelFilter::copy).orElse(null);
         this.subject = other.optionalSubject().map(StringFilter::copy).orElse(null);
@@ -111,9 +114,6 @@ public class NotificationCriteria implements Serializable, Criteria {
         this.retryCount = other.optionalRetryCount().map(IntegerFilter::copy).orElse(null);
         this.lastTriedAt = other.optionalLastTriedAt().map(InstantFilter::copy).orElse(null);
         this.createdAt = other.optionalCreatedAt().map(InstantFilter::copy).orElse(null);
-        this.ticketId = other.optionalTicketId().map(LongFilter::copy).orElse(null);
-        this.customerId = other.optionalCustomerId().map(LongFilter::copy).orElse(null);
-        this.surveyId = other.optionalSurveyId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -139,6 +139,63 @@ public class NotificationCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getTicketId() {
+        return ticketId;
+    }
+
+    public Optional<LongFilter> optionalTicketId() {
+        return Optional.ofNullable(ticketId);
+    }
+
+    public LongFilter ticketId() {
+        if (ticketId == null) {
+            setTicketId(new LongFilter());
+        }
+        return ticketId;
+    }
+
+    public void setTicketId(LongFilter ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public LongFilter getCustomerId() {
+        return customerId;
+    }
+
+    public Optional<LongFilter> optionalCustomerId() {
+        return Optional.ofNullable(customerId);
+    }
+
+    public LongFilter customerId() {
+        if (customerId == null) {
+            setCustomerId(new LongFilter());
+        }
+        return customerId;
+    }
+
+    public void setCustomerId(LongFilter customerId) {
+        this.customerId = customerId;
+    }
+
+    public LongFilter getSurveyId() {
+        return surveyId;
+    }
+
+    public Optional<LongFilter> optionalSurveyId() {
+        return Optional.ofNullable(surveyId);
+    }
+
+    public LongFilter surveyId() {
+        if (surveyId == null) {
+            setSurveyId(new LongFilter());
+        }
+        return surveyId;
+    }
+
+    public void setSurveyId(LongFilter surveyId) {
+        this.surveyId = surveyId;
     }
 
     public NotificationTypeFilter getType() {
@@ -274,63 +331,6 @@ public class NotificationCriteria implements Serializable, Criteria {
         this.createdAt = createdAt;
     }
 
-    public LongFilter getTicketId() {
-        return ticketId;
-    }
-
-    public Optional<LongFilter> optionalTicketId() {
-        return Optional.ofNullable(ticketId);
-    }
-
-    public LongFilter ticketId() {
-        if (ticketId == null) {
-            setTicketId(new LongFilter());
-        }
-        return ticketId;
-    }
-
-    public void setTicketId(LongFilter ticketId) {
-        this.ticketId = ticketId;
-    }
-
-    public LongFilter getCustomerId() {
-        return customerId;
-    }
-
-    public Optional<LongFilter> optionalCustomerId() {
-        return Optional.ofNullable(customerId);
-    }
-
-    public LongFilter customerId() {
-        if (customerId == null) {
-            setCustomerId(new LongFilter());
-        }
-        return customerId;
-    }
-
-    public void setCustomerId(LongFilter customerId) {
-        this.customerId = customerId;
-    }
-
-    public LongFilter getSurveyId() {
-        return surveyId;
-    }
-
-    public Optional<LongFilter> optionalSurveyId() {
-        return Optional.ofNullable(surveyId);
-    }
-
-    public LongFilter surveyId() {
-        if (surveyId == null) {
-            setSurveyId(new LongFilter());
-        }
-        return surveyId;
-    }
-
-    public void setSurveyId(LongFilter surveyId) {
-        this.surveyId = surveyId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -361,6 +361,9 @@ public class NotificationCriteria implements Serializable, Criteria {
         final NotificationCriteria that = (NotificationCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(ticketId, that.ticketId) &&
+            Objects.equals(customerId, that.customerId) &&
+            Objects.equals(surveyId, that.surveyId) &&
             Objects.equals(type, that.type) &&
             Objects.equals(channel, that.channel) &&
             Objects.equals(subject, that.subject) &&
@@ -368,9 +371,6 @@ public class NotificationCriteria implements Serializable, Criteria {
             Objects.equals(retryCount, that.retryCount) &&
             Objects.equals(lastTriedAt, that.lastTriedAt) &&
             Objects.equals(createdAt, that.createdAt) &&
-            Objects.equals(ticketId, that.ticketId) &&
-            Objects.equals(customerId, that.customerId) &&
-            Objects.equals(surveyId, that.surveyId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -379,6 +379,9 @@ public class NotificationCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
+            ticketId,
+            customerId,
+            surveyId,
             type,
             channel,
             subject,
@@ -386,9 +389,6 @@ public class NotificationCriteria implements Serializable, Criteria {
             retryCount,
             lastTriedAt,
             createdAt,
-            ticketId,
-            customerId,
-            surveyId,
             distinct
         );
     }
@@ -398,6 +398,9 @@ public class NotificationCriteria implements Serializable, Criteria {
     public String toString() {
         return "NotificationCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalTicketId().map(f -> "ticketId=" + f + ", ").orElse("") +
+            optionalCustomerId().map(f -> "customerId=" + f + ", ").orElse("") +
+            optionalSurveyId().map(f -> "surveyId=" + f + ", ").orElse("") +
             optionalType().map(f -> "type=" + f + ", ").orElse("") +
             optionalChannel().map(f -> "channel=" + f + ", ").orElse("") +
             optionalSubject().map(f -> "subject=" + f + ", ").orElse("") +
@@ -405,9 +408,6 @@ public class NotificationCriteria implements Serializable, Criteria {
             optionalRetryCount().map(f -> "retryCount=" + f + ", ").orElse("") +
             optionalLastTriedAt().map(f -> "lastTriedAt=" + f + ", ").orElse("") +
             optionalCreatedAt().map(f -> "createdAt=" + f + ", ").orElse("") +
-            optionalTicketId().map(f -> "ticketId=" + f + ", ").orElse("") +
-            optionalCustomerId().map(f -> "customerId=" + f + ", ").orElse("") +
-            optionalSurveyId().map(f -> "surveyId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

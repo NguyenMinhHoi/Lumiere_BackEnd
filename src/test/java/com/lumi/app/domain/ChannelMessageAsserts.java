@@ -47,6 +47,8 @@ public class ChannelMessageAsserts {
     public static void assertChannelMessageUpdatableFieldsEquals(ChannelMessage expected, ChannelMessage actual) {
         assertThat(actual)
             .as("Verify ChannelMessage relevant properties")
+            .satisfies(a -> assertThat(a.getTicketId()).as("check ticketId").isEqualTo(expected.getTicketId()))
+            .satisfies(a -> assertThat(a.getAuthorId()).as("check authorId").isEqualTo(expected.getAuthorId()))
             .satisfies(a -> assertThat(a.getDirection()).as("check direction").isEqualTo(expected.getDirection()))
             .satisfies(a -> assertThat(a.getContent()).as("check content").isEqualTo(expected.getContent()))
             .satisfies(a -> assertThat(a.getSentAt()).as("check sentAt").isEqualTo(expected.getSentAt()))
@@ -60,8 +62,6 @@ public class ChannelMessageAsserts {
      * @param actual the actual entity
      */
     public static void assertChannelMessageUpdatableRelationshipsEquals(ChannelMessage expected, ChannelMessage actual) {
-        assertThat(actual)
-            .as("Verify ChannelMessage relationships")
-            .satisfies(a -> assertThat(a.getTicket()).as("check ticket").isEqualTo(expected.getTicket()));
+        // empty method
     }
 }

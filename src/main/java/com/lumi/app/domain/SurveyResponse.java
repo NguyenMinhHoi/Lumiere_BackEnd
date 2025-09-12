@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -27,6 +26,16 @@ public class SurveyResponse implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "survey_id", nullable = false)
+    private Long surveyId;
+
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    @Column(name = "ticket_id")
+    private Long ticketId;
+
+    @NotNull
     @Column(name = "responded_at", nullable = false)
     private Instant respondedAt;
 
@@ -34,20 +43,10 @@ public class SurveyResponse implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Integer)
     private Integer score;
 
+    @Lob
     @Column(name = "comment")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String comment;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
-    private Survey survey;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer", "assignee", "slaPlan", "order", "tags" }, allowSetters = true)
-    private Ticket ticket;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -62,6 +61,45 @@ public class SurveyResponse implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getSurveyId() {
+        return this.surveyId;
+    }
+
+    public SurveyResponse surveyId(Long surveyId) {
+        this.setSurveyId(surveyId);
+        return this;
+    }
+
+    public void setSurveyId(Long surveyId) {
+        this.surveyId = surveyId;
+    }
+
+    public Long getCustomerId() {
+        return this.customerId;
+    }
+
+    public SurveyResponse customerId(Long customerId) {
+        this.setCustomerId(customerId);
+        return this;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getTicketId() {
+        return this.ticketId;
+    }
+
+    public SurveyResponse ticketId(Long ticketId) {
+        this.setTicketId(ticketId);
+        return this;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
     }
 
     public Instant getRespondedAt() {
@@ -103,45 +141,6 @@ public class SurveyResponse implements Serializable {
         this.comment = comment;
     }
 
-    public Survey getSurvey() {
-        return this.survey;
-    }
-
-    public void setSurvey(Survey survey) {
-        this.survey = survey;
-    }
-
-    public SurveyResponse survey(Survey survey) {
-        this.setSurvey(survey);
-        return this;
-    }
-
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public SurveyResponse customer(Customer customer) {
-        this.setCustomer(customer);
-        return this;
-    }
-
-    public Ticket getTicket() {
-        return this.ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public SurveyResponse ticket(Ticket ticket) {
-        this.setTicket(ticket);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -166,6 +165,9 @@ public class SurveyResponse implements Serializable {
     public String toString() {
         return "SurveyResponse{" +
             "id=" + getId() +
+            ", surveyId=" + getSurveyId() +
+            ", customerId=" + getCustomerId() +
+            ", ticketId=" + getTicketId() +
             ", respondedAt='" + getRespondedAt() + "'" +
             ", score=" + getScore() +
             ", comment='" + getComment() + "'" +

@@ -19,6 +19,10 @@
         "title": "Ticket"
       },
       "id": "ID",
+      "customerId": "Customer Id",
+      "slaPlanId": "Sla Plan Id",
+      "orderId": "Order Id",
+      "assigneeEmployeeId": "Assignee Employee Id",
       "code": "Code",
       "subject": "Subject",
       "description": "Description",
@@ -28,12 +32,7 @@
       "openedAt": "Opened At",
       "firstResponseAt": "First Response At",
       "resolvedAt": "Resolved At",
-      "slaDueAt": "Sla Due At",
-      "customer": "Customer",
-      "assignee": "Assignee",
-      "slaPlan": "Sla Plan",
-      "order": "Order",
-      "tags": "Tags"
+      "slaDueAt": "Sla Due At"
     }
   }
 }

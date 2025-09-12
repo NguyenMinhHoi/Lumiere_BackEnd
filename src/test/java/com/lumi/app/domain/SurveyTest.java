@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import static com.lumi.app.domain.CustomerTestSamples.*;
 import static com.lumi.app.domain.SurveyTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,17 +20,5 @@ class SurveyTest {
 
         survey2 = getSurveySample2();
         assertThat(survey1).isNotEqualTo(survey2);
-    }
-
-    @Test
-    void customerTest() {
-        Survey survey = getSurveyRandomSampleGenerator();
-        Customer customerBack = getCustomerRandomSampleGenerator();
-
-        survey.setCustomer(customerBack);
-        assertThat(survey.getCustomer()).isEqualTo(customerBack);
-
-        survey.customer(null);
-        assertThat(survey.getCustomer()).isNull();
     }
 }

@@ -57,9 +57,6 @@ public class TagAsserts {
      * @param actual the actual entity
      */
     public static void assertTagUpdatableRelationshipsEquals(Tag expected, Tag actual) {
-        assertThat(actual)
-            .as("Verify Tag relationships")
-            .satisfies(a -> assertThat(a.getTickets()).as("check tickets").isEqualTo(expected.getTickets()))
-            .satisfies(a -> assertThat(a.getArticles()).as("check articles").isEqualTo(expected.getArticles()));
+        // empty method
     }
 }

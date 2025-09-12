@@ -29,6 +29,9 @@ public class Orders implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "customer_id")
+    private Long customerId;
+
     @NotNull
     @Size(min = 6, max = 32)
     @Column(name = "code", length = 32, nullable = false, unique = true)
@@ -74,9 +77,6 @@ public class Orders implements Serializable {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -90,6 +90,19 @@ public class Orders implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCustomerId() {
+        return this.customerId;
+    }
+
+    public Orders customerId(Long customerId) {
+        this.setCustomerId(customerId);
+        return this;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public String getCode() {
@@ -209,19 +222,6 @@ public class Orders implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Orders customer(Customer customer) {
-        this.setCustomer(customer);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -246,6 +246,7 @@ public class Orders implements Serializable {
     public String toString() {
         return "Orders{" +
             "id=" + getId() +
+            ", customerId=" + getCustomerId() +
             ", code='" + getCode() + "'" +
             ", status='" + getStatus() + "'" +
             ", paymentStatus='" + getPaymentStatus() + "'" +

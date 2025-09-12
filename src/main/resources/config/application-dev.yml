@@ -114,3 +114,8 @@ jhipster:
 # ===================================================================
 
 # application:
+app:
+  upload:
+    temp-dir: ./uploads/tmp
+    final-dir: ./uploads
+    max-chunk-size: 5MB

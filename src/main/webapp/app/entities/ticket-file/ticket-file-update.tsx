@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getTickets } from 'app/entities/ticket/ticket.reducer';
-import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { StorageType } from 'app/shared/model/enumerations/storage-type.model';
 import { FileStatus } from 'app/shared/model/enumerations/file-status.model';
 import { createEntity, getEntity, reset, updateEntity } from './ticket-file.reducer';
@@ -21,8 +19,6 @@ export const TicketFileUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const tickets = useAppSelector(state => state.ticket.entities);
-  const users = useAppSelector(state => state.userManagement.users);
   const ticketFileEntity = useAppSelector(state => state.ticketFile.entity);
   const loading = useAppSelector(state => state.ticketFile.loading);
   const updating = useAppSelector(state => state.ticketFile.updating);
@@ -40,9 +36,6 @@ export const TicketFileUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getTickets({}));
-    dispatch(getUsers({}));
   }, []);
 
   useEffect(() => {
@@ -55,6 +48,12 @@ export const TicketFileUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.ticketId !== undefined && typeof values.ticketId !== 'number') {
+      values.ticketId = Number(values.ticketId);
+    }
+    if (values.uploaderId !== undefined && typeof values.uploaderId !== 'number') {
+      values.uploaderId = Number(values.uploaderId);
+    }
     if (values.capacity !== undefined && typeof values.capacity !== 'number') {
       values.capacity = Number(values.capacity);
     }
@@ -63,8 +62,6 @@ export const TicketFileUpdate = () => {
     const entity = {
       ...ticketFileEntity,
       ...values,
-      ticket: tickets.find(it => it.id.toString() === values.ticket?.toString()),
-      uploader: users.find(it => it.id.toString() === values.uploader?.toString()),
     };
 
     if (isNew) {
@@ -84,8 +81,6 @@ export const TicketFileUpdate = () => {
           status: 'ACTIVE',
           ...ticketFileEntity,
           uploadedAt: convertDateTimeFromServer(ticketFileEntity.uploadedAt),
-          ticket: ticketFileEntity?.ticket?.id,
-          uploader: ticketFileEntity?.uploader?.id,
         };
 
   return (
@@ -113,6 +108,24 @@ export const TicketFileUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.ticketFile.ticketId')}
+                id="ticket-file-ticketId"
+                name="ticketId"
+                data-cy="ticketId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('lumiApp.ticketFile.uploaderId')}
+                id="ticket-file-uploaderId"
+                name="uploaderId"
+                data-cy="uploaderId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.ticketFile.fileName')}
                 id="ticket-file-fileName"
@@ -223,38 +236,6 @@ export const TicketFileUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
-              <ValidatedField
-                id="ticket-file-ticket"
-                name="ticket"
-                data-cy="ticket"
-                label={translate('lumiApp.ticketFile.ticket')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {tickets
-                  ? tickets.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="ticket-file-uploader"
-                name="uploader"
-                data-cy="uploader"
-                label={translate('lumiApp.ticketFile.uploader')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {users
-                  ? users.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.login}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/ticket-file" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

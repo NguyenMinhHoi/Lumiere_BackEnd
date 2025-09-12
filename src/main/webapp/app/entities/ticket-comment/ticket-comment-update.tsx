@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
-import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
+import { Translate, ValidatedField, ValidatedForm, isNumber, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getTickets } from 'app/entities/ticket/ticket.reducer';
-import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { Visibility } from 'app/shared/model/enumerations/visibility.model';
 import { createEntity, getEntity, reset, updateEntity } from './ticket-comment.reducer';
 
@@ -20,8 +18,6 @@ export const TicketCommentUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const tickets = useAppSelector(state => state.ticket.entities);
-  const users = useAppSelector(state => state.userManagement.users);
   const ticketCommentEntity = useAppSelector(state => state.ticketComment.entity);
   const loading = useAppSelector(state => state.ticketComment.loading);
   const updating = useAppSelector(state => state.ticketComment.updating);
@@ -38,9 +34,6 @@ export const TicketCommentUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getTickets({}));
-    dispatch(getUsers({}));
   }, []);
 
   useEffect(() => {
@@ -53,13 +46,17 @@ export const TicketCommentUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.ticketId !== undefined && typeof values.ticketId !== 'number') {
+      values.ticketId = Number(values.ticketId);
+    }
+    if (values.authorId !== undefined && typeof values.authorId !== 'number') {
+      values.authorId = Number(values.authorId);
+    }
     values.createdAt = convertDateTimeToServer(values.createdAt);
 
     const entity = {
       ...ticketCommentEntity,
       ...values,
-      ticket: tickets.find(it => it.id.toString() === values.ticket?.toString()),
-      author: users.find(it => it.id.toString() === values.author?.toString()),
     };
 
     if (isNew) {
@@ -78,8 +75,6 @@ export const TicketCommentUpdate = () => {
           visibility: 'PUBLIC',
           ...ticketCommentEntity,
           createdAt: convertDateTimeFromServer(ticketCommentEntity.createdAt),
-          ticket: ticketCommentEntity?.ticket?.id,
-          author: ticketCommentEntity?.author?.id,
         };
 
   return (
@@ -107,6 +102,28 @@ export const TicketCommentUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.ticketComment.ticketId')}
+                id="ticket-comment-ticketId"
+                name="ticketId"
+                data-cy="ticketId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('lumiApp.ticketComment.authorId')}
+                id="ticket-comment-authorId"
+                name="authorId"
+                data-cy="authorId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
               <ValidatedField
                 label={translate('lumiApp.ticketComment.body')}
                 id="ticket-comment-body"
@@ -141,38 +158,6 @@ export const TicketCommentUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
-              <ValidatedField
-                id="ticket-comment-ticket"
-                name="ticket"
-                data-cy="ticket"
-                label={translate('lumiApp.ticketComment.ticket')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {tickets
-                  ? tickets.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="ticket-comment-author"
-                name="author"
-                data-cy="author"
-                label={translate('lumiApp.ticketComment.author')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {users
-                  ? users.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.login}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/ticket-comment" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

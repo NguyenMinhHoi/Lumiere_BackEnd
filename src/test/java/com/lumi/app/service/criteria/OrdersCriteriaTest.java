@@ -76,6 +76,7 @@ class OrdersCriteriaTest {
 
     private static void setAllFilters(OrdersCriteria ordersCriteria) {
         ordersCriteria.id();
+        ordersCriteria.customerId();
         ordersCriteria.code();
         ordersCriteria.status();
         ordersCriteria.paymentStatus();
@@ -85,7 +86,6 @@ class OrdersCriteriaTest {
         ordersCriteria.note();
         ordersCriteria.placedAt();
         ordersCriteria.updatedAt();
-        ordersCriteria.customerId();
         ordersCriteria.distinct();
     }
 
@@ -93,6 +93,7 @@ class OrdersCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getCustomerId()) &&
                 condition.apply(criteria.getCode()) &&
                 condition.apply(criteria.getStatus()) &&
                 condition.apply(criteria.getPaymentStatus()) &&
@@ -102,7 +103,6 @@ class OrdersCriteriaTest {
                 condition.apply(criteria.getNote()) &&
                 condition.apply(criteria.getPlacedAt()) &&
                 condition.apply(criteria.getUpdatedAt()) &&
-                condition.apply(criteria.getCustomerId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -112,6 +112,7 @@ class OrdersCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getCustomerId(), copy.getCustomerId()) &&
                 condition.apply(criteria.getCode(), copy.getCode()) &&
                 condition.apply(criteria.getStatus(), copy.getStatus()) &&
                 condition.apply(criteria.getPaymentStatus(), copy.getPaymentStatus()) &&
@@ -121,7 +122,6 @@ class OrdersCriteriaTest {
                 condition.apply(criteria.getNote(), copy.getNote()) &&
                 condition.apply(criteria.getPlacedAt(), copy.getPlacedAt()) &&
                 condition.apply(criteria.getUpdatedAt(), copy.getUpdatedAt()) &&
-                condition.apply(criteria.getCustomerId(), copy.getCustomerId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

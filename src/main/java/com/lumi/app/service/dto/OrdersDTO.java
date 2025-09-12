@@ -17,6 +17,8 @@ public class OrdersDTO implements Serializable {
 
     private Long id;
 
+    private Long customerId;
+
     @NotNull
     @Size(min = 6, max = 32)
     private String code;
@@ -44,14 +46,20 @@ public class OrdersDTO implements Serializable {
 
     private Instant updatedAt;
 
-    private CustomerDTO customer;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public String getCode() {
@@ -126,14 +134,6 @@ public class OrdersDTO implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public CustomerDTO getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerDTO customer) {
-        this.customer = customer;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -160,6 +160,7 @@ public class OrdersDTO implements Serializable {
     public String toString() {
         return "OrdersDTO{" +
             "id=" + getId() +
+            ", customerId=" + getCustomerId() +
             ", code='" + getCode() + "'" +
             ", status='" + getStatus() + "'" +
             ", paymentStatus='" + getPaymentStatus() + "'" +
@@ -169,7 +170,6 @@ public class OrdersDTO implements Serializable {
             ", note='" + getNote() + "'" +
             ", placedAt='" + getPlacedAt() + "'" +
             ", updatedAt='" + getUpdatedAt() + "'" +
-            ", customer=" + getCustomer() +
             "}";
     }
 }

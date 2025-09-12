@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -25,6 +24,12 @@ public class Attachment implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "ticket_id")
+    private Long ticketId;
+
+    @Column(name = "comment_id")
+    private Long commentId;
 
     @NotNull
     @Size(max = 200)
@@ -51,14 +56,6 @@ public class Attachment implements Serializable {
     @Column(name = "uploaded_at", nullable = false)
     private Instant uploadedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer", "assignee", "slaPlan", "order", "tags" }, allowSetters = true)
-    private Ticket ticket;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "ticket", "author" }, allowSetters = true)
-    private TicketComment comment;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -72,6 +69,32 @@ public class Attachment implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTicketId() {
+        return this.ticketId;
+    }
+
+    public Attachment ticketId(Long ticketId) {
+        this.setTicketId(ticketId);
+        return this;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getCommentId() {
+        return this.commentId;
+    }
+
+    public Attachment commentId(Long commentId) {
+        this.setCommentId(commentId);
+        return this;
+    }
+
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
     }
 
     public String getName() {
@@ -139,32 +162,6 @@ public class Attachment implements Serializable {
         this.uploadedAt = uploadedAt;
     }
 
-    public Ticket getTicket() {
-        return this.ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public Attachment ticket(Ticket ticket) {
-        this.setTicket(ticket);
-        return this;
-    }
-
-    public TicketComment getComment() {
-        return this.comment;
-    }
-
-    public void setComment(TicketComment ticketComment) {
-        this.comment = ticketComment;
-    }
-
-    public Attachment comment(TicketComment ticketComment) {
-        this.setComment(ticketComment);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -189,6 +186,8 @@ public class Attachment implements Serializable {
     public String toString() {
         return "Attachment{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", commentId=" + getCommentId() +
             ", name='" + getName() + "'" +
             ", url='" + getUrl() + "'" +
             ", contentType='" + getContentType() + "'" +

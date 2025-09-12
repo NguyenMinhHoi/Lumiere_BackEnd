@@ -177,6 +177,14 @@ export const TicketComment = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.ticketComment.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('ticketId')}>
+                  <Translate contentKey="lumiApp.ticketComment.ticketId">Ticket Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('ticketId')} />
+                </th>
+                <th className="hand" onClick={sort('authorId')}>
+                  <Translate contentKey="lumiApp.ticketComment.authorId">Author Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('authorId')} />
+                </th>
                 <th className="hand" onClick={sort('body')}>
                   <Translate contentKey="lumiApp.ticketComment.body">Body</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('body')} />
@@ -189,12 +197,6 @@ export const TicketComment = () => {
                   <Translate contentKey="lumiApp.ticketComment.createdAt">Created At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('createdAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticketComment.ticket">Ticket</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticketComment.author">Author</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -206,6 +208,8 @@ export const TicketComment = () => {
                       {ticketComment.id}
                     </Button>
                   </td>
+                  <td>{ticketComment.ticketId}</td>
+                  <td>{ticketComment.authorId}</td>
                   <td>{ticketComment.body}</td>
                   <td>
                     <Translate contentKey={`lumiApp.Visibility.${ticketComment.visibility}`} />
@@ -213,8 +217,6 @@ export const TicketComment = () => {
                   <td>
                     {ticketComment.createdAt ? <TextFormat type="date" value={ticketComment.createdAt} format={APP_DATE_FORMAT} /> : null}
                   </td>
-                  <td>{ticketComment.ticket ? <Link to={`/ticket/${ticketComment.ticket.id}`}>{ticketComment.ticket.code}</Link> : ''}</td>
-                  <td>{ticketComment.author ? ticketComment.author.login : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/ticket-comment/${ticketComment.id}`} color="info" size="sm" data-cy="entityDetailsButton">

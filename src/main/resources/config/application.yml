@@ -137,6 +137,9 @@ spring:
     jpa:
       repositories:
         bootstrap-mode: deferred
+    elasticsearch:
+      repositories:
+        enabled: false
   jpa:
     open-in-view: false
     properties:
@@ -188,6 +191,11 @@ spring:
   output:
     ansi:
       console-available: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2GB
+      max-request-size: 2GB
 
 server:
   servlet:

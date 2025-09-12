@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -27,6 +26,14 @@ public class OrderItem implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "order_id", nullable = false)
+    private Long orderId;
+
+    @NotNull
+    @Column(name = "variant_id", nullable = false)
+    private Long variantId;
+
+    @NotNull
     @Min(value = 1L)
     @Column(name = "quantity", nullable = false)
     private Long quantity;
@@ -51,14 +58,6 @@ public class OrderItem implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String skuSnapshot;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
-    private Orders order;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "product" }, allowSetters = true)
-    private ProductVariant variant;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -72,6 +71,32 @@ public class OrderItem implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getOrderId() {
+        return this.orderId;
+    }
+
+    public OrderItem orderId(Long orderId) {
+        this.setOrderId(orderId);
+        return this;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public Long getVariantId() {
+        return this.variantId;
+    }
+
+    public OrderItem variantId(Long variantId) {
+        this.setVariantId(variantId);
+        return this;
+    }
+
+    public void setVariantId(Long variantId) {
+        this.variantId = variantId;
     }
 
     public Long getQuantity() {
@@ -139,32 +164,6 @@ public class OrderItem implements Serializable {
         this.skuSnapshot = skuSnapshot;
     }
 
-    public Orders getOrder() {
-        return this.order;
-    }
-
-    public void setOrder(Orders orders) {
-        this.order = orders;
-    }
-
-    public OrderItem order(Orders orders) {
-        this.setOrder(orders);
-        return this;
-    }
-
-    public ProductVariant getVariant() {
-        return this.variant;
-    }
-
-    public void setVariant(ProductVariant productVariant) {
-        this.variant = productVariant;
-    }
-
-    public OrderItem variant(ProductVariant productVariant) {
-        this.setVariant(productVariant);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -189,6 +188,8 @@ public class OrderItem implements Serializable {
     public String toString() {
         return "OrderItem{" +
             "id=" + getId() +
+            ", orderId=" + getOrderId() +
+            ", variantId=" + getVariantId() +
             ", quantity=" + getQuantity() +
             ", unitPrice=" + getUnitPrice() +
             ", totalPrice=" + getTotalPrice() +

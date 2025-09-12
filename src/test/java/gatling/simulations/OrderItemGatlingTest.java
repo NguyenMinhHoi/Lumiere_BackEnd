@@ -68,7 +68,9 @@ public class OrderItemGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"quantity\": 0" +
+                                "\"orderId\": 0" +
+                                ", \"variantId\": 0" +
+                                ", \"quantity\": 0" +
                                 ", \"unitPrice\": 0" +
                                 ", \"totalPrice\": 0" +
                                 ", \"nameSnapshot\": \"SAMPLE_TEXT\"" +

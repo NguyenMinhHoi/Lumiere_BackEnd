@@ -51,7 +51,7 @@ class AttachmentSearchRepositoryInternalImpl implements AttachmentSearchReposito
 
     @Override
     public void index(Attachment entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

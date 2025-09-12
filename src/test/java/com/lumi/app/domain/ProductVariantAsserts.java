@@ -48,6 +48,7 @@ public class ProductVariantAsserts {
     public static void assertProductVariantUpdatableFieldsEquals(ProductVariant expected, ProductVariant actual) {
         assertThat(actual)
             .as("Verify ProductVariant relevant properties")
+            .satisfies(a -> assertThat(a.getProductId()).as("check productId").isEqualTo(expected.getProductId()))
             .satisfies(a -> assertThat(a.getSku()).as("check sku").isEqualTo(expected.getSku()))
             .satisfies(a -> assertThat(a.getName()).as("check name").isEqualTo(expected.getName()))
             .satisfies(a -> assertThat(a.getPrice()).as("check price").usingComparator(bigDecimalCompareTo).isEqualTo(expected.getPrice()))
@@ -75,8 +76,6 @@ public class ProductVariantAsserts {
      * @param actual the actual entity
      */
     public static void assertProductVariantUpdatableRelationshipsEquals(ProductVariant expected, ProductVariant actual) {
-        assertThat(actual)
-            .as("Verify ProductVariant relationships")
-            .satisfies(a -> assertThat(a.getProduct()).as("check product").isEqualTo(expected.getProduct()));
+        // empty method
     }
 }

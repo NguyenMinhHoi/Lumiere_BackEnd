@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
-import { IProduct } from 'app/shared/model/product.model';
 
 export interface IProductVariant {
   id?: number;
+  productId?: number;
   sku?: string;
   name?: string;
   price?: number;
@@ -16,7 +16,6 @@ export interface IProductVariant {
   isDefault?: boolean;
   createdAt?: dayjs.Dayjs;
   updatedAt?: dayjs.Dayjs | null;
-  product?: IProduct | null;
 }
 
 export const defaultValue: Readonly<IProductVariant> = {

@@ -15,13 +15,11 @@ import com.lumi.app.domain.Survey;
 import com.lumi.app.domain.enumeration.SurveyType;
 import com.lumi.app.repository.SurveyRepository;
 import com.lumi.app.repository.search.SurveySearchRepository;
-import com.lumi.app.service.SurveyService;
 import com.lumi.app.service.dto.SurveyDTO;
 import com.lumi.app.service.mapper.SurveyMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -30,13 +28,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -47,10 +40,12 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link SurveyResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class SurveyResourceIT {
+
+    private static final Long DEFAULT_CUSTOMER_ID = 1L;
+    private static final Long UPDATED_CUSTOMER_ID = 2L;
 
     private static final SurveyType DEFAULT_SURVEY_TYPE = SurveyType.CSAT;
     private static final SurveyType UPDATED_SURVEY_TYPE = SurveyType.NPS;
@@ -80,14 +75,8 @@ class SurveyResourceIT {
     @Autowired
     private SurveyRepository surveyRepository;
 
-    @Mock
-    private SurveyRepository surveyRepositoryMock;
-
     @Autowired
     private SurveyMapper surveyMapper;
-
-    @Mock
-    private SurveyService surveyServiceMock;
 
     @Autowired
     private SurveySearchRepository surveySearchRepository;
@@ -110,6 +99,7 @@ class SurveyResourceIT {
      */
     public static Survey createEntity() {
         return new Survey()
+            .customerId(DEFAULT_CUSTOMER_ID)
             .surveyType(DEFAULT_SURVEY_TYPE)
             .title(DEFAULT_TITLE)
             .sentAt(DEFAULT_SENT_AT)
@@ -125,6 +115,7 @@ class SurveyResourceIT {
      */
     public static Survey createUpdatedEntity() {
         return new Survey()
+            .customerId(UPDATED_CUSTOMER_ID)
             .surveyType(UPDATED_SURVEY_TYPE)
             .title(UPDATED_TITLE)
             .sentAt(UPDATED_SENT_AT)
@@ -274,28 +265,12 @@ class SurveyResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(survey.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
             .andExpect(jsonPath("$.[*].surveyType").value(hasItem(DEFAULT_SURVEY_TYPE.toString())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].sentAt").value(hasItem(DEFAULT_SENT_AT.toString())))
             .andExpect(jsonPath("$.[*].dueAt").value(hasItem(DEFAULT_DUE_AT.toString())))
             .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE)));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSurveysWithEagerRelationshipsIsEnabled() throws Exception {
-        when(surveyServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSurveyMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(surveyServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSurveysWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(surveyServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSurveyMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(surveyRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -310,6 +285,7 @@ class SurveyResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(survey.getId().intValue()))
+            .andExpect(jsonPath("$.customerId").value(DEFAULT_CUSTOMER_ID.intValue()))
             .andExpect(jsonPath("$.surveyType").value(DEFAULT_SURVEY_TYPE.toString()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
             .andExpect(jsonPath("$.sentAt").value(DEFAULT_SENT_AT.toString()))
@@ -339,6 +315,7 @@ class SurveyResourceIT {
         // Disconnect from session so that the updates on updatedSurvey are not directly saved in db
         em.detach(updatedSurvey);
         updatedSurvey
+            .customerId(UPDATED_CUSTOMER_ID)
             .surveyType(UPDATED_SURVEY_TYPE)
             .title(UPDATED_TITLE)
             .sentAt(UPDATED_SENT_AT)
@@ -449,7 +426,7 @@ class SurveyResourceIT {
         Survey partialUpdatedSurvey = new Survey();
         partialUpdatedSurvey.setId(survey.getId());
 
-        partialUpdatedSurvey.title(UPDATED_TITLE).dueAt(UPDATED_DUE_AT);
+        partialUpdatedSurvey.surveyType(UPDATED_SURVEY_TYPE).sentAt(UPDATED_SENT_AT).isActive(UPDATED_IS_ACTIVE);
 
         restSurveyMockMvc
             .perform(
@@ -478,6 +455,7 @@ class SurveyResourceIT {
         partialUpdatedSurvey.setId(survey.getId());
 
         partialUpdatedSurvey
+            .customerId(UPDATED_CUSTOMER_ID)
             .surveyType(UPDATED_SURVEY_TYPE)
             .title(UPDATED_TITLE)
             .sentAt(UPDATED_SENT_AT)
@@ -605,6 +583,7 @@ class SurveyResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(survey.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
             .andExpect(jsonPath("$.[*].surveyType").value(hasItem(DEFAULT_SURVEY_TYPE.toString())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].sentAt").value(hasItem(DEFAULT_SENT_AT.toString())))

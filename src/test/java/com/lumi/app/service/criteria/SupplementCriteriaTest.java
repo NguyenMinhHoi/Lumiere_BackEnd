@@ -76,6 +76,8 @@ class SupplementCriteriaTest {
 
     private static void setAllFilters(SupplementCriteria supplementCriteria) {
         supplementCriteria.id();
+        supplementCriteria.productId();
+        supplementCriteria.supplierId();
         supplementCriteria.supplyPrice();
         supplementCriteria.currency();
         supplementCriteria.leadTimeDays();
@@ -83,8 +85,6 @@ class SupplementCriteriaTest {
         supplementCriteria.isPreferred();
         supplementCriteria.createdAt();
         supplementCriteria.updatedAt();
-        supplementCriteria.productId();
-        supplementCriteria.supplierId();
         supplementCriteria.distinct();
     }
 
@@ -92,6 +92,8 @@ class SupplementCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getProductId()) &&
+                condition.apply(criteria.getSupplierId()) &&
                 condition.apply(criteria.getSupplyPrice()) &&
                 condition.apply(criteria.getCurrency()) &&
                 condition.apply(criteria.getLeadTimeDays()) &&
@@ -99,8 +101,6 @@ class SupplementCriteriaTest {
                 condition.apply(criteria.getIsPreferred()) &&
                 condition.apply(criteria.getCreatedAt()) &&
                 condition.apply(criteria.getUpdatedAt()) &&
-                condition.apply(criteria.getProductId()) &&
-                condition.apply(criteria.getSupplierId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -110,6 +110,8 @@ class SupplementCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getProductId(), copy.getProductId()) &&
+                condition.apply(criteria.getSupplierId(), copy.getSupplierId()) &&
                 condition.apply(criteria.getSupplyPrice(), copy.getSupplyPrice()) &&
                 condition.apply(criteria.getCurrency(), copy.getCurrency()) &&
                 condition.apply(criteria.getLeadTimeDays(), copy.getLeadTimeDays()) &&
@@ -117,8 +119,6 @@ class SupplementCriteriaTest {
                 condition.apply(criteria.getIsPreferred(), copy.getIsPreferred()) &&
                 condition.apply(criteria.getCreatedAt(), copy.getCreatedAt()) &&
                 condition.apply(criteria.getUpdatedAt(), copy.getUpdatedAt()) &&
-                condition.apply(criteria.getProductId(), copy.getProductId()) &&
-                condition.apply(criteria.getSupplierId(), copy.getSupplierId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

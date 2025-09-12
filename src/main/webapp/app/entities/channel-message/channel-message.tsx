@@ -177,6 +177,14 @@ export const ChannelMessage = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.channelMessage.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('ticketId')}>
+                  <Translate contentKey="lumiApp.channelMessage.ticketId">Ticket Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('ticketId')} />
+                </th>
+                <th className="hand" onClick={sort('authorId')}>
+                  <Translate contentKey="lumiApp.channelMessage.authorId">Author Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('authorId')} />
+                </th>
                 <th className="hand" onClick={sort('direction')}>
                   <Translate contentKey="lumiApp.channelMessage.direction">Direction</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('direction')} />
@@ -193,12 +201,6 @@ export const ChannelMessage = () => {
                   <Translate contentKey="lumiApp.channelMessage.externalMessageId">External Message Id</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('externalMessageId')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.channelMessage.ticket">Ticket</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.channelMessage.author">Author</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -210,6 +212,8 @@ export const ChannelMessage = () => {
                       {channelMessage.id}
                     </Button>
                   </td>
+                  <td>{channelMessage.ticketId}</td>
+                  <td>{channelMessage.authorId}</td>
                   <td>
                     <Translate contentKey={`lumiApp.MessageDirection.${channelMessage.direction}`} />
                   </td>
@@ -218,10 +222,6 @@ export const ChannelMessage = () => {
                     {channelMessage.sentAt ? <TextFormat type="date" value={channelMessage.sentAt} format={APP_DATE_FORMAT} /> : null}
                   </td>
                   <td>{channelMessage.externalMessageId}</td>
-                  <td>
-                    {channelMessage.ticket ? <Link to={`/ticket/${channelMessage.ticket.id}`}>{channelMessage.ticket.code}</Link> : ''}
-                  </td>
-                  <td>{channelMessage.author ? channelMessage.author.login : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/channel-message/${channelMessage.id}`} color="info" size="sm" data-cy="entityDetailsButton">

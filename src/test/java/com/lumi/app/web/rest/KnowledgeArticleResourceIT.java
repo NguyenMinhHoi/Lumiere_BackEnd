@@ -12,17 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
 import com.lumi.app.domain.KnowledgeArticle;
-import com.lumi.app.domain.KnowledgeCategory;
-import com.lumi.app.domain.Tag;
 import com.lumi.app.repository.KnowledgeArticleRepository;
 import com.lumi.app.repository.search.KnowledgeArticleSearchRepository;
-import com.lumi.app.service.KnowledgeArticleService;
 import com.lumi.app.service.dto.KnowledgeArticleDTO;
 import com.lumi.app.service.mapper.KnowledgeArticleMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -31,13 +27,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -48,10 +39,13 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link KnowledgeArticleResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class KnowledgeArticleResourceIT {
+
+    private static final Long DEFAULT_CATEGORY_ID = 1L;
+    private static final Long UPDATED_CATEGORY_ID = 2L;
+    private static final Long SMALLER_CATEGORY_ID = 1L - 1L;
 
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
@@ -82,14 +76,8 @@ class KnowledgeArticleResourceIT {
     @Autowired
     private KnowledgeArticleRepository knowledgeArticleRepository;
 
-    @Mock
-    private KnowledgeArticleRepository knowledgeArticleRepositoryMock;
-
     @Autowired
     private KnowledgeArticleMapper knowledgeArticleMapper;
-
-    @Mock
-    private KnowledgeArticleService knowledgeArticleServiceMock;
 
     @Autowired
     private KnowledgeArticleSearchRepository knowledgeArticleSearchRepository;
@@ -112,6 +100,7 @@ class KnowledgeArticleResourceIT {
      */
     public static KnowledgeArticle createEntity() {
         return new KnowledgeArticle()
+            .categoryId(DEFAULT_CATEGORY_ID)
             .title(DEFAULT_TITLE)
             .content(DEFAULT_CONTENT)
             .published(DEFAULT_PUBLISHED)
@@ -127,6 +116,7 @@ class KnowledgeArticleResourceIT {
      */
     public static KnowledgeArticle createUpdatedEntity() {
         return new KnowledgeArticle()
+            .categoryId(UPDATED_CATEGORY_ID)
             .title(UPDATED_TITLE)
             .content(UPDATED_CONTENT)
             .published(UPDATED_PUBLISHED)
@@ -276,28 +266,12 @@ class KnowledgeArticleResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(knowledgeArticle.getId().intValue())))
+            .andExpect(jsonPath("$.[*].categoryId").value(hasItem(DEFAULT_CATEGORY_ID.intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
             .andExpect(jsonPath("$.[*].published").value(hasItem(DEFAULT_PUBLISHED)))
             .andExpect(jsonPath("$.[*].views").value(hasItem(DEFAULT_VIEWS.intValue())))
             .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllKnowledgeArticlesWithEagerRelationshipsIsEnabled() throws Exception {
-        when(knowledgeArticleServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restKnowledgeArticleMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(knowledgeArticleServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllKnowledgeArticlesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(knowledgeArticleServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restKnowledgeArticleMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(knowledgeArticleRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -312,6 +286,7 @@ class KnowledgeArticleResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(knowledgeArticle.getId().intValue()))
+            .andExpect(jsonPath("$.categoryId").value(DEFAULT_CATEGORY_ID.intValue()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
             .andExpect(jsonPath("$.content").value(DEFAULT_CONTENT))
             .andExpect(jsonPath("$.published").value(DEFAULT_PUBLISHED))
@@ -332,6 +307,85 @@ class KnowledgeArticleResourceIT {
         defaultKnowledgeArticleFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultKnowledgeArticleFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllKnowledgeArticlesByCategoryIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedKnowledgeArticle = knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
+
+        // Get all the knowledgeArticleList where categoryId equals to
+        defaultKnowledgeArticleFiltering("categoryId.equals=" + DEFAULT_CATEGORY_ID, "categoryId.equals=" + UPDATED_CATEGORY_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllKnowledgeArticlesByCategoryIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedKnowledgeArticle = knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
+
+        // Get all the knowledgeArticleList where categoryId in
+        defaultKnowledgeArticleFiltering(
+            "categoryId.in=" + DEFAULT_CATEGORY_ID + "," + UPDATED_CATEGORY_ID,
+            "categoryId.in=" + UPDATED_CATEGORY_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllKnowledgeArticlesByCategoryIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedKnowledgeArticle = knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
+
+        // Get all the knowledgeArticleList where categoryId is not null
+        defaultKnowledgeArticleFiltering("categoryId.specified=true", "categoryId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllKnowledgeArticlesByCategoryIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedKnowledgeArticle = knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
+
+        // Get all the knowledgeArticleList where categoryId is greater than or equal to
+        defaultKnowledgeArticleFiltering(
+            "categoryId.greaterThanOrEqual=" + DEFAULT_CATEGORY_ID,
+            "categoryId.greaterThanOrEqual=" + UPDATED_CATEGORY_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllKnowledgeArticlesByCategoryIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedKnowledgeArticle = knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
+
+        // Get all the knowledgeArticleList where categoryId is less than or equal to
+        defaultKnowledgeArticleFiltering(
+            "categoryId.lessThanOrEqual=" + DEFAULT_CATEGORY_ID,
+            "categoryId.lessThanOrEqual=" + SMALLER_CATEGORY_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllKnowledgeArticlesByCategoryIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedKnowledgeArticle = knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
+
+        // Get all the knowledgeArticleList where categoryId is less than
+        defaultKnowledgeArticleFiltering("categoryId.lessThan=" + UPDATED_CATEGORY_ID, "categoryId.lessThan=" + DEFAULT_CATEGORY_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllKnowledgeArticlesByCategoryIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedKnowledgeArticle = knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
+
+        // Get all the knowledgeArticleList where categoryId is greater than
+        defaultKnowledgeArticleFiltering("categoryId.greaterThan=" + SMALLER_CATEGORY_ID, "categoryId.greaterThan=" + DEFAULT_CATEGORY_ID);
     }
 
     @Test
@@ -520,50 +574,6 @@ class KnowledgeArticleResourceIT {
         defaultKnowledgeArticleFiltering("updatedAt.specified=true", "updatedAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllKnowledgeArticlesByCategoryIsEqualToSomething() throws Exception {
-        KnowledgeCategory category;
-        if (TestUtil.findAll(em, KnowledgeCategory.class).isEmpty()) {
-            knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
-            category = KnowledgeCategoryResourceIT.createEntity();
-        } else {
-            category = TestUtil.findAll(em, KnowledgeCategory.class).get(0);
-        }
-        em.persist(category);
-        em.flush();
-        knowledgeArticle.setCategory(category);
-        knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
-        Long categoryId = category.getId();
-        // Get all the knowledgeArticleList where category equals to categoryId
-        defaultKnowledgeArticleShouldBeFound("categoryId.equals=" + categoryId);
-
-        // Get all the knowledgeArticleList where category equals to (categoryId + 1)
-        defaultKnowledgeArticleShouldNotBeFound("categoryId.equals=" + (categoryId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllKnowledgeArticlesByTagsIsEqualToSomething() throws Exception {
-        Tag tags;
-        if (TestUtil.findAll(em, Tag.class).isEmpty()) {
-            knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
-            tags = TagResourceIT.createEntity();
-        } else {
-            tags = TestUtil.findAll(em, Tag.class).get(0);
-        }
-        em.persist(tags);
-        em.flush();
-        knowledgeArticle.addTags(tags);
-        knowledgeArticleRepository.saveAndFlush(knowledgeArticle);
-        Long tagsId = tags.getId();
-        // Get all the knowledgeArticleList where tags equals to tagsId
-        defaultKnowledgeArticleShouldBeFound("tagsId.equals=" + tagsId);
-
-        // Get all the knowledgeArticleList where tags equals to (tagsId + 1)
-        defaultKnowledgeArticleShouldNotBeFound("tagsId.equals=" + (tagsId + 1));
-    }
-
     private void defaultKnowledgeArticleFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultKnowledgeArticleShouldBeFound(shouldBeFound);
         defaultKnowledgeArticleShouldNotBeFound(shouldNotBeFound);
@@ -578,6 +588,7 @@ class KnowledgeArticleResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(knowledgeArticle.getId().intValue())))
+            .andExpect(jsonPath("$.[*].categoryId").value(hasItem(DEFAULT_CATEGORY_ID.intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
             .andExpect(jsonPath("$.[*].published").value(hasItem(DEFAULT_PUBLISHED)))
@@ -633,6 +644,7 @@ class KnowledgeArticleResourceIT {
         // Disconnect from session so that the updates on updatedKnowledgeArticle are not directly saved in db
         em.detach(updatedKnowledgeArticle);
         updatedKnowledgeArticle
+            .categoryId(UPDATED_CATEGORY_ID)
             .title(UPDATED_TITLE)
             .content(UPDATED_CONTENT)
             .published(UPDATED_PUBLISHED)
@@ -747,7 +759,7 @@ class KnowledgeArticleResourceIT {
         KnowledgeArticle partialUpdatedKnowledgeArticle = new KnowledgeArticle();
         partialUpdatedKnowledgeArticle.setId(knowledgeArticle.getId());
 
-        partialUpdatedKnowledgeArticle.content(UPDATED_CONTENT).views(UPDATED_VIEWS).updatedAt(UPDATED_UPDATED_AT);
+        partialUpdatedKnowledgeArticle.title(UPDATED_TITLE).published(UPDATED_PUBLISHED).views(UPDATED_VIEWS).updatedAt(UPDATED_UPDATED_AT);
 
         restKnowledgeArticleMockMvc
             .perform(
@@ -779,6 +791,7 @@ class KnowledgeArticleResourceIT {
         partialUpdatedKnowledgeArticle.setId(knowledgeArticle.getId());
 
         partialUpdatedKnowledgeArticle
+            .categoryId(UPDATED_CATEGORY_ID)
             .title(UPDATED_TITLE)
             .content(UPDATED_CONTENT)
             .published(UPDATED_PUBLISHED)
@@ -909,6 +922,7 @@ class KnowledgeArticleResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(knowledgeArticle.getId().intValue())))
+            .andExpect(jsonPath("$.[*].categoryId").value(hasItem(DEFAULT_CATEGORY_ID.intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT.toString())))
             .andExpect(jsonPath("$.[*].published").value(hasItem(DEFAULT_PUBLISHED)))

@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getProducts } from 'app/entities/product/product.reducer';
-import { getEntities as getSuppliers } from 'app/entities/supplier/supplier.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './supplement.reducer';
 
 export const SupplementUpdate = () => {
@@ -19,8 +17,6 @@ export const SupplementUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const products = useAppSelector(state => state.product.entities);
-  const suppliers = useAppSelector(state => state.supplier.entities);
   const supplementEntity = useAppSelector(state => state.supplement.entity);
   const loading = useAppSelector(state => state.supplement.loading);
   const updating = useAppSelector(state => state.supplement.updating);
@@ -36,9 +32,6 @@ export const SupplementUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getProducts({}));
-    dispatch(getSuppliers({}));
   }, []);
 
   useEffect(() => {
@@ -50,6 +43,12 @@ export const SupplementUpdate = () => {
   const saveEntity = values => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
+    }
+    if (values.productId !== undefined && typeof values.productId !== 'number') {
+      values.productId = Number(values.productId);
+    }
+    if (values.supplierId !== undefined && typeof values.supplierId !== 'number') {
+      values.supplierId = Number(values.supplierId);
     }
     if (values.supplyPrice !== undefined && typeof values.supplyPrice !== 'number') {
       values.supplyPrice = Number(values.supplyPrice);
@@ -66,8 +65,6 @@ export const SupplementUpdate = () => {
     const entity = {
       ...supplementEntity,
       ...values,
-      product: products.find(it => it.id.toString() === values.product?.toString()),
-      supplier: suppliers.find(it => it.id.toString() === values.supplier?.toString()),
     };
 
     if (isNew) {
@@ -87,8 +84,6 @@ export const SupplementUpdate = () => {
           ...supplementEntity,
           createdAt: convertDateTimeFromServer(supplementEntity.createdAt),
           updatedAt: convertDateTimeFromServer(supplementEntity.updatedAt),
-          product: supplementEntity?.product?.id,
-          supplier: supplementEntity?.supplier?.id,
         };
 
   return (
@@ -116,6 +111,28 @@ export const SupplementUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.supplement.productId')}
+                id="supplement-productId"
+                name="productId"
+                data-cy="productId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('lumiApp.supplement.supplierId')}
+                id="supplement-supplierId"
+                name="supplierId"
+                data-cy="supplierId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
               <ValidatedField
                 label={translate('lumiApp.supplement.supplyPrice')}
                 id="supplement-supplyPrice"
@@ -187,38 +204,6 @@ export const SupplementUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField
-                id="supplement-product"
-                name="product"
-                data-cy="product"
-                label={translate('lumiApp.supplement.product')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {products
-                  ? products.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="supplement-supplier"
-                name="supplier"
-                data-cy="supplier"
-                label={translate('lumiApp.supplement.supplier')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {suppliers
-                  ? suppliers.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/supplement" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

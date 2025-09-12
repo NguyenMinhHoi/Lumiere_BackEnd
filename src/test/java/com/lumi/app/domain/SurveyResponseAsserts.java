@@ -47,6 +47,9 @@ public class SurveyResponseAsserts {
     public static void assertSurveyResponseUpdatableFieldsEquals(SurveyResponse expected, SurveyResponse actual) {
         assertThat(actual)
             .as("Verify SurveyResponse relevant properties")
+            .satisfies(a -> assertThat(a.getSurveyId()).as("check surveyId").isEqualTo(expected.getSurveyId()))
+            .satisfies(a -> assertThat(a.getCustomerId()).as("check customerId").isEqualTo(expected.getCustomerId()))
+            .satisfies(a -> assertThat(a.getTicketId()).as("check ticketId").isEqualTo(expected.getTicketId()))
             .satisfies(a -> assertThat(a.getRespondedAt()).as("check respondedAt").isEqualTo(expected.getRespondedAt()))
             .satisfies(a -> assertThat(a.getScore()).as("check score").isEqualTo(expected.getScore()))
             .satisfies(a -> assertThat(a.getComment()).as("check comment").isEqualTo(expected.getComment()));
@@ -59,10 +62,6 @@ public class SurveyResponseAsserts {
      * @param actual the actual entity
      */
     public static void assertSurveyResponseUpdatableRelationshipsEquals(SurveyResponse expected, SurveyResponse actual) {
-        assertThat(actual)
-            .as("Verify SurveyResponse relationships")
-            .satisfies(a -> assertThat(a.getSurvey()).as("check survey").isEqualTo(expected.getSurvey()))
-            .satisfies(a -> assertThat(a.getCustomer()).as("check customer").isEqualTo(expected.getCustomer()))
-            .satisfies(a -> assertThat(a.getTicket()).as("check ticket").isEqualTo(expected.getTicket()));
+        // empty method
     }
 }

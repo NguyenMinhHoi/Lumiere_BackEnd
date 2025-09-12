@@ -68,7 +68,9 @@ public class TicketCommentGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"body\": null" +
+                                "\"ticketId\": 0" +
+                                ", \"authorId\": 0" +
+                                ", \"body\": null" +
                                 ", \"visibility\": \"PUBLIC\"" +
                                 ", \"createdAt\": \"2020-01-01T00:00:00.000Z\"" +
                                 "}"

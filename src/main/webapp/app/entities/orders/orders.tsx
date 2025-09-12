@@ -177,6 +177,10 @@ export const Orders = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.orders.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('customerId')}>
+                  <Translate contentKey="lumiApp.orders.customerId">Customer Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('customerId')} />
+                </th>
                 <th className="hand" onClick={sort('code')}>
                   <Translate contentKey="lumiApp.orders.code">Code</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('code')} />
                 </th>
@@ -211,9 +215,6 @@ export const Orders = () => {
                   <Translate contentKey="lumiApp.orders.updatedAt">Updated At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('updatedAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.orders.customer">Customer</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -225,6 +226,7 @@ export const Orders = () => {
                       {orders.id}
                     </Button>
                   </td>
+                  <td>{orders.customerId}</td>
                   <td>{orders.code}</td>
                   <td>
                     <Translate contentKey={`lumiApp.OrderStatus.${orders.status}`} />
@@ -240,7 +242,6 @@ export const Orders = () => {
                   <td>{orders.note}</td>
                   <td>{orders.placedAt ? <TextFormat type="date" value={orders.placedAt} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{orders.updatedAt ? <TextFormat type="date" value={orders.updatedAt} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{orders.customer ? <Link to={`/customer/${orders.customer.id}`}>{orders.customer.code}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/orders/${orders.id}`} color="info" size="sm" data-cy="entityDetailsButton">

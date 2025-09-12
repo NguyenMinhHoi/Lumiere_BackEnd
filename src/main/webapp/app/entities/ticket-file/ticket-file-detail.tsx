@@ -33,6 +33,18 @@ export const TicketFileDetail = () => {
           </dt>
           <dd>{ticketFileEntity.id}</dd>
           <dt>
+            <span id="ticketId">
+              <Translate contentKey="lumiApp.ticketFile.ticketId">Ticket Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketFileEntity.ticketId}</dd>
+          <dt>
+            <span id="uploaderId">
+              <Translate contentKey="lumiApp.ticketFile.uploaderId">Uploader Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketFileEntity.uploaderId}</dd>
+          <dt>
             <span id="fileName">
               <Translate contentKey="lumiApp.ticketFile.fileName">File Name</Translate>
             </span>
@@ -94,14 +106,6 @@ export const TicketFileDetail = () => {
           <dd>
             {ticketFileEntity.uploadedAt ? <TextFormat value={ticketFileEntity.uploadedAt} type="date" format={APP_DATE_FORMAT} /> : null}
           </dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticketFile.ticket">Ticket</Translate>
-          </dt>
-          <dd>{ticketFileEntity.ticket ? ticketFileEntity.ticket.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticketFile.uploader">Uploader</Translate>
-          </dt>
-          <dd>{ticketFileEntity.uploader ? ticketFileEntity.uploader.login : ''}</dd>
         </dl>
         <Button tag={Link} to="/ticket-file" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

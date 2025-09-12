@@ -32,5 +32,5 @@
   ],
   "name": "SlaPlan",
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }

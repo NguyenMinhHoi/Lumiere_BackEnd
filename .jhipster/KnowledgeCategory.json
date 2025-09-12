@@ -22,5 +22,5 @@
   ],
   "name": "KnowledgeCategory",
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }

@@ -67,7 +67,14 @@ public class SurveyResponseGatlingTest extends Simulation {
                         .headers(headersHttpAuthenticated)
                         .body(
                             StringBody(
-                                "{" + "\"respondedAt\": \"2020-01-01T00:00:00.000Z\"" + ", \"score\": 0" + ", \"comment\": null" + "}"
+                                "{" +
+                                "\"surveyId\": 0" +
+                                ", \"customerId\": 0" +
+                                ", \"ticketId\": 0" +
+                                ", \"respondedAt\": \"2020-01-01T00:00:00.000Z\"" +
+                                ", \"score\": 0" +
+                                ", \"comment\": null" +
+                                "}"
                             )
                         )
                         .asJson()

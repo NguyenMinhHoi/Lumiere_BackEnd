@@ -58,7 +58,7 @@ class KnowledgeArticleSearchRepositoryInternalImpl implements KnowledgeArticleSe
 
     @Override
     public void index(KnowledgeArticle entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

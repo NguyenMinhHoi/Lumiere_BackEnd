@@ -47,6 +47,8 @@ public class TicketCommentAsserts {
     public static void assertTicketCommentUpdatableFieldsEquals(TicketComment expected, TicketComment actual) {
         assertThat(actual)
             .as("Verify TicketComment relevant properties")
+            .satisfies(a -> assertThat(a.getTicketId()).as("check ticketId").isEqualTo(expected.getTicketId()))
+            .satisfies(a -> assertThat(a.getAuthorId()).as("check authorId").isEqualTo(expected.getAuthorId()))
             .satisfies(a -> assertThat(a.getBody()).as("check body").isEqualTo(expected.getBody()))
             .satisfies(a -> assertThat(a.getVisibility()).as("check visibility").isEqualTo(expected.getVisibility()))
             .satisfies(a -> assertThat(a.getCreatedAt()).as("check createdAt").isEqualTo(expected.getCreatedAt()));
@@ -59,8 +61,6 @@ public class TicketCommentAsserts {
      * @param actual the actual entity
      */
     public static void assertTicketCommentUpdatableRelationshipsEquals(TicketComment expected, TicketComment actual) {
-        assertThat(actual)
-            .as("Verify TicketComment relationships")
-            .satisfies(a -> assertThat(a.getTicket()).as("check ticket").isEqualTo(expected.getTicket()));
+        // empty method
     }
 }

@@ -32,6 +32,18 @@ export const OrderItemDetail = () => {
           </dt>
           <dd>{orderItemEntity.id}</dd>
           <dt>
+            <span id="orderId">
+              <Translate contentKey="lumiApp.orderItem.orderId">Order Id</Translate>
+            </span>
+          </dt>
+          <dd>{orderItemEntity.orderId}</dd>
+          <dt>
+            <span id="variantId">
+              <Translate contentKey="lumiApp.orderItem.variantId">Variant Id</Translate>
+            </span>
+          </dt>
+          <dd>{orderItemEntity.variantId}</dd>
+          <dt>
             <span id="quantity">
               <Translate contentKey="lumiApp.orderItem.quantity">Quantity</Translate>
             </span>
@@ -61,14 +73,6 @@ export const OrderItemDetail = () => {
             </span>
           </dt>
           <dd>{orderItemEntity.skuSnapshot}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.orderItem.order">Order</Translate>
-          </dt>
-          <dd>{orderItemEntity.order ? orderItemEntity.order.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.orderItem.variant">Variant</Translate>
-          </dt>
-          <dd>{orderItemEntity.variant ? orderItemEntity.variant.sku : ''}</dd>
         </dl>
         <Button tag={Link} to="/order-item" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

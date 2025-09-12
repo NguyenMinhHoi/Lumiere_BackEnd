@@ -25,6 +25,21 @@ import OrderItem from './order-item';
 import Supplier from './supplier';
 import Supplement from './supplement';
 import AuditHistory from './audit-history';
+import TicketTag from './ticket-tag';
+import ArticleTag from './article-tag';
+import AppConfig from './app-config';
+import CompanyConfig from './company-config';
+import CompanyConfigAdditional from './company-config-additional';
+import Voucher from './voucher';
+import VoucherRedemption from './voucher-redemption';
+import Cart from './cart';
+import CartItem from './cart-item';
+import Warehouse from './warehouse';
+import Inventory from './inventory';
+import StockMovement from './stock-movement';
+import Campaign from './campaign';
+import IntegrationLog from './integration-log';
+import Employee from './employee';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -54,6 +69,21 @@ export default () => {
         <Route path="supplier/*" element={<Supplier />} />
         <Route path="supplement/*" element={<Supplement />} />
         <Route path="audit-history/*" element={<AuditHistory />} />
+        <Route path="ticket-tag/*" element={<TicketTag />} />
+        <Route path="article-tag/*" element={<ArticleTag />} />
+        <Route path="app-config/*" element={<AppConfig />} />
+        <Route path="company-config/*" element={<CompanyConfig />} />
+        <Route path="company-config-additional/*" element={<CompanyConfigAdditional />} />
+        <Route path="voucher/*" element={<Voucher />} />
+        <Route path="voucher-redemption/*" element={<VoucherRedemption />} />
+        <Route path="cart/*" element={<Cart />} />
+        <Route path="cart-item/*" element={<CartItem />} />
+        <Route path="warehouse/*" element={<Warehouse />} />
+        <Route path="inventory/*" element={<Inventory />} />
+        <Route path="stock-movement/*" element={<StockMovement />} />
+        <Route path="campaign/*" element={<Campaign />} />
+        <Route path="integration-log/*" element={<IntegrationLog />} />
+        <Route path="employee/*" element={<Employee />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}
       </ErrorBoundaryRoutes>
     </div>

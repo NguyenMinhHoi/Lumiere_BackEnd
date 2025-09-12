@@ -76,6 +76,9 @@ class NotificationCriteriaTest {
 
     private static void setAllFilters(NotificationCriteria notificationCriteria) {
         notificationCriteria.id();
+        notificationCriteria.ticketId();
+        notificationCriteria.customerId();
+        notificationCriteria.surveyId();
         notificationCriteria.type();
         notificationCriteria.channel();
         notificationCriteria.subject();
@@ -83,9 +86,6 @@ class NotificationCriteriaTest {
         notificationCriteria.retryCount();
         notificationCriteria.lastTriedAt();
         notificationCriteria.createdAt();
-        notificationCriteria.ticketId();
-        notificationCriteria.customerId();
-        notificationCriteria.surveyId();
         notificationCriteria.distinct();
     }
 
@@ -93,6 +93,9 @@ class NotificationCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getTicketId()) &&
+                condition.apply(criteria.getCustomerId()) &&
+                condition.apply(criteria.getSurveyId()) &&
                 condition.apply(criteria.getType()) &&
                 condition.apply(criteria.getChannel()) &&
                 condition.apply(criteria.getSubject()) &&
@@ -100,9 +103,6 @@ class NotificationCriteriaTest {
                 condition.apply(criteria.getRetryCount()) &&
                 condition.apply(criteria.getLastTriedAt()) &&
                 condition.apply(criteria.getCreatedAt()) &&
-                condition.apply(criteria.getTicketId()) &&
-                condition.apply(criteria.getCustomerId()) &&
-                condition.apply(criteria.getSurveyId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -115,6 +115,9 @@ class NotificationCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getTicketId(), copy.getTicketId()) &&
+                condition.apply(criteria.getCustomerId(), copy.getCustomerId()) &&
+                condition.apply(criteria.getSurveyId(), copy.getSurveyId()) &&
                 condition.apply(criteria.getType(), copy.getType()) &&
                 condition.apply(criteria.getChannel(), copy.getChannel()) &&
                 condition.apply(criteria.getSubject(), copy.getSubject()) &&
@@ -122,9 +125,6 @@ class NotificationCriteriaTest {
                 condition.apply(criteria.getRetryCount(), copy.getRetryCount()) &&
                 condition.apply(criteria.getLastTriedAt(), copy.getLastTriedAt()) &&
                 condition.apply(criteria.getCreatedAt(), copy.getCreatedAt()) &&
-                condition.apply(criteria.getTicketId(), copy.getTicketId()) &&
-                condition.apply(criteria.getCustomerId(), copy.getCustomerId()) &&
-                condition.apply(criteria.getSurveyId(), copy.getSurveyId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

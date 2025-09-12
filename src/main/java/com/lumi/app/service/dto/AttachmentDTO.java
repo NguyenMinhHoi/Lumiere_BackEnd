@@ -13,6 +13,10 @@ public class AttachmentDTO implements Serializable {
 
     private Long id;
 
+    private Long ticketId;
+
+    private Long commentId;
+
     @NotNull
     @Size(max = 200)
     private String name;
@@ -30,16 +34,28 @@ public class AttachmentDTO implements Serializable {
     @NotNull
     private Instant uploadedAt;
 
-    private TicketDTO ticket;
-
-    private TicketCommentDTO comment;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
     }
 
     public String getName() {
@@ -82,22 +98,6 @@ public class AttachmentDTO implements Serializable {
         this.uploadedAt = uploadedAt;
     }
 
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(TicketDTO ticket) {
-        this.ticket = ticket;
-    }
-
-    public TicketCommentDTO getComment() {
-        return comment;
-    }
-
-    public void setComment(TicketCommentDTO comment) {
-        this.comment = comment;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -124,13 +124,13 @@ public class AttachmentDTO implements Serializable {
     public String toString() {
         return "AttachmentDTO{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", commentId=" + getCommentId() +
             ", name='" + getName() + "'" +
             ", url='" + getUrl() + "'" +
             ", contentType='" + getContentType() + "'" +
             ", size=" + getSize() +
             ", uploadedAt='" + getUploadedAt() + "'" +
-            ", ticket=" + getTicket() +
-            ", comment=" + getComment() +
             "}";
     }
 }

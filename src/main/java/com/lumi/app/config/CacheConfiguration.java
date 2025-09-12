@@ -48,16 +48,12 @@ public class CacheConfiguration {
             createCache(cm, com.lumi.app.domain.User.class.getName() + ".authorities");
             createCache(cm, com.lumi.app.domain.Customer.class.getName());
             createCache(cm, com.lumi.app.domain.Ticket.class.getName());
-            createCache(cm, com.lumi.app.domain.Ticket.class.getName() + ".tags");
             createCache(cm, com.lumi.app.domain.TicketComment.class.getName());
             createCache(cm, com.lumi.app.domain.Attachment.class.getName());
             createCache(cm, com.lumi.app.domain.ChannelMessage.class.getName());
             createCache(cm, com.lumi.app.domain.KnowledgeCategory.class.getName());
             createCache(cm, com.lumi.app.domain.KnowledgeArticle.class.getName());
-            createCache(cm, com.lumi.app.domain.KnowledgeArticle.class.getName() + ".tags");
             createCache(cm, com.lumi.app.domain.Tag.class.getName());
-            createCache(cm, com.lumi.app.domain.Tag.class.getName() + ".tickets");
-            createCache(cm, com.lumi.app.domain.Tag.class.getName() + ".articles");
             createCache(cm, com.lumi.app.domain.SlaPlan.class.getName());
             createCache(cm, com.lumi.app.domain.Survey.class.getName());
             createCache(cm, com.lumi.app.domain.SurveyQuestion.class.getName());
@@ -72,6 +68,21 @@ public class CacheConfiguration {
             createCache(cm, com.lumi.app.domain.Supplier.class.getName());
             createCache(cm, com.lumi.app.domain.Supplement.class.getName());
             createCache(cm, com.lumi.app.domain.AuditHistory.class.getName());
+            createCache(cm, com.lumi.app.domain.TicketTag.class.getName());
+            createCache(cm, com.lumi.app.domain.ArticleTag.class.getName());
+            createCache(cm, com.lumi.app.domain.AppConfig.class.getName());
+            createCache(cm, com.lumi.app.domain.CompanyConfig.class.getName());
+            createCache(cm, com.lumi.app.domain.CompanyConfigAdditional.class.getName());
+            createCache(cm, com.lumi.app.domain.Voucher.class.getName());
+            createCache(cm, com.lumi.app.domain.VoucherRedemption.class.getName());
+            createCache(cm, com.lumi.app.domain.Cart.class.getName());
+            createCache(cm, com.lumi.app.domain.CartItem.class.getName());
+            createCache(cm, com.lumi.app.domain.Warehouse.class.getName());
+            createCache(cm, com.lumi.app.domain.Inventory.class.getName());
+            createCache(cm, com.lumi.app.domain.StockMovement.class.getName());
+            createCache(cm, com.lumi.app.domain.Campaign.class.getName());
+            createCache(cm, com.lumi.app.domain.IntegrationLog.class.getName());
+            createCache(cm, com.lumi.app.domain.Employee.class.getName());
             // jhipster-needle-caffeine-add-entry
         };
     }

@@ -138,6 +138,10 @@ export const SurveyQuestion = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.surveyQuestion.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('surveyId')}>
+                  <Translate contentKey="lumiApp.surveyQuestion.surveyId">Survey Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('surveyId')} />
+                </th>
                 <th className="hand" onClick={sort('text')}>
                   <Translate contentKey="lumiApp.surveyQuestion.text">Text</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('text')} />
@@ -162,9 +166,6 @@ export const SurveyQuestion = () => {
                   <Translate contentKey="lumiApp.surveyQuestion.orderNo">Order No</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('orderNo')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.surveyQuestion.survey">Survey</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -176,6 +177,7 @@ export const SurveyQuestion = () => {
                       {surveyQuestion.id}
                     </Button>
                   </td>
+                  <td>{surveyQuestion.surveyId}</td>
                   <td>{surveyQuestion.text}</td>
                   <td>
                     <Translate contentKey={`lumiApp.QuestionType.${surveyQuestion.questionType}`} />
@@ -184,9 +186,6 @@ export const SurveyQuestion = () => {
                   <td>{surveyQuestion.scaleMax}</td>
                   <td>{surveyQuestion.isNeed ? 'true' : 'false'}</td>
                   <td>{surveyQuestion.orderNo}</td>
-                  <td>
-                    {surveyQuestion.survey ? <Link to={`/survey/${surveyQuestion.survey.id}`}>{surveyQuestion.survey.title}</Link> : ''}
-                  </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/survey-question/${surveyQuestion.id}`} color="info" size="sm" data-cy="entityDetailsButton">

@@ -5,11 +5,8 @@ import { Translate, ValidatedField, ValidatedForm, isNumber, translate } from 'r
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
-import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getKnowledgeCategories } from 'app/entities/knowledge-category/knowledge-category.reducer';
-import { getEntities as getTags } from 'app/entities/tag/tag.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './knowledge-article.reducer';
 
 export const KnowledgeArticleUpdate = () => {
@@ -20,8 +17,6 @@ export const KnowledgeArticleUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const knowledgeCategories = useAppSelector(state => state.knowledgeCategory.entities);
-  const tags = useAppSelector(state => state.tag.entities);
   const knowledgeArticleEntity = useAppSelector(state => state.knowledgeArticle.entity);
   const loading = useAppSelector(state => state.knowledgeArticle.loading);
   const updating = useAppSelector(state => state.knowledgeArticle.updating);
@@ -37,9 +32,6 @@ export const KnowledgeArticleUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getKnowledgeCategories({}));
-    dispatch(getTags({}));
   }, []);
 
   useEffect(() => {
@@ -52,6 +44,9 @@ export const KnowledgeArticleUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.categoryId !== undefined && typeof values.categoryId !== 'number') {
+      values.categoryId = Number(values.categoryId);
+    }
     if (values.views !== undefined && typeof values.views !== 'number') {
       values.views = Number(values.views);
     }
@@ -60,8 +55,6 @@ export const KnowledgeArticleUpdate = () => {
     const entity = {
       ...knowledgeArticleEntity,
       ...values,
-      category: knowledgeCategories.find(it => it.id.toString() === values.category?.toString()),
-      tags: mapIdList(values.tags),
     };
 
     if (isNew) {
@@ -79,8 +72,6 @@ export const KnowledgeArticleUpdate = () => {
       : {
           ...knowledgeArticleEntity,
           updatedAt: convertDateTimeFromServer(knowledgeArticleEntity.updatedAt),
-          category: knowledgeArticleEntity?.category?.id,
-          tags: knowledgeArticleEntity?.tags?.map(e => e.id.toString()),
         };
 
   return (
@@ -108,6 +99,13 @@ export const KnowledgeArticleUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.knowledgeArticle.categoryId')}
+                id="knowledge-article-categoryId"
+                name="categoryId"
+                data-cy="categoryId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.knowledgeArticle.title')}
                 id="knowledge-article-title"
@@ -158,39 +156,6 @@ export const KnowledgeArticleUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField
-                id="knowledge-article-category"
-                name="category"
-                data-cy="category"
-                label={translate('lumiApp.knowledgeArticle.category')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {knowledgeCategories
-                  ? knowledgeCategories.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.name}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                label={translate('lumiApp.knowledgeArticle.tags')}
-                id="knowledge-article-tags"
-                data-cy="tags"
-                type="select"
-                multiple
-                name="tags"
-              >
-                <option value="" key="0" />
-                {tags
-                  ? tags.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.name}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/knowledge-article" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

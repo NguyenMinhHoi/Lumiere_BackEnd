@@ -68,7 +68,8 @@ public class SurveyGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"surveyType\": \"CSAT\"" +
+                                "\"customerId\": 0" +
+                                ", \"surveyType\": \"CSAT\"" +
                                 ", \"title\": \"SAMPLE_TEXT\"" +
                                 ", \"sentAt\": \"2020-01-01T00:00:00.000Z\"" +
                                 ", \"dueAt\": \"2020-01-01T00:00:00.000Z\"" +

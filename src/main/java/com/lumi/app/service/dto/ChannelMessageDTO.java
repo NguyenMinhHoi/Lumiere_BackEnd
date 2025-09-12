@@ -16,6 +16,11 @@ public class ChannelMessageDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private Long ticketId;
+
+    private Long authorId;
+
+    @NotNull
     private MessageDirection direction;
 
     @Lob
@@ -27,16 +32,28 @@ public class ChannelMessageDTO implements Serializable {
     @Size(max = 128)
     private String externalMessageId;
 
-    private TicketDTO ticket;
-
-    private UserDTO author;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
     public MessageDirection getDirection() {
@@ -71,22 +88,6 @@ public class ChannelMessageDTO implements Serializable {
         this.externalMessageId = externalMessageId;
     }
 
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(TicketDTO ticket) {
-        this.ticket = ticket;
-    }
-
-    public UserDTO getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(UserDTO author) {
-        this.author = author;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -113,12 +114,12 @@ public class ChannelMessageDTO implements Serializable {
     public String toString() {
         return "ChannelMessageDTO{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", authorId=" + getAuthorId() +
             ", direction='" + getDirection() + "'" +
             ", content='" + getContent() + "'" +
             ", sentAt='" + getSentAt() + "'" +
             ", externalMessageId='" + getExternalMessageId() + "'" +
-            ", ticket=" + getTicket() +
-            ", author=" + getAuthor() +
             "}";
     }
 }

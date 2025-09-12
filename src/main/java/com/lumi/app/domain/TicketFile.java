@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lumi.app.domain.enumeration.FileStatus;
 import com.lumi.app.domain.enumeration.StorageType;
 import jakarta.persistence.*;
@@ -27,6 +26,13 @@ public class TicketFile implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
+
+    @NotNull
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId;
+
+    @Column(name = "uploader_id")
+    private Long uploaderId;
 
     @NotNull
     @Size(max = 255)
@@ -80,13 +86,6 @@ public class TicketFile implements Serializable {
     @Column(name = "uploaded_at", nullable = false)
     private Instant uploadedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer", "assignee", "slaPlan", "order", "tags" }, allowSetters = true)
-    private Ticket ticket;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User uploader;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -100,6 +99,32 @@ public class TicketFile implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTicketId() {
+        return this.ticketId;
+    }
+
+    public TicketFile ticketId(Long ticketId) {
+        this.setTicketId(ticketId);
+        return this;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getUploaderId() {
+        return this.uploaderId;
+    }
+
+    public TicketFile uploaderId(Long uploaderId) {
+        this.setUploaderId(uploaderId);
+        return this;
+    }
+
+    public void setUploaderId(Long uploaderId) {
+        this.uploaderId = uploaderId;
     }
 
     public String getFileName() {
@@ -232,32 +257,6 @@ public class TicketFile implements Serializable {
         this.uploadedAt = uploadedAt;
     }
 
-    public Ticket getTicket() {
-        return this.ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public TicketFile ticket(Ticket ticket) {
-        this.setTicket(ticket);
-        return this;
-    }
-
-    public User getUploader() {
-        return this.uploader;
-    }
-
-    public void setUploader(User user) {
-        this.uploader = user;
-    }
-
-    public TicketFile uploader(User user) {
-        this.setUploader(user);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -282,6 +281,8 @@ public class TicketFile implements Serializable {
     public String toString() {
         return "TicketFile{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", uploaderId=" + getUploaderId() +
             ", fileName='" + getFileName() + "'" +
             ", originalName='" + getOriginalName() + "'" +
             ", contentType='" + getContentType() + "'" +

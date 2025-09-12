@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
-import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
+import { Translate, ValidatedField, ValidatedForm, isNumber, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getTickets } from 'app/entities/ticket/ticket.reducer';
-import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { MessageDirection } from 'app/shared/model/enumerations/message-direction.model';
 import { createEntity, getEntity, reset, updateEntity } from './channel-message.reducer';
 
@@ -20,8 +18,6 @@ export const ChannelMessageUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const tickets = useAppSelector(state => state.ticket.entities);
-  const users = useAppSelector(state => state.userManagement.users);
   const channelMessageEntity = useAppSelector(state => state.channelMessage.entity);
   const loading = useAppSelector(state => state.channelMessage.loading);
   const updating = useAppSelector(state => state.channelMessage.updating);
@@ -38,9 +34,6 @@ export const ChannelMessageUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getTickets({}));
-    dispatch(getUsers({}));
   }, []);
 
   useEffect(() => {
@@ -53,13 +46,17 @@ export const ChannelMessageUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.ticketId !== undefined && typeof values.ticketId !== 'number') {
+      values.ticketId = Number(values.ticketId);
+    }
+    if (values.authorId !== undefined && typeof values.authorId !== 'number') {
+      values.authorId = Number(values.authorId);
+    }
     values.sentAt = convertDateTimeToServer(values.sentAt);
 
     const entity = {
       ...channelMessageEntity,
       ...values,
-      ticket: tickets.find(it => it.id.toString() === values.ticket?.toString()),
-      author: users.find(it => it.id.toString() === values.author?.toString()),
     };
 
     if (isNew) {
@@ -78,8 +75,6 @@ export const ChannelMessageUpdate = () => {
           direction: 'INBOUND',
           ...channelMessageEntity,
           sentAt: convertDateTimeFromServer(channelMessageEntity.sentAt),
-          ticket: channelMessageEntity?.ticket?.id,
-          author: channelMessageEntity?.author?.id,
         };
 
   return (
@@ -107,6 +102,24 @@ export const ChannelMessageUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.channelMessage.ticketId')}
+                id="channel-message-ticketId"
+                name="ticketId"
+                data-cy="ticketId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('lumiApp.channelMessage.authorId')}
+                id="channel-message-authorId"
+                name="authorId"
+                data-cy="authorId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.channelMessage.direction')}
                 id="channel-message-direction"
@@ -151,38 +164,6 @@ export const ChannelMessageUpdate = () => {
                   maxLength: { value: 128, message: translate('entity.validation.maxlength', { max: 128 }) },
                 }}
               />
-              <ValidatedField
-                id="channel-message-ticket"
-                name="ticket"
-                data-cy="ticket"
-                label={translate('lumiApp.channelMessage.ticket')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {tickets
-                  ? tickets.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="channel-message-author"
-                name="author"
-                data-cy="author"
-                label={translate('lumiApp.channelMessage.author')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {users
-                  ? users.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.login}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/channel-message" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

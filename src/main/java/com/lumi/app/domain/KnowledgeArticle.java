@@ -1,12 +1,9 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -28,12 +25,16 @@ public class KnowledgeArticle implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "category_id")
+    private Long categoryId;
+
     @NotNull
     @Size(min = 5, max = 200)
     @Column(name = "title", length = 200, nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String title;
 
+    @Lob
     @Column(name = "content", nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String content;
@@ -51,19 +52,6 @@ public class KnowledgeArticle implements Serializable {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private KnowledgeCategory category;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "rel_knowledge_article__tags",
-        joinColumns = @JoinColumn(name = "knowledge_article_id"),
-        inverseJoinColumns = @JoinColumn(name = "tags_id")
-    )
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "tickets", "articles" }, allowSetters = true)
-    private Set<Tag> tags = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -77,6 +65,19 @@ public class KnowledgeArticle implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCategoryId() {
+        return this.categoryId;
+    }
+
+    public KnowledgeArticle categoryId(Long categoryId) {
+        this.setCategoryId(categoryId);
+        return this;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getTitle() {
@@ -144,42 +145,6 @@ public class KnowledgeArticle implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public KnowledgeCategory getCategory() {
-        return this.category;
-    }
-
-    public void setCategory(KnowledgeCategory knowledgeCategory) {
-        this.category = knowledgeCategory;
-    }
-
-    public KnowledgeArticle category(KnowledgeCategory knowledgeCategory) {
-        this.setCategory(knowledgeCategory);
-        return this;
-    }
-
-    public Set<Tag> getTags() {
-        return this.tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public KnowledgeArticle tags(Set<Tag> tags) {
-        this.setTags(tags);
-        return this;
-    }
-
-    public KnowledgeArticle addTags(Tag tag) {
-        this.tags.add(tag);
-        return this;
-    }
-
-    public KnowledgeArticle removeTags(Tag tag) {
-        this.tags.remove(tag);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -204,6 +169,7 @@ public class KnowledgeArticle implements Serializable {
     public String toString() {
         return "KnowledgeArticle{" +
             "id=" + getId() +
+            ", categoryId=" + getCategoryId() +
             ", title='" + getTitle() + "'" +
             ", content='" + getContent() + "'" +
             ", published='" + getPublished() + "'" +

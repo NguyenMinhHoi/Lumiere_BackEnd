@@ -78,6 +78,14 @@ public class TicketCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter customerId;
+
+    private LongFilter slaPlanId;
+
+    private LongFilter orderId;
+
+    private LongFilter assigneeEmployeeId;
+
     private StringFilter code;
 
     private StringFilter subject;
@@ -96,22 +104,16 @@ public class TicketCriteria implements Serializable, Criteria {
 
     private InstantFilter slaDueAt;
 
-    private LongFilter customerId;
-
-    private LongFilter assigneeId;
-
-    private LongFilter slaPlanId;
-
-    private LongFilter orderId;
-
-    private LongFilter tagsId;
-
     private Boolean distinct;
 
     public TicketCriteria() {}
 
     public TicketCriteria(TicketCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.customerId = other.optionalCustomerId().map(LongFilter::copy).orElse(null);
+        this.slaPlanId = other.optionalSlaPlanId().map(LongFilter::copy).orElse(null);
+        this.orderId = other.optionalOrderId().map(LongFilter::copy).orElse(null);
+        this.assigneeEmployeeId = other.optionalAssigneeEmployeeId().map(LongFilter::copy).orElse(null);
         this.code = other.optionalCode().map(StringFilter::copy).orElse(null);
         this.subject = other.optionalSubject().map(StringFilter::copy).orElse(null);
         this.status = other.optionalStatus().map(TicketStatusFilter::copy).orElse(null);
@@ -121,11 +123,6 @@ public class TicketCriteria implements Serializable, Criteria {
         this.firstResponseAt = other.optionalFirstResponseAt().map(InstantFilter::copy).orElse(null);
         this.resolvedAt = other.optionalResolvedAt().map(InstantFilter::copy).orElse(null);
         this.slaDueAt = other.optionalSlaDueAt().map(InstantFilter::copy).orElse(null);
-        this.customerId = other.optionalCustomerId().map(LongFilter::copy).orElse(null);
-        this.assigneeId = other.optionalAssigneeId().map(LongFilter::copy).orElse(null);
-        this.slaPlanId = other.optionalSlaPlanId().map(LongFilter::copy).orElse(null);
-        this.orderId = other.optionalOrderId().map(LongFilter::copy).orElse(null);
-        this.tagsId = other.optionalTagsId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -151,6 +148,82 @@ public class TicketCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getCustomerId() {
+        return customerId;
+    }
+
+    public Optional<LongFilter> optionalCustomerId() {
+        return Optional.ofNullable(customerId);
+    }
+
+    public LongFilter customerId() {
+        if (customerId == null) {
+            setCustomerId(new LongFilter());
+        }
+        return customerId;
+    }
+
+    public void setCustomerId(LongFilter customerId) {
+        this.customerId = customerId;
+    }
+
+    public LongFilter getSlaPlanId() {
+        return slaPlanId;
+    }
+
+    public Optional<LongFilter> optionalSlaPlanId() {
+        return Optional.ofNullable(slaPlanId);
+    }
+
+    public LongFilter slaPlanId() {
+        if (slaPlanId == null) {
+            setSlaPlanId(new LongFilter());
+        }
+        return slaPlanId;
+    }
+
+    public void setSlaPlanId(LongFilter slaPlanId) {
+        this.slaPlanId = slaPlanId;
+    }
+
+    public LongFilter getOrderId() {
+        return orderId;
+    }
+
+    public Optional<LongFilter> optionalOrderId() {
+        return Optional.ofNullable(orderId);
+    }
+
+    public LongFilter orderId() {
+        if (orderId == null) {
+            setOrderId(new LongFilter());
+        }
+        return orderId;
+    }
+
+    public void setOrderId(LongFilter orderId) {
+        this.orderId = orderId;
+    }
+
+    public LongFilter getAssigneeEmployeeId() {
+        return assigneeEmployeeId;
+    }
+
+    public Optional<LongFilter> optionalAssigneeEmployeeId() {
+        return Optional.ofNullable(assigneeEmployeeId);
+    }
+
+    public LongFilter assigneeEmployeeId() {
+        if (assigneeEmployeeId == null) {
+            setAssigneeEmployeeId(new LongFilter());
+        }
+        return assigneeEmployeeId;
+    }
+
+    public void setAssigneeEmployeeId(LongFilter assigneeEmployeeId) {
+        this.assigneeEmployeeId = assigneeEmployeeId;
     }
 
     public StringFilter getCode() {
@@ -324,101 +397,6 @@ public class TicketCriteria implements Serializable, Criteria {
         this.slaDueAt = slaDueAt;
     }
 
-    public LongFilter getCustomerId() {
-        return customerId;
-    }
-
-    public Optional<LongFilter> optionalCustomerId() {
-        return Optional.ofNullable(customerId);
-    }
-
-    public LongFilter customerId() {
-        if (customerId == null) {
-            setCustomerId(new LongFilter());
-        }
-        return customerId;
-    }
-
-    public void setCustomerId(LongFilter customerId) {
-        this.customerId = customerId;
-    }
-
-    public LongFilter getAssigneeId() {
-        return assigneeId;
-    }
-
-    public Optional<LongFilter> optionalAssigneeId() {
-        return Optional.ofNullable(assigneeId);
-    }
-
-    public LongFilter assigneeId() {
-        if (assigneeId == null) {
-            setAssigneeId(new LongFilter());
-        }
-        return assigneeId;
-    }
-
-    public void setAssigneeId(LongFilter assigneeId) {
-        this.assigneeId = assigneeId;
-    }
-
-    public LongFilter getSlaPlanId() {
-        return slaPlanId;
-    }
-
-    public Optional<LongFilter> optionalSlaPlanId() {
-        return Optional.ofNullable(slaPlanId);
-    }
-
-    public LongFilter slaPlanId() {
-        if (slaPlanId == null) {
-            setSlaPlanId(new LongFilter());
-        }
-        return slaPlanId;
-    }
-
-    public void setSlaPlanId(LongFilter slaPlanId) {
-        this.slaPlanId = slaPlanId;
-    }
-
-    public LongFilter getOrderId() {
-        return orderId;
-    }
-
-    public Optional<LongFilter> optionalOrderId() {
-        return Optional.ofNullable(orderId);
-    }
-
-    public LongFilter orderId() {
-        if (orderId == null) {
-            setOrderId(new LongFilter());
-        }
-        return orderId;
-    }
-
-    public void setOrderId(LongFilter orderId) {
-        this.orderId = orderId;
-    }
-
-    public LongFilter getTagsId() {
-        return tagsId;
-    }
-
-    public Optional<LongFilter> optionalTagsId() {
-        return Optional.ofNullable(tagsId);
-    }
-
-    public LongFilter tagsId() {
-        if (tagsId == null) {
-            setTagsId(new LongFilter());
-        }
-        return tagsId;
-    }
-
-    public void setTagsId(LongFilter tagsId) {
-        this.tagsId = tagsId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -449,6 +427,10 @@ public class TicketCriteria implements Serializable, Criteria {
         final TicketCriteria that = (TicketCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(customerId, that.customerId) &&
+            Objects.equals(slaPlanId, that.slaPlanId) &&
+            Objects.equals(orderId, that.orderId) &&
+            Objects.equals(assigneeEmployeeId, that.assigneeEmployeeId) &&
             Objects.equals(code, that.code) &&
             Objects.equals(subject, that.subject) &&
             Objects.equals(status, that.status) &&
@@ -458,11 +440,6 @@ public class TicketCriteria implements Serializable, Criteria {
             Objects.equals(firstResponseAt, that.firstResponseAt) &&
             Objects.equals(resolvedAt, that.resolvedAt) &&
             Objects.equals(slaDueAt, that.slaDueAt) &&
-            Objects.equals(customerId, that.customerId) &&
-            Objects.equals(assigneeId, that.assigneeId) &&
-            Objects.equals(slaPlanId, that.slaPlanId) &&
-            Objects.equals(orderId, that.orderId) &&
-            Objects.equals(tagsId, that.tagsId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -471,6 +448,10 @@ public class TicketCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
+            customerId,
+            slaPlanId,
+            orderId,
+            assigneeEmployeeId,
             code,
             subject,
             status,
@@ -480,11 +461,6 @@ public class TicketCriteria implements Serializable, Criteria {
             firstResponseAt,
             resolvedAt,
             slaDueAt,
-            customerId,
-            assigneeId,
-            slaPlanId,
-            orderId,
-            tagsId,
             distinct
         );
     }
@@ -494,6 +470,10 @@ public class TicketCriteria implements Serializable, Criteria {
     public String toString() {
         return "TicketCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalCustomerId().map(f -> "customerId=" + f + ", ").orElse("") +
+            optionalSlaPlanId().map(f -> "slaPlanId=" + f + ", ").orElse("") +
+            optionalOrderId().map(f -> "orderId=" + f + ", ").orElse("") +
+            optionalAssigneeEmployeeId().map(f -> "assigneeEmployeeId=" + f + ", ").orElse("") +
             optionalCode().map(f -> "code=" + f + ", ").orElse("") +
             optionalSubject().map(f -> "subject=" + f + ", ").orElse("") +
             optionalStatus().map(f -> "status=" + f + ", ").orElse("") +
@@ -503,11 +483,6 @@ public class TicketCriteria implements Serializable, Criteria {
             optionalFirstResponseAt().map(f -> "firstResponseAt=" + f + ", ").orElse("") +
             optionalResolvedAt().map(f -> "resolvedAt=" + f + ", ").orElse("") +
             optionalSlaDueAt().map(f -> "slaDueAt=" + f + ", ").orElse("") +
-            optionalCustomerId().map(f -> "customerId=" + f + ", ").orElse("") +
-            optionalAssigneeId().map(f -> "assigneeId=" + f + ", ").orElse("") +
-            optionalSlaPlanId().map(f -> "slaPlanId=" + f + ", ").orElse("") +
-            optionalOrderId().map(f -> "orderId=" + f + ", ").orElse("") +
-            optionalTagsId().map(f -> "tagsId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

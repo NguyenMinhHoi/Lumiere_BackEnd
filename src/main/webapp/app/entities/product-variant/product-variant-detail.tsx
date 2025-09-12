@@ -33,6 +33,12 @@ export const ProductVariantDetail = () => {
           </dt>
           <dd>{productVariantEntity.id}</dd>
           <dt>
+            <span id="productId">
+              <Translate contentKey="lumiApp.productVariant.productId">Product Id</Translate>
+            </span>
+          </dt>
+          <dd>{productVariantEntity.productId}</dd>
+          <dt>
             <span id="sku">
               <Translate contentKey="lumiApp.productVariant.sku">Sku</Translate>
             </span>
@@ -118,10 +124,6 @@ export const ProductVariantDetail = () => {
               <TextFormat value={productVariantEntity.updatedAt} type="date" format={APP_DATE_FORMAT} />
             ) : null}
           </dd>
-          <dt>
-            <Translate contentKey="lumiApp.productVariant.product">Product</Translate>
-          </dt>
-          <dd>{productVariantEntity.product ? productVariantEntity.product.code : ''}</dd>
         </dl>
         <Button tag={Link} to="/product-variant" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

@@ -14,6 +14,8 @@ public class SurveyDTO implements Serializable {
 
     private Long id;
 
+    private Long customerId;
+
     @NotNull
     private SurveyType surveyType;
 
@@ -28,14 +30,20 @@ public class SurveyDTO implements Serializable {
     @NotNull
     private Boolean isActive;
 
-    private CustomerDTO customer;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public SurveyType getSurveyType() {
@@ -78,14 +86,6 @@ public class SurveyDTO implements Serializable {
         this.isActive = isActive;
     }
 
-    public CustomerDTO getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerDTO customer) {
-        this.customer = customer;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -112,12 +112,12 @@ public class SurveyDTO implements Serializable {
     public String toString() {
         return "SurveyDTO{" +
             "id=" + getId() +
+            ", customerId=" + getCustomerId() +
             ", surveyType='" + getSurveyType() + "'" +
             ", title='" + getTitle() + "'" +
             ", sentAt='" + getSentAt() + "'" +
             ", dueAt='" + getDueAt() + "'" +
             ", isActive='" + getIsActive() + "'" +
-            ", customer=" + getCustomer() +
             "}";
     }
 }

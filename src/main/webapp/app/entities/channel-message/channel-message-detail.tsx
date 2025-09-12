@@ -33,6 +33,18 @@ export const ChannelMessageDetail = () => {
           </dt>
           <dd>{channelMessageEntity.id}</dd>
           <dt>
+            <span id="ticketId">
+              <Translate contentKey="lumiApp.channelMessage.ticketId">Ticket Id</Translate>
+            </span>
+          </dt>
+          <dd>{channelMessageEntity.ticketId}</dd>
+          <dt>
+            <span id="authorId">
+              <Translate contentKey="lumiApp.channelMessage.authorId">Author Id</Translate>
+            </span>
+          </dt>
+          <dd>{channelMessageEntity.authorId}</dd>
+          <dt>
             <span id="direction">
               <Translate contentKey="lumiApp.channelMessage.direction">Direction</Translate>
             </span>
@@ -58,14 +70,6 @@ export const ChannelMessageDetail = () => {
             </span>
           </dt>
           <dd>{channelMessageEntity.externalMessageId}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.channelMessage.ticket">Ticket</Translate>
-          </dt>
-          <dd>{channelMessageEntity.ticket ? channelMessageEntity.ticket.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.channelMessage.author">Author</Translate>
-          </dt>
-          <dd>{channelMessageEntity.author ? channelMessageEntity.author.login : ''}</dd>
         </dl>
         <Button tag={Link} to="/channel-message" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

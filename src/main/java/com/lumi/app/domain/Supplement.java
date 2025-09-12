@@ -27,6 +27,14 @@ public class Supplement implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
+
+    @NotNull
+    @Column(name = "supplier_id", nullable = false)
+    private Long supplierId;
+
+    @NotNull
     @DecimalMin(value = "0")
     @Column(name = "supply_price", precision = 21, scale = 2, nullable = false)
     private BigDecimal supplyPrice;
@@ -58,12 +66,6 @@ public class Supplement implements Serializable {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Supplier supplier;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -77,6 +79,32 @@ public class Supplement implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProductId() {
+        return this.productId;
+    }
+
+    public Supplement productId(Long productId) {
+        this.setProductId(productId);
+        return this;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Long getSupplierId() {
+        return this.supplierId;
+    }
+
+    public Supplement supplierId(Long supplierId) {
+        this.setSupplierId(supplierId);
+        return this;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
     }
 
     public BigDecimal getSupplyPrice() {
@@ -170,32 +198,6 @@ public class Supplement implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Product getProduct() {
-        return this.product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Supplement product(Product product) {
-        this.setProduct(product);
-        return this;
-    }
-
-    public Supplier getSupplier() {
-        return this.supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public Supplement supplier(Supplier supplier) {
-        this.setSupplier(supplier);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -220,6 +222,8 @@ public class Supplement implements Serializable {
     public String toString() {
         return "Supplement{" +
             "id=" + getId() +
+            ", productId=" + getProductId() +
+            ", supplierId=" + getSupplierId() +
             ", supplyPrice=" + getSupplyPrice() +
             ", currency='" + getCurrency() + "'" +
             ", leadTimeDays=" + getLeadTimeDays() +

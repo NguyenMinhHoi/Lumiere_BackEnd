@@ -76,13 +76,13 @@ class OrderItemCriteriaTest {
 
     private static void setAllFilters(OrderItemCriteria orderItemCriteria) {
         orderItemCriteria.id();
+        orderItemCriteria.orderId();
+        orderItemCriteria.variantId();
         orderItemCriteria.quantity();
         orderItemCriteria.unitPrice();
         orderItemCriteria.totalPrice();
         orderItemCriteria.nameSnapshot();
         orderItemCriteria.skuSnapshot();
-        orderItemCriteria.orderId();
-        orderItemCriteria.variantId();
         orderItemCriteria.distinct();
     }
 
@@ -90,13 +90,13 @@ class OrderItemCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getOrderId()) &&
+                condition.apply(criteria.getVariantId()) &&
                 condition.apply(criteria.getQuantity()) &&
                 condition.apply(criteria.getUnitPrice()) &&
                 condition.apply(criteria.getTotalPrice()) &&
                 condition.apply(criteria.getNameSnapshot()) &&
                 condition.apply(criteria.getSkuSnapshot()) &&
-                condition.apply(criteria.getOrderId()) &&
-                condition.apply(criteria.getVariantId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -106,13 +106,13 @@ class OrderItemCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getOrderId(), copy.getOrderId()) &&
+                condition.apply(criteria.getVariantId(), copy.getVariantId()) &&
                 condition.apply(criteria.getQuantity(), copy.getQuantity()) &&
                 condition.apply(criteria.getUnitPrice(), copy.getUnitPrice()) &&
                 condition.apply(criteria.getTotalPrice(), copy.getTotalPrice()) &&
                 condition.apply(criteria.getNameSnapshot(), copy.getNameSnapshot()) &&
                 condition.apply(criteria.getSkuSnapshot(), copy.getSkuSnapshot()) &&
-                condition.apply(criteria.getOrderId(), copy.getOrderId()) &&
-                condition.apply(criteria.getVariantId(), copy.getVariantId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

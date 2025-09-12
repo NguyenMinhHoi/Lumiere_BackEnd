@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getOrders } from 'app/entities/orders/orders.reducer';
-import { getEntities as getProductVariants } from 'app/entities/product-variant/product-variant.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './order-item.reducer';
 
 export const OrderItemUpdate = () => {
@@ -18,8 +16,6 @@ export const OrderItemUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const orders = useAppSelector(state => state.orders.entities);
-  const productVariants = useAppSelector(state => state.productVariant.entities);
   const orderItemEntity = useAppSelector(state => state.orderItem.entity);
   const loading = useAppSelector(state => state.orderItem.loading);
   const updating = useAppSelector(state => state.orderItem.updating);
@@ -35,9 +31,6 @@ export const OrderItemUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getOrders({}));
-    dispatch(getProductVariants({}));
   }, []);
 
   useEffect(() => {
@@ -49,6 +42,12 @@ export const OrderItemUpdate = () => {
   const saveEntity = values => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
+    }
+    if (values.orderId !== undefined && typeof values.orderId !== 'number') {
+      values.orderId = Number(values.orderId);
+    }
+    if (values.variantId !== undefined && typeof values.variantId !== 'number') {
+      values.variantId = Number(values.variantId);
     }
     if (values.quantity !== undefined && typeof values.quantity !== 'number') {
       values.quantity = Number(values.quantity);
@@ -63,8 +62,6 @@ export const OrderItemUpdate = () => {
     const entity = {
       ...orderItemEntity,
       ...values,
-      order: orders.find(it => it.id.toString() === values.order?.toString()),
-      variant: productVariants.find(it => it.id.toString() === values.variant?.toString()),
     };
 
     if (isNew) {
@@ -79,8 +76,6 @@ export const OrderItemUpdate = () => {
       ? {}
       : {
           ...orderItemEntity,
-          order: orderItemEntity?.order?.id,
-          variant: orderItemEntity?.variant?.id,
         };
 
   return (
@@ -108,6 +103,28 @@ export const OrderItemUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.orderItem.orderId')}
+                id="order-item-orderId"
+                name="orderId"
+                data-cy="orderId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('lumiApp.orderItem.variantId')}
+                id="order-item-variantId"
+                name="variantId"
+                data-cy="variantId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
               <ValidatedField
                 label={translate('lumiApp.orderItem.quantity')}
                 id="order-item-quantity"
@@ -164,32 +181,6 @@ export const OrderItemUpdate = () => {
                   maxLength: { value: 64, message: translate('entity.validation.maxlength', { max: 64 }) },
                 }}
               />
-              <ValidatedField id="order-item-order" name="order" data-cy="order" label={translate('lumiApp.orderItem.order')} type="select">
-                <option value="" key="0" />
-                {orders
-                  ? orders.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="order-item-variant"
-                name="variant"
-                data-cy="variant"
-                label={translate('lumiApp.orderItem.variant')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {productVariants
-                  ? productVariants.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.sku}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/order-item" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

@@ -60,6 +60,10 @@ public class TicketFileCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter ticketId;
+
+    private LongFilter uploaderId;
+
     private StringFilter fileName;
 
     private StringFilter originalName;
@@ -80,16 +84,14 @@ public class TicketFileCriteria implements Serializable, Criteria {
 
     private InstantFilter uploadedAt;
 
-    private LongFilter ticketId;
-
-    private LongFilter uploaderId;
-
     private Boolean distinct;
 
     public TicketFileCriteria() {}
 
     public TicketFileCriteria(TicketFileCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.ticketId = other.optionalTicketId().map(LongFilter::copy).orElse(null);
+        this.uploaderId = other.optionalUploaderId().map(LongFilter::copy).orElse(null);
         this.fileName = other.optionalFileName().map(StringFilter::copy).orElse(null);
         this.originalName = other.optionalOriginalName().map(StringFilter::copy).orElse(null);
         this.contentType = other.optionalContentType().map(StringFilter::copy).orElse(null);
@@ -100,8 +102,6 @@ public class TicketFileCriteria implements Serializable, Criteria {
         this.checksum = other.optionalChecksum().map(StringFilter::copy).orElse(null);
         this.status = other.optionalStatus().map(FileStatusFilter::copy).orElse(null);
         this.uploadedAt = other.optionalUploadedAt().map(InstantFilter::copy).orElse(null);
-        this.ticketId = other.optionalTicketId().map(LongFilter::copy).orElse(null);
-        this.uploaderId = other.optionalUploaderId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -127,6 +127,44 @@ public class TicketFileCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getTicketId() {
+        return ticketId;
+    }
+
+    public Optional<LongFilter> optionalTicketId() {
+        return Optional.ofNullable(ticketId);
+    }
+
+    public LongFilter ticketId() {
+        if (ticketId == null) {
+            setTicketId(new LongFilter());
+        }
+        return ticketId;
+    }
+
+    public void setTicketId(LongFilter ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public LongFilter getUploaderId() {
+        return uploaderId;
+    }
+
+    public Optional<LongFilter> optionalUploaderId() {
+        return Optional.ofNullable(uploaderId);
+    }
+
+    public LongFilter uploaderId() {
+        if (uploaderId == null) {
+            setUploaderId(new LongFilter());
+        }
+        return uploaderId;
+    }
+
+    public void setUploaderId(LongFilter uploaderId) {
+        this.uploaderId = uploaderId;
     }
 
     public StringFilter getFileName() {
@@ -319,44 +357,6 @@ public class TicketFileCriteria implements Serializable, Criteria {
         this.uploadedAt = uploadedAt;
     }
 
-    public LongFilter getTicketId() {
-        return ticketId;
-    }
-
-    public Optional<LongFilter> optionalTicketId() {
-        return Optional.ofNullable(ticketId);
-    }
-
-    public LongFilter ticketId() {
-        if (ticketId == null) {
-            setTicketId(new LongFilter());
-        }
-        return ticketId;
-    }
-
-    public void setTicketId(LongFilter ticketId) {
-        this.ticketId = ticketId;
-    }
-
-    public LongFilter getUploaderId() {
-        return uploaderId;
-    }
-
-    public Optional<LongFilter> optionalUploaderId() {
-        return Optional.ofNullable(uploaderId);
-    }
-
-    public LongFilter uploaderId() {
-        if (uploaderId == null) {
-            setUploaderId(new LongFilter());
-        }
-        return uploaderId;
-    }
-
-    public void setUploaderId(LongFilter uploaderId) {
-        this.uploaderId = uploaderId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -387,6 +387,8 @@ public class TicketFileCriteria implements Serializable, Criteria {
         final TicketFileCriteria that = (TicketFileCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(ticketId, that.ticketId) &&
+            Objects.equals(uploaderId, that.uploaderId) &&
             Objects.equals(fileName, that.fileName) &&
             Objects.equals(originalName, that.originalName) &&
             Objects.equals(contentType, that.contentType) &&
@@ -397,8 +399,6 @@ public class TicketFileCriteria implements Serializable, Criteria {
             Objects.equals(checksum, that.checksum) &&
             Objects.equals(status, that.status) &&
             Objects.equals(uploadedAt, that.uploadedAt) &&
-            Objects.equals(ticketId, that.ticketId) &&
-            Objects.equals(uploaderId, that.uploaderId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -407,6 +407,8 @@ public class TicketFileCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
+            ticketId,
+            uploaderId,
             fileName,
             originalName,
             contentType,
@@ -417,8 +419,6 @@ public class TicketFileCriteria implements Serializable, Criteria {
             checksum,
             status,
             uploadedAt,
-            ticketId,
-            uploaderId,
             distinct
         );
     }
@@ -428,6 +428,8 @@ public class TicketFileCriteria implements Serializable, Criteria {
     public String toString() {
         return "TicketFileCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalTicketId().map(f -> "ticketId=" + f + ", ").orElse("") +
+            optionalUploaderId().map(f -> "uploaderId=" + f + ", ").orElse("") +
             optionalFileName().map(f -> "fileName=" + f + ", ").orElse("") +
             optionalOriginalName().map(f -> "originalName=" + f + ", ").orElse("") +
             optionalContentType().map(f -> "contentType=" + f + ", ").orElse("") +
@@ -438,8 +440,6 @@ public class TicketFileCriteria implements Serializable, Criteria {
             optionalChecksum().map(f -> "checksum=" + f + ", ").orElse("") +
             optionalStatus().map(f -> "status=" + f + ", ").orElse("") +
             optionalUploadedAt().map(f -> "uploadedAt=" + f + ", ").orElse("") +
-            optionalTicketId().map(f -> "ticketId=" + f + ", ").orElse("") +
-            optionalUploaderId().map(f -> "uploaderId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

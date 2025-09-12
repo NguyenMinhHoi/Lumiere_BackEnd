@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getSurveys } from 'app/entities/survey/survey.reducer';
 import { QuestionType } from 'app/shared/model/enumerations/question-type.model';
 import { createEntity, getEntity, reset, updateEntity } from './survey-question.reducer';
 
@@ -18,7 +17,6 @@ export const SurveyQuestionUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const surveys = useAppSelector(state => state.survey.entities);
   const surveyQuestionEntity = useAppSelector(state => state.surveyQuestion.entity);
   const loading = useAppSelector(state => state.surveyQuestion.loading);
   const updating = useAppSelector(state => state.surveyQuestion.updating);
@@ -35,8 +33,6 @@ export const SurveyQuestionUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getSurveys({}));
   }, []);
 
   useEffect(() => {
@@ -48,6 +44,9 @@ export const SurveyQuestionUpdate = () => {
   const saveEntity = values => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
+    }
+    if (values.surveyId !== undefined && typeof values.surveyId !== 'number') {
+      values.surveyId = Number(values.surveyId);
     }
     if (values.scaleMin !== undefined && typeof values.scaleMin !== 'number') {
       values.scaleMin = Number(values.scaleMin);
@@ -62,7 +61,6 @@ export const SurveyQuestionUpdate = () => {
     const entity = {
       ...surveyQuestionEntity,
       ...values,
-      survey: surveys.find(it => it.id.toString() === values.survey?.toString()),
     };
 
     if (isNew) {
@@ -78,7 +76,6 @@ export const SurveyQuestionUpdate = () => {
       : {
           questionType: 'SCALE',
           ...surveyQuestionEntity,
-          survey: surveyQuestionEntity?.survey?.id,
         };
 
   return (
@@ -106,6 +103,17 @@ export const SurveyQuestionUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.surveyQuestion.surveyId')}
+                id="survey-question-surveyId"
+                name="surveyId"
+                data-cy="surveyId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
               <ValidatedField
                 label={translate('lumiApp.surveyQuestion.text')}
                 id="survey-question-text"
@@ -165,22 +173,6 @@ export const SurveyQuestionUpdate = () => {
                   validate: v => isNumber(v) || translate('entity.validation.number'),
                 }}
               />
-              <ValidatedField
-                id="survey-question-survey"
-                name="survey"
-                data-cy="survey"
-                label={translate('lumiApp.surveyQuestion.survey')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {surveys
-                  ? surveys.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.title}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/survey-question" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

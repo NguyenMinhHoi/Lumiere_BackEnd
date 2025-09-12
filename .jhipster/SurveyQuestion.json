@@ -6,6 +6,11 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "surveyId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "text",
       "fieldType": "String",
       "fieldValidateRules": ["required", "minlength", "maxlength"],
@@ -39,14 +44,6 @@
     }
   ],
   "name": "SurveyQuestion",
-  "relationships": [
-    {
-      "otherEntityField": "title",
-      "otherEntityName": "survey",
-      "relationshipName": "survey",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

@@ -6,6 +6,10 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "categoryId",
+      "fieldType": "Long"
+    },
+    {
       "fieldName": "title",
       "fieldType": "String",
       "fieldValidateRules": ["required", "minlength", "maxlength"],
@@ -36,22 +40,6 @@
   "jpaMetamodelFiltering": true,
   "name": "KnowledgeArticle",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "name",
-      "otherEntityName": "knowledgeCategory",
-      "relationshipName": "category",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "name",
-      "otherEntityName": "tag",
-      "otherEntityRelationshipName": "articles",
-      "relationshipName": "tags",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-many"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

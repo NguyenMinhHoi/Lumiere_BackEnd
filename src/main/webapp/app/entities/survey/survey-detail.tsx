@@ -33,6 +33,12 @@ export const SurveyDetail = () => {
           </dt>
           <dd>{surveyEntity.id}</dd>
           <dt>
+            <span id="customerId">
+              <Translate contentKey="lumiApp.survey.customerId">Customer Id</Translate>
+            </span>
+          </dt>
+          <dd>{surveyEntity.customerId}</dd>
+          <dt>
             <span id="surveyType">
               <Translate contentKey="lumiApp.survey.surveyType">Survey Type</Translate>
             </span>
@@ -62,10 +68,6 @@ export const SurveyDetail = () => {
             </span>
           </dt>
           <dd>{surveyEntity.isActive ? 'true' : 'false'}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.survey.customer">Customer</Translate>
-          </dt>
-          <dd>{surveyEntity.customer ? surveyEntity.customer.code : ''}</dd>
         </dl>
         <Button tag={Link} to="/survey" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

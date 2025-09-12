@@ -58,7 +58,7 @@ class ChannelMessageSearchRepositoryInternalImpl implements ChannelMessageSearch
 
     @Override
     public void index(ChannelMessage entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

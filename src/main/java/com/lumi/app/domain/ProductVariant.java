@@ -27,6 +27,10 @@ public class ProductVariant implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
+
+    @NotNull
     @Size(min = 3, max = 64)
     @Column(name = "sku", length = 64, nullable = false, unique = true)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
@@ -80,9 +84,6 @@ public class ProductVariant implements Serializable {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -96,6 +97,19 @@ public class ProductVariant implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProductId() {
+        return this.productId;
+    }
+
+    public ProductVariant productId(Long productId) {
+        this.setProductId(productId);
+        return this;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public String getSku() {
@@ -267,19 +281,6 @@ public class ProductVariant implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Product getProduct() {
-        return this.product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public ProductVariant product(Product product) {
-        this.setProduct(product);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -304,6 +305,7 @@ public class ProductVariant implements Serializable {
     public String toString() {
         return "ProductVariant{" +
             "id=" + getId() +
+            ", productId=" + getProductId() +
             ", sku='" + getSku() + "'" +
             ", name='" + getName() + "'" +
             ", price=" + getPrice() +

@@ -177,6 +177,10 @@ export const KnowledgeArticle = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.knowledgeArticle.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('categoryId')}>
+                  <Translate contentKey="lumiApp.knowledgeArticle.categoryId">Category Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('categoryId')} />
+                </th>
                 <th className="hand" onClick={sort('title')}>
                   <Translate contentKey="lumiApp.knowledgeArticle.title">Title</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('title')} />
@@ -197,9 +201,6 @@ export const KnowledgeArticle = () => {
                   <Translate contentKey="lumiApp.knowledgeArticle.updatedAt">Updated At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('updatedAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.knowledgeArticle.category">Category</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -211,6 +212,7 @@ export const KnowledgeArticle = () => {
                       {knowledgeArticle.id}
                     </Button>
                   </td>
+                  <td>{knowledgeArticle.categoryId}</td>
                   <td>{knowledgeArticle.title}</td>
                   <td>{knowledgeArticle.content}</td>
                   <td>{knowledgeArticle.published ? 'true' : 'false'}</td>
@@ -219,13 +221,6 @@ export const KnowledgeArticle = () => {
                     {knowledgeArticle.updatedAt ? (
                       <TextFormat type="date" value={knowledgeArticle.updatedAt} format={APP_DATE_FORMAT} />
                     ) : null}
-                  </td>
-                  <td>
-                    {knowledgeArticle.category ? (
-                      <Link to={`/knowledge-category/${knowledgeArticle.category.id}`}>{knowledgeArticle.category.name}</Link>
-                    ) : (
-                      ''
-                    )}
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">

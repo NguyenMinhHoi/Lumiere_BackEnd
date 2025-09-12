@@ -177,6 +177,18 @@ export const Notification = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.notification.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('ticketId')}>
+                  <Translate contentKey="lumiApp.notification.ticketId">Ticket Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('ticketId')} />
+                </th>
+                <th className="hand" onClick={sort('customerId')}>
+                  <Translate contentKey="lumiApp.notification.customerId">Customer Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('customerId')} />
+                </th>
+                <th className="hand" onClick={sort('surveyId')}>
+                  <Translate contentKey="lumiApp.notification.surveyId">Survey Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('surveyId')} />
+                </th>
                 <th className="hand" onClick={sort('type')}>
                   <Translate contentKey="lumiApp.notification.type">Type</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('type')} />
@@ -209,15 +221,6 @@ export const Notification = () => {
                   <Translate contentKey="lumiApp.notification.createdAt">Created At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('createdAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.notification.ticket">Ticket</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.notification.customer">Customer</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.notification.survey">Survey</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -229,6 +232,9 @@ export const Notification = () => {
                       {notification.id}
                     </Button>
                   </td>
+                  <td>{notification.ticketId}</td>
+                  <td>{notification.customerId}</td>
+                  <td>{notification.surveyId}</td>
                   <td>
                     <Translate contentKey={`lumiApp.NotificationType.${notification.type}`} />
                   </td>
@@ -247,11 +253,6 @@ export const Notification = () => {
                   <td>
                     {notification.createdAt ? <TextFormat type="date" value={notification.createdAt} format={APP_DATE_FORMAT} /> : null}
                   </td>
-                  <td>{notification.ticket ? <Link to={`/ticket/${notification.ticket.id}`}>{notification.ticket.code}</Link> : ''}</td>
-                  <td>
-                    {notification.customer ? <Link to={`/customer/${notification.customer.id}`}>{notification.customer.code}</Link> : ''}
-                  </td>
-                  <td>{notification.survey ? <Link to={`/survey/${notification.survey.id}`}>{notification.survey.title}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/notification/${notification.id}`} color="info" size="sm" data-cy="entityDetailsButton">

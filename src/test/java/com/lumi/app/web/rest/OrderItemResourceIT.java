@@ -13,16 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
 import com.lumi.app.domain.OrderItem;
-import com.lumi.app.domain.Orders;
-import com.lumi.app.domain.ProductVariant;
 import com.lumi.app.repository.OrderItemRepository;
 import com.lumi.app.repository.search.OrderItemSearchRepository;
-import com.lumi.app.service.OrderItemService;
 import com.lumi.app.service.dto.OrderItemDTO;
 import com.lumi.app.service.mapper.OrderItemMapper;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -31,13 +27,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -48,10 +39,17 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link OrderItemResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class OrderItemResourceIT {
+
+    private static final Long DEFAULT_ORDER_ID = 1L;
+    private static final Long UPDATED_ORDER_ID = 2L;
+    private static final Long SMALLER_ORDER_ID = 1L - 1L;
+
+    private static final Long DEFAULT_VARIANT_ID = 1L;
+    private static final Long UPDATED_VARIANT_ID = 2L;
+    private static final Long SMALLER_VARIANT_ID = 1L - 1L;
 
     private static final Long DEFAULT_QUANTITY = 1L;
     private static final Long UPDATED_QUANTITY = 2L;
@@ -84,14 +82,8 @@ class OrderItemResourceIT {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    @Mock
-    private OrderItemRepository orderItemRepositoryMock;
-
     @Autowired
     private OrderItemMapper orderItemMapper;
-
-    @Mock
-    private OrderItemService orderItemServiceMock;
 
     @Autowired
     private OrderItemSearchRepository orderItemSearchRepository;
@@ -114,6 +106,8 @@ class OrderItemResourceIT {
      */
     public static OrderItem createEntity() {
         return new OrderItem()
+            .orderId(DEFAULT_ORDER_ID)
+            .variantId(DEFAULT_VARIANT_ID)
             .quantity(DEFAULT_QUANTITY)
             .unitPrice(DEFAULT_UNIT_PRICE)
             .totalPrice(DEFAULT_TOTAL_PRICE)
@@ -129,6 +123,8 @@ class OrderItemResourceIT {
      */
     public static OrderItem createUpdatedEntity() {
         return new OrderItem()
+            .orderId(UPDATED_ORDER_ID)
+            .variantId(UPDATED_VARIANT_ID)
             .quantity(UPDATED_QUANTITY)
             .unitPrice(UPDATED_UNIT_PRICE)
             .totalPrice(UPDATED_TOTAL_PRICE)
@@ -199,6 +195,48 @@ class OrderItemResourceIT {
 
         // Validate the OrderItem in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(orderItemSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkOrderIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(orderItemSearchRepository.findAll());
+        // set the field null
+        orderItem.setOrderId(null);
+
+        // Create the OrderItem, which fails.
+        OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
+
+        restOrderItemMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(orderItemDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(orderItemSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkVariantIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(orderItemSearchRepository.findAll());
+        // set the field null
+        orderItem.setVariantId(null);
+
+        // Create the OrderItem, which fails.
+        OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
+
+        restOrderItemMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(orderItemDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
         int searchDatabaseSizeAfter = IterableUtil.sizeOf(orderItemSearchRepository.findAll());
         assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
     }
@@ -278,28 +316,13 @@ class OrderItemResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orderItem.getId().intValue())))
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].variantId").value(hasItem(DEFAULT_VARIANT_ID.intValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.intValue())))
             .andExpect(jsonPath("$.[*].unitPrice").value(hasItem(sameNumber(DEFAULT_UNIT_PRICE))))
             .andExpect(jsonPath("$.[*].totalPrice").value(hasItem(sameNumber(DEFAULT_TOTAL_PRICE))))
             .andExpect(jsonPath("$.[*].nameSnapshot").value(hasItem(DEFAULT_NAME_SNAPSHOT)))
             .andExpect(jsonPath("$.[*].skuSnapshot").value(hasItem(DEFAULT_SKU_SNAPSHOT)));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllOrderItemsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(orderItemServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restOrderItemMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(orderItemServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllOrderItemsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(orderItemServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restOrderItemMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(orderItemRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -314,6 +337,8 @@ class OrderItemResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(orderItem.getId().intValue()))
+            .andExpect(jsonPath("$.orderId").value(DEFAULT_ORDER_ID.intValue()))
+            .andExpect(jsonPath("$.variantId").value(DEFAULT_VARIANT_ID.intValue()))
             .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY.intValue()))
             .andExpect(jsonPath("$.unitPrice").value(sameNumber(DEFAULT_UNIT_PRICE)))
             .andExpect(jsonPath("$.totalPrice").value(sameNumber(DEFAULT_TOTAL_PRICE)))
@@ -334,6 +359,149 @@ class OrderItemResourceIT {
         defaultOrderItemFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultOrderItemFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByOrderIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where orderId equals to
+        defaultOrderItemFiltering("orderId.equals=" + DEFAULT_ORDER_ID, "orderId.equals=" + UPDATED_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByOrderIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where orderId in
+        defaultOrderItemFiltering("orderId.in=" + DEFAULT_ORDER_ID + "," + UPDATED_ORDER_ID, "orderId.in=" + UPDATED_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByOrderIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where orderId is not null
+        defaultOrderItemFiltering("orderId.specified=true", "orderId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByOrderIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where orderId is greater than or equal to
+        defaultOrderItemFiltering("orderId.greaterThanOrEqual=" + DEFAULT_ORDER_ID, "orderId.greaterThanOrEqual=" + UPDATED_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByOrderIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where orderId is less than or equal to
+        defaultOrderItemFiltering("orderId.lessThanOrEqual=" + DEFAULT_ORDER_ID, "orderId.lessThanOrEqual=" + SMALLER_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByOrderIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where orderId is less than
+        defaultOrderItemFiltering("orderId.lessThan=" + UPDATED_ORDER_ID, "orderId.lessThan=" + DEFAULT_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByOrderIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where orderId is greater than
+        defaultOrderItemFiltering("orderId.greaterThan=" + SMALLER_ORDER_ID, "orderId.greaterThan=" + DEFAULT_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByVariantIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where variantId equals to
+        defaultOrderItemFiltering("variantId.equals=" + DEFAULT_VARIANT_ID, "variantId.equals=" + UPDATED_VARIANT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByVariantIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where variantId in
+        defaultOrderItemFiltering("variantId.in=" + DEFAULT_VARIANT_ID + "," + UPDATED_VARIANT_ID, "variantId.in=" + UPDATED_VARIANT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByVariantIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where variantId is not null
+        defaultOrderItemFiltering("variantId.specified=true", "variantId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByVariantIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where variantId is greater than or equal to
+        defaultOrderItemFiltering(
+            "variantId.greaterThanOrEqual=" + DEFAULT_VARIANT_ID,
+            "variantId.greaterThanOrEqual=" + UPDATED_VARIANT_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByVariantIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where variantId is less than or equal to
+        defaultOrderItemFiltering("variantId.lessThanOrEqual=" + DEFAULT_VARIANT_ID, "variantId.lessThanOrEqual=" + SMALLER_VARIANT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByVariantIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where variantId is less than
+        defaultOrderItemFiltering("variantId.lessThan=" + UPDATED_VARIANT_ID, "variantId.lessThan=" + DEFAULT_VARIANT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrderItemsByVariantIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedOrderItem = orderItemRepository.saveAndFlush(orderItem);
+
+        // Get all the orderItemList where variantId is greater than
+        defaultOrderItemFiltering("variantId.greaterThan=" + SMALLER_VARIANT_ID, "variantId.greaterThan=" + DEFAULT_VARIANT_ID);
     }
 
     @Test
@@ -667,50 +835,6 @@ class OrderItemResourceIT {
         );
     }
 
-    @Test
-    @Transactional
-    void getAllOrderItemsByOrderIsEqualToSomething() throws Exception {
-        Orders order;
-        if (TestUtil.findAll(em, Orders.class).isEmpty()) {
-            orderItemRepository.saveAndFlush(orderItem);
-            order = OrdersResourceIT.createEntity();
-        } else {
-            order = TestUtil.findAll(em, Orders.class).get(0);
-        }
-        em.persist(order);
-        em.flush();
-        orderItem.setOrder(order);
-        orderItemRepository.saveAndFlush(orderItem);
-        Long orderId = order.getId();
-        // Get all the orderItemList where order equals to orderId
-        defaultOrderItemShouldBeFound("orderId.equals=" + orderId);
-
-        // Get all the orderItemList where order equals to (orderId + 1)
-        defaultOrderItemShouldNotBeFound("orderId.equals=" + (orderId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllOrderItemsByVariantIsEqualToSomething() throws Exception {
-        ProductVariant variant;
-        if (TestUtil.findAll(em, ProductVariant.class).isEmpty()) {
-            orderItemRepository.saveAndFlush(orderItem);
-            variant = ProductVariantResourceIT.createEntity();
-        } else {
-            variant = TestUtil.findAll(em, ProductVariant.class).get(0);
-        }
-        em.persist(variant);
-        em.flush();
-        orderItem.setVariant(variant);
-        orderItemRepository.saveAndFlush(orderItem);
-        Long variantId = variant.getId();
-        // Get all the orderItemList where variant equals to variantId
-        defaultOrderItemShouldBeFound("variantId.equals=" + variantId);
-
-        // Get all the orderItemList where variant equals to (variantId + 1)
-        defaultOrderItemShouldNotBeFound("variantId.equals=" + (variantId + 1));
-    }
-
     private void defaultOrderItemFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultOrderItemShouldBeFound(shouldBeFound);
         defaultOrderItemShouldNotBeFound(shouldNotBeFound);
@@ -725,6 +849,8 @@ class OrderItemResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orderItem.getId().intValue())))
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].variantId").value(hasItem(DEFAULT_VARIANT_ID.intValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.intValue())))
             .andExpect(jsonPath("$.[*].unitPrice").value(hasItem(sameNumber(DEFAULT_UNIT_PRICE))))
             .andExpect(jsonPath("$.[*].totalPrice").value(hasItem(sameNumber(DEFAULT_TOTAL_PRICE))))
@@ -780,6 +906,8 @@ class OrderItemResourceIT {
         // Disconnect from session so that the updates on updatedOrderItem are not directly saved in db
         em.detach(updatedOrderItem);
         updatedOrderItem
+            .orderId(UPDATED_ORDER_ID)
+            .variantId(UPDATED_VARIANT_ID)
             .quantity(UPDATED_QUANTITY)
             .unitPrice(UPDATED_UNIT_PRICE)
             .totalPrice(UPDATED_TOTAL_PRICE)
@@ -894,7 +1022,7 @@ class OrderItemResourceIT {
         OrderItem partialUpdatedOrderItem = new OrderItem();
         partialUpdatedOrderItem.setId(orderItem.getId());
 
-        partialUpdatedOrderItem.unitPrice(UPDATED_UNIT_PRICE).totalPrice(UPDATED_TOTAL_PRICE);
+        partialUpdatedOrderItem.variantId(UPDATED_VARIANT_ID).quantity(UPDATED_QUANTITY);
 
         restOrderItemMockMvc
             .perform(
@@ -926,6 +1054,8 @@ class OrderItemResourceIT {
         partialUpdatedOrderItem.setId(orderItem.getId());
 
         partialUpdatedOrderItem
+            .orderId(UPDATED_ORDER_ID)
+            .variantId(UPDATED_VARIANT_ID)
             .quantity(UPDATED_QUANTITY)
             .unitPrice(UPDATED_UNIT_PRICE)
             .totalPrice(UPDATED_TOTAL_PRICE)
@@ -1053,6 +1183,8 @@ class OrderItemResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orderItem.getId().intValue())))
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].variantId").value(hasItem(DEFAULT_VARIANT_ID.intValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.intValue())))
             .andExpect(jsonPath("$.[*].unitPrice").value(hasItem(sameNumber(DEFAULT_UNIT_PRICE))))
             .andExpect(jsonPath("$.[*].totalPrice").value(hasItem(sameNumber(DEFAULT_TOTAL_PRICE))))

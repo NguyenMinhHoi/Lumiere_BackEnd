@@ -15,18 +15,20 @@ public class TicketCommentDTO implements Serializable {
 
     private Long id;
 
+    @NotNull
+    private Long ticketId;
+
+    @NotNull
+    private Long authorId;
+
     @Lob
-    private String content;
+    private String body;
 
     @NotNull
     private Visibility visibility;
 
     @NotNull
     private Instant createdAt;
-
-    private TicketDTO ticket;
-
-    private UserDTO author;
 
     public Long getId() {
         return id;
@@ -36,12 +38,28 @@ public class TicketCommentDTO implements Serializable {
         this.id = id;
     }
 
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+
     public String getBody() {
-        return content;
+        return body;
     }
 
     public void setBody(String body) {
-        this.content = body;
+        this.body = body;
     }
 
     public Visibility getVisibility() {
@@ -58,22 +76,6 @@ public class TicketCommentDTO implements Serializable {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(TicketDTO ticket) {
-        this.ticket = ticket;
-    }
-
-    public UserDTO getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(UserDTO author) {
-        this.author = author;
     }
 
     @Override
@@ -102,11 +104,11 @@ public class TicketCommentDTO implements Serializable {
     public String toString() {
         return "TicketCommentDTO{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", authorId=" + getAuthorId() +
             ", body='" + getBody() + "'" +
             ", visibility='" + getVisibility() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
-            ", ticket=" + getTicket() +
-            ", author=" + getAuthor() +
             "}";
     }
 }

@@ -58,7 +58,7 @@ class TicketCommentSearchRepositoryInternalImpl implements TicketCommentSearchRe
 
     @Override
     public void index(TicketComment entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

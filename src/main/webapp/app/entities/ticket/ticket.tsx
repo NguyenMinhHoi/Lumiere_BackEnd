@@ -177,6 +177,22 @@ export const Ticket = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.ticket.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('customerId')}>
+                  <Translate contentKey="lumiApp.ticket.customerId">Customer Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('customerId')} />
+                </th>
+                <th className="hand" onClick={sort('slaPlanId')}>
+                  <Translate contentKey="lumiApp.ticket.slaPlanId">Sla Plan Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('slaPlanId')} />
+                </th>
+                <th className="hand" onClick={sort('orderId')}>
+                  <Translate contentKey="lumiApp.ticket.orderId">Order Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('orderId')} />
+                </th>
+                <th className="hand" onClick={sort('assigneeEmployeeId')}>
+                  <Translate contentKey="lumiApp.ticket.assigneeEmployeeId">Assignee Employee Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('assigneeEmployeeId')} />
+                </th>
                 <th className="hand" onClick={sort('code')}>
                   <Translate contentKey="lumiApp.ticket.code">Code</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('code')} />
                 </th>
@@ -216,18 +232,6 @@ export const Ticket = () => {
                   <Translate contentKey="lumiApp.ticket.slaDueAt">Sla Due At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('slaDueAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticket.customer">Customer</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticket.assignee">Assignee</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticket.slaPlan">Sla Plan</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.ticket.order">Order</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -239,6 +243,10 @@ export const Ticket = () => {
                       {ticket.id}
                     </Button>
                   </td>
+                  <td>{ticket.customerId}</td>
+                  <td>{ticket.slaPlanId}</td>
+                  <td>{ticket.orderId}</td>
+                  <td>{ticket.assigneeEmployeeId}</td>
                   <td>{ticket.code}</td>
                   <td>{ticket.subject}</td>
                   <td>{ticket.description}</td>
@@ -257,10 +265,6 @@ export const Ticket = () => {
                   </td>
                   <td>{ticket.resolvedAt ? <TextFormat type="date" value={ticket.resolvedAt} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{ticket.slaDueAt ? <TextFormat type="date" value={ticket.slaDueAt} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{ticket.customer ? <Link to={`/customer/${ticket.customer.id}`}>{ticket.customer.code}</Link> : ''}</td>
-                  <td>{ticket.assignee ? ticket.assignee.login : ''}</td>
-                  <td>{ticket.slaPlan ? <Link to={`/sla-plan/${ticket.slaPlan.id}`}>{ticket.slaPlan.name}</Link> : ''}</td>
-                  <td>{ticket.order ? <Link to={`/orders/${ticket.order.id}`}>{ticket.order.code}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/ticket/${ticket.id}`} color="info" size="sm" data-cy="entityDetailsButton">

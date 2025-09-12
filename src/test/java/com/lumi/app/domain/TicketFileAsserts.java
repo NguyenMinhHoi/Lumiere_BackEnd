@@ -47,6 +47,8 @@ public class TicketFileAsserts {
     public static void assertTicketFileUpdatableFieldsEquals(TicketFile expected, TicketFile actual) {
         assertThat(actual)
             .as("Verify TicketFile relevant properties")
+            .satisfies(a -> assertThat(a.getTicketId()).as("check ticketId").isEqualTo(expected.getTicketId()))
+            .satisfies(a -> assertThat(a.getUploaderId()).as("check uploaderId").isEqualTo(expected.getUploaderId()))
             .satisfies(a -> assertThat(a.getFileName()).as("check fileName").isEqualTo(expected.getFileName()))
             .satisfies(a -> assertThat(a.getOriginalName()).as("check originalName").isEqualTo(expected.getOriginalName()))
             .satisfies(a -> assertThat(a.getContentType()).as("check contentType").isEqualTo(expected.getContentType()))
@@ -66,8 +68,6 @@ public class TicketFileAsserts {
      * @param actual the actual entity
      */
     public static void assertTicketFileUpdatableRelationshipsEquals(TicketFile expected, TicketFile actual) {
-        assertThat(actual)
-            .as("Verify TicketFile relationships")
-            .satisfies(a -> assertThat(a.getTicket()).as("check ticket").isEqualTo(expected.getTicket()));
+        // empty method
     }
 }

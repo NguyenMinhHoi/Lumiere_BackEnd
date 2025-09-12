@@ -68,7 +68,9 @@ public class TicketFileGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"fileName\": \"SAMPLE_TEXT\"" +
+                                "\"ticketId\": 0" +
+                                ", \"uploaderId\": 0" +
+                                ", \"fileName\": \"SAMPLE_TEXT\"" +
                                 ", \"originalName\": \"SAMPLE_TEXT\"" +
                                 ", \"contentType\": \"SAMPLE_TEXT\"" +
                                 ", \"capacity\": 0" +

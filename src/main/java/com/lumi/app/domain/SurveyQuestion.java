@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lumi.app.domain.enumeration.QuestionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -25,6 +24,10 @@ public class SurveyQuestion implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
+
+    @NotNull
+    @Column(name = "survey_id", nullable = false)
+    private Long surveyId;
 
     @NotNull
     @Size(min = 3, max = 300)
@@ -57,10 +60,6 @@ public class SurveyQuestion implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Integer)
     private Integer orderNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
-    private Survey survey;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -74,6 +73,19 @@ public class SurveyQuestion implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getSurveyId() {
+        return this.surveyId;
+    }
+
+    public SurveyQuestion surveyId(Long surveyId) {
+        this.setSurveyId(surveyId);
+        return this;
+    }
+
+    public void setSurveyId(Long surveyId) {
+        this.surveyId = surveyId;
     }
 
     public String getText() {
@@ -154,19 +166,6 @@ public class SurveyQuestion implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public Survey getSurvey() {
-        return this.survey;
-    }
-
-    public void setSurvey(Survey survey) {
-        this.survey = survey;
-    }
-
-    public SurveyQuestion survey(Survey survey) {
-        this.setSurvey(survey);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -191,6 +190,7 @@ public class SurveyQuestion implements Serializable {
     public String toString() {
         return "SurveyQuestion{" +
             "id=" + getId() +
+            ", surveyId=" + getSurveyId() +
             ", text='" + getText() + "'" +
             ", questionType='" + getQuestionType() + "'" +
             ", scaleMin=" + getScaleMin() +

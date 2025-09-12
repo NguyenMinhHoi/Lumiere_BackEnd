@@ -76,6 +76,7 @@ class ProductVariantCriteriaTest {
 
     private static void setAllFilters(ProductVariantCriteria productVariantCriteria) {
         productVariantCriteria.id();
+        productVariantCriteria.productId();
         productVariantCriteria.sku();
         productVariantCriteria.name();
         productVariantCriteria.price();
@@ -89,7 +90,6 @@ class ProductVariantCriteriaTest {
         productVariantCriteria.isDefault();
         productVariantCriteria.createdAt();
         productVariantCriteria.updatedAt();
-        productVariantCriteria.productId();
         productVariantCriteria.distinct();
     }
 
@@ -97,6 +97,7 @@ class ProductVariantCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getProductId()) &&
                 condition.apply(criteria.getSku()) &&
                 condition.apply(criteria.getName()) &&
                 condition.apply(criteria.getPrice()) &&
@@ -110,7 +111,6 @@ class ProductVariantCriteriaTest {
                 condition.apply(criteria.getIsDefault()) &&
                 condition.apply(criteria.getCreatedAt()) &&
                 condition.apply(criteria.getUpdatedAt()) &&
-                condition.apply(criteria.getProductId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -123,6 +123,7 @@ class ProductVariantCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getProductId(), copy.getProductId()) &&
                 condition.apply(criteria.getSku(), copy.getSku()) &&
                 condition.apply(criteria.getName(), copy.getName()) &&
                 condition.apply(criteria.getPrice(), copy.getPrice()) &&
@@ -136,7 +137,6 @@ class ProductVariantCriteriaTest {
                 condition.apply(criteria.getIsDefault(), copy.getIsDefault()) &&
                 condition.apply(criteria.getCreatedAt(), copy.getCreatedAt()) &&
                 condition.apply(criteria.getUpdatedAt(), copy.getUpdatedAt()) &&
-                condition.apply(criteria.getProductId(), copy.getProductId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

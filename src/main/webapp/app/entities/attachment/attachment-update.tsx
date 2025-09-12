@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getTickets } from 'app/entities/ticket/ticket.reducer';
-import { getEntities as getTicketComments } from 'app/entities/ticket-comment/ticket-comment.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './attachment.reducer';
 
 export const AttachmentUpdate = () => {
@@ -19,8 +17,6 @@ export const AttachmentUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const tickets = useAppSelector(state => state.ticket.entities);
-  const ticketComments = useAppSelector(state => state.ticketComment.entities);
   const attachmentEntity = useAppSelector(state => state.attachment.entity);
   const loading = useAppSelector(state => state.attachment.loading);
   const updating = useAppSelector(state => state.attachment.updating);
@@ -36,9 +32,6 @@ export const AttachmentUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getTickets({}));
-    dispatch(getTicketComments({}));
   }, []);
 
   useEffect(() => {
@@ -51,6 +44,12 @@ export const AttachmentUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.ticketId !== undefined && typeof values.ticketId !== 'number') {
+      values.ticketId = Number(values.ticketId);
+    }
+    if (values.commentId !== undefined && typeof values.commentId !== 'number') {
+      values.commentId = Number(values.commentId);
+    }
     if (values.size !== undefined && typeof values.size !== 'number') {
       values.size = Number(values.size);
     }
@@ -59,8 +58,6 @@ export const AttachmentUpdate = () => {
     const entity = {
       ...attachmentEntity,
       ...values,
-      ticket: tickets.find(it => it.id.toString() === values.ticket?.toString()),
-      comment: ticketComments.find(it => it.id.toString() === values.comment?.toString()),
     };
 
     if (isNew) {
@@ -78,8 +75,6 @@ export const AttachmentUpdate = () => {
       : {
           ...attachmentEntity,
           uploadedAt: convertDateTimeFromServer(attachmentEntity.uploadedAt),
-          ticket: attachmentEntity?.ticket?.id,
-          comment: attachmentEntity?.comment?.id,
         };
 
   return (
@@ -107,6 +102,20 @@ export const AttachmentUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
+              <ValidatedField
+                label={translate('lumiApp.attachment.ticketId')}
+                id="attachment-ticketId"
+                name="ticketId"
+                data-cy="ticketId"
+                type="text"
+              />
+              <ValidatedField
+                label={translate('lumiApp.attachment.commentId')}
+                id="attachment-commentId"
+                name="commentId"
+                data-cy="commentId"
+                type="text"
+              />
               <ValidatedField
                 label={translate('lumiApp.attachment.name')}
                 id="attachment-name"
@@ -161,38 +170,6 @@ export const AttachmentUpdate = () => {
                   required: { value: true, message: translate('entity.validation.required') },
                 }}
               />
-              <ValidatedField
-                id="attachment-ticket"
-                name="ticket"
-                data-cy="ticket"
-                label={translate('lumiApp.attachment.ticket')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {tickets
-                  ? tickets.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="attachment-comment"
-                name="comment"
-                data-cy="comment"
-                label={translate('lumiApp.attachment.comment')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {ticketComments
-                  ? ticketComments.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/attachment" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

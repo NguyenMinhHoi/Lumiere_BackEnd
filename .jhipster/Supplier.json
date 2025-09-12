@@ -57,5 +57,5 @@
   "name": "Supplier",
   "pagination": "pagination",
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }

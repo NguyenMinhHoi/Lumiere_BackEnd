@@ -176,6 +176,14 @@ export const OrderItem = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.orderItem.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('orderId')}>
+                  <Translate contentKey="lumiApp.orderItem.orderId">Order Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('orderId')} />
+                </th>
+                <th className="hand" onClick={sort('variantId')}>
+                  <Translate contentKey="lumiApp.orderItem.variantId">Variant Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('variantId')} />
+                </th>
                 <th className="hand" onClick={sort('quantity')}>
                   <Translate contentKey="lumiApp.orderItem.quantity">Quantity</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('quantity')} />
@@ -196,12 +204,6 @@ export const OrderItem = () => {
                   <Translate contentKey="lumiApp.orderItem.skuSnapshot">Sku Snapshot</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('skuSnapshot')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.orderItem.order">Order</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.orderItem.variant">Variant</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -213,13 +215,13 @@ export const OrderItem = () => {
                       {orderItem.id}
                     </Button>
                   </td>
+                  <td>{orderItem.orderId}</td>
+                  <td>{orderItem.variantId}</td>
                   <td>{orderItem.quantity}</td>
                   <td>{orderItem.unitPrice}</td>
                   <td>{orderItem.totalPrice}</td>
                   <td>{orderItem.nameSnapshot}</td>
                   <td>{orderItem.skuSnapshot}</td>
-                  <td>{orderItem.order ? <Link to={`/orders/${orderItem.order.id}`}>{orderItem.order.code}</Link> : ''}</td>
-                  <td>{orderItem.variant ? <Link to={`/product-variant/${orderItem.variant.id}`}>{orderItem.variant.sku}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/order-item/${orderItem.id}`} color="info" size="sm" data-cy="entityDetailsButton">

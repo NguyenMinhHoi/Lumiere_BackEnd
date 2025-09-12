@@ -33,6 +33,30 @@ export const TicketDetail = () => {
           </dt>
           <dd>{ticketEntity.id}</dd>
           <dt>
+            <span id="customerId">
+              <Translate contentKey="lumiApp.ticket.customerId">Customer Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketEntity.customerId}</dd>
+          <dt>
+            <span id="slaPlanId">
+              <Translate contentKey="lumiApp.ticket.slaPlanId">Sla Plan Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketEntity.slaPlanId}</dd>
+          <dt>
+            <span id="orderId">
+              <Translate contentKey="lumiApp.ticket.orderId">Order Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketEntity.orderId}</dd>
+          <dt>
+            <span id="assigneeEmployeeId">
+              <Translate contentKey="lumiApp.ticket.assigneeEmployeeId">Assignee Employee Id</Translate>
+            </span>
+          </dt>
+          <dd>{ticketEntity.assigneeEmployeeId}</dd>
+          <dt>
             <span id="code">
               <Translate contentKey="lumiApp.ticket.code">Code</Translate>
             </span>
@@ -94,35 +118,6 @@ export const TicketDetail = () => {
             </span>
           </dt>
           <dd>{ticketEntity.slaDueAt ? <TextFormat value={ticketEntity.slaDueAt} type="date" format={APP_DATE_FORMAT} /> : null}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticket.customer">Customer</Translate>
-          </dt>
-          <dd>{ticketEntity.customer ? ticketEntity.customer.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticket.assignee">Assignee</Translate>
-          </dt>
-          <dd>{ticketEntity.assignee ? ticketEntity.assignee.login : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticket.slaPlan">Sla Plan</Translate>
-          </dt>
-          <dd>{ticketEntity.slaPlan ? ticketEntity.slaPlan.name : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticket.order">Order</Translate>
-          </dt>
-          <dd>{ticketEntity.order ? ticketEntity.order.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.ticket.tags">Tags</Translate>
-          </dt>
-          <dd>
-            {ticketEntity.tags
-              ? ticketEntity.tags.map((val, i) => (
-                  <span key={val.id}>
-                    <a>{val.name}</a>
-                    {ticketEntity.tags && i === ticketEntity.tags.length - 1 ? '' : ', '}
-                  </span>
-                ))
-              : null}
-          </dd>
         </dl>
         <Button tag={Link} to="/ticket" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

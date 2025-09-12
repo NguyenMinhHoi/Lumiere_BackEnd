@@ -33,6 +33,24 @@ export const SurveyResponseDetail = () => {
           </dt>
           <dd>{surveyResponseEntity.id}</dd>
           <dt>
+            <span id="surveyId">
+              <Translate contentKey="lumiApp.surveyResponse.surveyId">Survey Id</Translate>
+            </span>
+          </dt>
+          <dd>{surveyResponseEntity.surveyId}</dd>
+          <dt>
+            <span id="customerId">
+              <Translate contentKey="lumiApp.surveyResponse.customerId">Customer Id</Translate>
+            </span>
+          </dt>
+          <dd>{surveyResponseEntity.customerId}</dd>
+          <dt>
+            <span id="ticketId">
+              <Translate contentKey="lumiApp.surveyResponse.ticketId">Ticket Id</Translate>
+            </span>
+          </dt>
+          <dd>{surveyResponseEntity.ticketId}</dd>
+          <dt>
             <span id="respondedAt">
               <Translate contentKey="lumiApp.surveyResponse.respondedAt">Responded At</Translate>
             </span>
@@ -54,18 +72,6 @@ export const SurveyResponseDetail = () => {
             </span>
           </dt>
           <dd>{surveyResponseEntity.comment}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.surveyResponse.survey">Survey</Translate>
-          </dt>
-          <dd>{surveyResponseEntity.survey ? surveyResponseEntity.survey.title : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.surveyResponse.customer">Customer</Translate>
-          </dt>
-          <dd>{surveyResponseEntity.customer ? surveyResponseEntity.customer.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.surveyResponse.ticket">Ticket</Translate>
-          </dt>
-          <dd>{surveyResponseEntity.ticket ? surveyResponseEntity.ticket.code : ''}</dd>
         </dl>
         <Button tag={Link} to="/survey-response" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

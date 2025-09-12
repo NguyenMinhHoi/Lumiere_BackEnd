@@ -1,126 +1,58 @@
 package com.lumi.app.service;
 
-import com.lumi.app.domain.Tag;
-import com.lumi.app.repository.TagRepository;
-import com.lumi.app.repository.search.TagSearchRepository;
 import com.lumi.app.service.dto.TagDTO;
-import com.lumi.app.service.mapper.TagMapper;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service Implementation for managing {@link com.lumi.app.domain.Tag}.
+ * Service Interface for managing {@link com.lumi.app.domain.Tag}.
  */
-@Service
-@Transactional
-public class TagService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TagService.class);
-
-    private final TagRepository tagRepository;
-
-    private final TagMapper tagMapper;
-
-    private final TagSearchRepository tagSearchRepository;
-
-    public TagService(TagRepository tagRepository, TagMapper tagMapper, TagSearchRepository tagSearchRepository) {
-        this.tagRepository = tagRepository;
-        this.tagMapper = tagMapper;
-        this.tagSearchRepository = tagSearchRepository;
-    }
-
+public interface TagService {
     /**
      * Save a tag.
      *
      * @param tagDTO the entity to save.
      * @return the persisted entity.
      */
-    public TagDTO save(TagDTO tagDTO) {
-        LOG.debug("Request to save Tag : {}", tagDTO);
-        Tag tag = tagMapper.toEntity(tagDTO);
-        tag = tagRepository.save(tag);
-        tagSearchRepository.index(tag);
-        return tagMapper.toDto(tag);
-    }
+    TagDTO save(TagDTO tagDTO);
 
     /**
-     * Update a tag.
+     * Updates a tag.
      *
-     * @param tagDTO the entity to save.
+     * @param tagDTO the entity to update.
      * @return the persisted entity.
      */
-    public TagDTO update(TagDTO tagDTO) {
-        LOG.debug("Request to update Tag : {}", tagDTO);
-        Tag tag = tagMapper.toEntity(tagDTO);
-        tag = tagRepository.save(tag);
-        tagSearchRepository.index(tag);
-        return tagMapper.toDto(tag);
-    }
+    TagDTO update(TagDTO tagDTO);
 
     /**
-     * Partially update a tag.
+     * Partially updates a tag.
      *
      * @param tagDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<TagDTO> partialUpdate(TagDTO tagDTO) {
-        LOG.debug("Request to partially update Tag : {}", tagDTO);
-
-        return tagRepository
-            .findById(tagDTO.getId())
-            .map(existingTag -> {
-                tagMapper.partialUpdate(existingTag, tagDTO);
-
-                return existingTag;
-            })
-            .map(tagRepository::save)
-            .map(savedTag -> {
-                tagSearchRepository.index(savedTag);
-                return savedTag;
-            })
-            .map(tagMapper::toDto);
-    }
+    Optional<TagDTO> partialUpdate(TagDTO tagDTO);
 
     /**
      * Get all the tags.
      *
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public List<TagDTO> findAll() {
-        LOG.debug("Request to get all Tags");
-        return tagRepository.findAll().stream().map(tagMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
-    }
+    List<TagDTO> findAll();
 
     /**
-     * Get one tag by id.
+     * Get the "id" tag.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
-    public Optional<TagDTO> findOne(Long id) {
-        LOG.debug("Request to get Tag : {}", id);
-        return tagRepository.findById(id).map(tagMapper::toDto);
-    }
+    Optional<TagDTO> findOne(Long id);
 
     /**
-     * Delete the tag by id.
+     * Delete the "id" tag.
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
-        LOG.debug("Request to delete Tag : {}", id);
-        tagRepository.deleteById(id);
-        tagSearchRepository.deleteFromIndexById(id);
-    }
+    void delete(Long id);
 
     /**
      * Search for the tag corresponding to the query.
@@ -128,13 +60,5 @@ public class TagService {
      * @param query the query of the search.
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public List<TagDTO> search(String query) {
-        LOG.debug("Request to search Tags for query {}", query);
-        try {
-            return StreamSupport.stream(tagSearchRepository.search(query).spliterator(), false).map(tagMapper::toDto).toList();
-        } catch (RuntimeException e) {
-            throw e;
-        }
-    }
+    List<TagDTO> search(String query);
 }

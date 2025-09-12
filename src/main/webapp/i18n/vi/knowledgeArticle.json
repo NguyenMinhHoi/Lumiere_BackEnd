@@ -19,13 +19,12 @@
         "title": "Knowledge Article"
       },
       "id": "ID",
+      "categoryId": "Category Id",
       "title": "Title",
       "content": "Content",
       "published": "Published",
       "views": "Views",
-      "updatedAt": "Updated At",
-      "category": "Category",
-      "tags": "Tags"
+      "updatedAt": "Updated At"
     }
   }
 }

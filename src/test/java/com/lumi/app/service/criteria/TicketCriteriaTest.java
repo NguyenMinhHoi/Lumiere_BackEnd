@@ -76,6 +76,10 @@ class TicketCriteriaTest {
 
     private static void setAllFilters(TicketCriteria ticketCriteria) {
         ticketCriteria.id();
+        ticketCriteria.customerId();
+        ticketCriteria.slaPlanId();
+        ticketCriteria.orderId();
+        ticketCriteria.assigneeEmployeeId();
         ticketCriteria.code();
         ticketCriteria.subject();
         ticketCriteria.status();
@@ -85,11 +89,6 @@ class TicketCriteriaTest {
         ticketCriteria.firstResponseAt();
         ticketCriteria.resolvedAt();
         ticketCriteria.slaDueAt();
-        ticketCriteria.customerId();
-        ticketCriteria.assigneeId();
-        ticketCriteria.slaPlanId();
-        ticketCriteria.orderId();
-        ticketCriteria.tagsId();
         ticketCriteria.distinct();
     }
 
@@ -97,6 +96,10 @@ class TicketCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getCustomerId()) &&
+                condition.apply(criteria.getSlaPlanId()) &&
+                condition.apply(criteria.getOrderId()) &&
+                condition.apply(criteria.getAssigneeEmployeeId()) &&
                 condition.apply(criteria.getCode()) &&
                 condition.apply(criteria.getSubject()) &&
                 condition.apply(criteria.getStatus()) &&
@@ -106,11 +109,6 @@ class TicketCriteriaTest {
                 condition.apply(criteria.getFirstResponseAt()) &&
                 condition.apply(criteria.getResolvedAt()) &&
                 condition.apply(criteria.getSlaDueAt()) &&
-                condition.apply(criteria.getCustomerId()) &&
-                condition.apply(criteria.getAssigneeId()) &&
-                condition.apply(criteria.getSlaPlanId()) &&
-                condition.apply(criteria.getOrderId()) &&
-                condition.apply(criteria.getTagsId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -120,6 +118,10 @@ class TicketCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getCustomerId(), copy.getCustomerId()) &&
+                condition.apply(criteria.getSlaPlanId(), copy.getSlaPlanId()) &&
+                condition.apply(criteria.getOrderId(), copy.getOrderId()) &&
+                condition.apply(criteria.getAssigneeEmployeeId(), copy.getAssigneeEmployeeId()) &&
                 condition.apply(criteria.getCode(), copy.getCode()) &&
                 condition.apply(criteria.getSubject(), copy.getSubject()) &&
                 condition.apply(criteria.getStatus(), copy.getStatus()) &&
@@ -129,11 +131,6 @@ class TicketCriteriaTest {
                 condition.apply(criteria.getFirstResponseAt(), copy.getFirstResponseAt()) &&
                 condition.apply(criteria.getResolvedAt(), copy.getResolvedAt()) &&
                 condition.apply(criteria.getSlaDueAt(), copy.getSlaDueAt()) &&
-                condition.apply(criteria.getCustomerId(), copy.getCustomerId()) &&
-                condition.apply(criteria.getAssigneeId(), copy.getAssigneeId()) &&
-                condition.apply(criteria.getSlaPlanId(), copy.getSlaPlanId()) &&
-                condition.apply(criteria.getOrderId(), copy.getOrderId()) &&
-                condition.apply(criteria.getTagsId(), copy.getTagsId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

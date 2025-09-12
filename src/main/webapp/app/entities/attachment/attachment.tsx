@@ -139,6 +139,14 @@ export const Attachment = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.attachment.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('ticketId')}>
+                  <Translate contentKey="lumiApp.attachment.ticketId">Ticket Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('ticketId')} />
+                </th>
+                <th className="hand" onClick={sort('commentId')}>
+                  <Translate contentKey="lumiApp.attachment.commentId">Comment Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('commentId')} />
+                </th>
                 <th className="hand" onClick={sort('name')}>
                   <Translate contentKey="lumiApp.attachment.name">Name</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('name')} />
                 </th>
@@ -156,12 +164,6 @@ export const Attachment = () => {
                   <Translate contentKey="lumiApp.attachment.uploadedAt">Uploaded At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('uploadedAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.attachment.ticket">Ticket</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.attachment.comment">Comment</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -173,6 +175,8 @@ export const Attachment = () => {
                       {attachment.id}
                     </Button>
                   </td>
+                  <td>{attachment.ticketId}</td>
+                  <td>{attachment.commentId}</td>
                   <td>{attachment.name}</td>
                   <td>{attachment.url}</td>
                   <td>{attachment.contentType}</td>
@@ -180,8 +184,6 @@ export const Attachment = () => {
                   <td>
                     {attachment.uploadedAt ? <TextFormat type="date" value={attachment.uploadedAt} format={APP_DATE_FORMAT} /> : null}
                   </td>
-                  <td>{attachment.ticket ? <Link to={`/ticket/${attachment.ticket.id}`}>{attachment.ticket.code}</Link> : ''}</td>
-                  <td>{attachment.comment ? <Link to={`/ticket-comment/${attachment.comment.id}`}>{attachment.comment.id}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/attachment/${attachment.id}`} color="info" size="sm" data-cy="entityDetailsButton">

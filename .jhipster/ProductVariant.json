@@ -6,6 +6,11 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "productId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "sku",
       "fieldType": "String",
       "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
@@ -75,14 +80,6 @@
   "jpaMetamodelFiltering": true,
   "name": "ProductVariant",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "product",
-      "relationshipName": "product",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

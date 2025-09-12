@@ -141,12 +141,6 @@ export const Tag = () => {
                 <th className="hand" onClick={sort('name')}>
                   <Translate contentKey="lumiApp.tag.name">Name</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('name')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.tag.tickets">Tickets</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.tag.articles">Articles</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -159,26 +153,6 @@ export const Tag = () => {
                     </Button>
                   </td>
                   <td>{tag.name}</td>
-                  <td>
-                    {tag.tickets
-                      ? tag.tickets.map((val, j) => (
-                          <span key={j}>
-                            <Link to={`/ticket/${val.id}`}>{val.id}</Link>
-                            {j === tag.tickets.length - 1 ? '' : ', '}
-                          </span>
-                        ))
-                      : null}
-                  </td>
-                  <td>
-                    {tag.articles
-                      ? tag.articles.map((val, j) => (
-                          <span key={j}>
-                            <Link to={`/knowledge-article/${val.id}`}>{val.id}</Link>
-                            {j === tag.articles.length - 1 ? '' : ', '}
-                          </span>
-                        ))
-                      : null}
-                  </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/tag/${tag.id}`} color="info" size="sm" data-cy="entityDetailsButton">

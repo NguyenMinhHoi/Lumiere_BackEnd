@@ -12,16 +12,18 @@ public class SupplementTestSamples {
     private static final AtomicInteger intCount = new AtomicInteger(random.nextInt() + (2 * Short.MAX_VALUE));
 
     public static Supplement getSupplementSample1() {
-        return new Supplement().id(1L).currency("currency1").leadTimeDays(1).minOrderQty(1);
+        return new Supplement().id(1L).productId(1L).supplierId(1L).currency("currency1").leadTimeDays(1).minOrderQty(1);
     }
 
     public static Supplement getSupplementSample2() {
-        return new Supplement().id(2L).currency("currency2").leadTimeDays(2).minOrderQty(2);
+        return new Supplement().id(2L).productId(2L).supplierId(2L).currency("currency2").leadTimeDays(2).minOrderQty(2);
     }
 
     public static Supplement getSupplementRandomSampleGenerator() {
         return new Supplement()
             .id(longCount.incrementAndGet())
+            .productId(longCount.incrementAndGet())
+            .supplierId(longCount.incrementAndGet())
             .currency(UUID.randomUUID().toString())
             .leadTimeDays(intCount.incrementAndGet())
             .minOrderQty(intCount.incrementAndGet());

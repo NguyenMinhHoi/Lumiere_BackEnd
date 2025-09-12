@@ -6,6 +6,16 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "orderId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "variantId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "quantity",
       "fieldType": "Long",
       "fieldValidateRules": ["required", "min"],
@@ -39,21 +49,6 @@
   "jpaMetamodelFiltering": true,
   "name": "OrderItem",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "orders",
-      "relationshipName": "order",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "sku",
-      "otherEntityName": "productVariant",
-      "relationshipName": "variant",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

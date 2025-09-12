@@ -20,6 +20,21 @@ import orderItem from 'app/entities/order-item/order-item.reducer';
 import supplier from 'app/entities/supplier/supplier.reducer';
 import supplement from 'app/entities/supplement/supplement.reducer';
 import auditHistory from 'app/entities/audit-history/audit-history.reducer';
+import ticketTag from 'app/entities/ticket-tag/ticket-tag.reducer';
+import articleTag from 'app/entities/article-tag/article-tag.reducer';
+import appConfig from 'app/entities/app-config/app-config.reducer';
+import companyConfig from 'app/entities/company-config/company-config.reducer';
+import companyConfigAdditional from 'app/entities/company-config-additional/company-config-additional.reducer';
+import voucher from 'app/entities/voucher/voucher.reducer';
+import voucherRedemption from 'app/entities/voucher-redemption/voucher-redemption.reducer';
+import cart from 'app/entities/cart/cart.reducer';
+import cartItem from 'app/entities/cart-item/cart-item.reducer';
+import warehouse from 'app/entities/warehouse/warehouse.reducer';
+import inventory from 'app/entities/inventory/inventory.reducer';
+import stockMovement from 'app/entities/stock-movement/stock-movement.reducer';
+import campaign from 'app/entities/campaign/campaign.reducer';
+import integrationLog from 'app/entities/integration-log/integration-log.reducer';
+import employee from 'app/entities/employee/employee.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const entitiesReducers = {
@@ -45,6 +60,21 @@ const entitiesReducers = {
   supplier,
   supplement,
   auditHistory,
+  ticketTag,
+  articleTag,
+  appConfig,
+  companyConfig,
+  companyConfigAdditional,
+  voucher,
+  voucherRedemption,
+  cart,
+  cartItem,
+  warehouse,
+  inventory,
+  stockMovement,
+  campaign,
+  integrationLog,
+  employee,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
 };
 

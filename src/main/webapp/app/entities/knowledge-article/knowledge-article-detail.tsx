@@ -33,6 +33,12 @@ export const KnowledgeArticleDetail = () => {
           </dt>
           <dd>{knowledgeArticleEntity.id}</dd>
           <dt>
+            <span id="categoryId">
+              <Translate contentKey="lumiApp.knowledgeArticle.categoryId">Category Id</Translate>
+            </span>
+          </dt>
+          <dd>{knowledgeArticleEntity.categoryId}</dd>
+          <dt>
             <span id="title">
               <Translate contentKey="lumiApp.knowledgeArticle.title">Title</Translate>
             </span>
@@ -65,23 +71,6 @@ export const KnowledgeArticleDetail = () => {
             {knowledgeArticleEntity.updatedAt ? (
               <TextFormat value={knowledgeArticleEntity.updatedAt} type="date" format={APP_DATE_FORMAT} />
             ) : null}
-          </dd>
-          <dt>
-            <Translate contentKey="lumiApp.knowledgeArticle.category">Category</Translate>
-          </dt>
-          <dd>{knowledgeArticleEntity.category ? knowledgeArticleEntity.category.name : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.knowledgeArticle.tags">Tags</Translate>
-          </dt>
-          <dd>
-            {knowledgeArticleEntity.tags
-              ? knowledgeArticleEntity.tags.map((val, i) => (
-                  <span key={val.id}>
-                    <a>{val.name}</a>
-                    {knowledgeArticleEntity.tags && i === knowledgeArticleEntity.tags.length - 1 ? '' : ', '}
-                  </span>
-                ))
-              : null}
           </dd>
         </dl>
         <Button tag={Link} to="/knowledge-article" replace color="info" data-cy="entityDetailsBackButton">

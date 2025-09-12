@@ -47,6 +47,7 @@ public class KnowledgeArticleAsserts {
     public static void assertKnowledgeArticleUpdatableFieldsEquals(KnowledgeArticle expected, KnowledgeArticle actual) {
         assertThat(actual)
             .as("Verify KnowledgeArticle relevant properties")
+            .satisfies(a -> assertThat(a.getCategoryId()).as("check categoryId").isEqualTo(expected.getCategoryId()))
             .satisfies(a -> assertThat(a.getTitle()).as("check title").isEqualTo(expected.getTitle()))
             .satisfies(a -> assertThat(a.getContent()).as("check content").isEqualTo(expected.getContent()))
             .satisfies(a -> assertThat(a.getPublished()).as("check published").isEqualTo(expected.getPublished()))
@@ -61,9 +62,6 @@ public class KnowledgeArticleAsserts {
      * @param actual the actual entity
      */
     public static void assertKnowledgeArticleUpdatableRelationshipsEquals(KnowledgeArticle expected, KnowledgeArticle actual) {
-        assertThat(actual)
-            .as("Verify KnowledgeArticle relationships")
-            .satisfies(a -> assertThat(a.getCategory()).as("check category").isEqualTo(expected.getCategory()))
-            .satisfies(a -> assertThat(a.getTags()).as("check tags").isEqualTo(expected.getTags()));
+        // empty method
     }
 }

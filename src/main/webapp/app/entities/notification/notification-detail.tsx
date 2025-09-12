@@ -33,6 +33,24 @@ export const NotificationDetail = () => {
           </dt>
           <dd>{notificationEntity.id}</dd>
           <dt>
+            <span id="ticketId">
+              <Translate contentKey="lumiApp.notification.ticketId">Ticket Id</Translate>
+            </span>
+          </dt>
+          <dd>{notificationEntity.ticketId}</dd>
+          <dt>
+            <span id="customerId">
+              <Translate contentKey="lumiApp.notification.customerId">Customer Id</Translate>
+            </span>
+          </dt>
+          <dd>{notificationEntity.customerId}</dd>
+          <dt>
+            <span id="surveyId">
+              <Translate contentKey="lumiApp.notification.surveyId">Survey Id</Translate>
+            </span>
+          </dt>
+          <dd>{notificationEntity.surveyId}</dd>
+          <dt>
             <span id="type">
               <Translate contentKey="lumiApp.notification.type">Type</Translate>
             </span>
@@ -86,18 +104,6 @@ export const NotificationDetail = () => {
           <dd>
             {notificationEntity.createdAt ? <TextFormat value={notificationEntity.createdAt} type="date" format={APP_DATE_FORMAT} /> : null}
           </dd>
-          <dt>
-            <Translate contentKey="lumiApp.notification.ticket">Ticket</Translate>
-          </dt>
-          <dd>{notificationEntity.ticket ? notificationEntity.ticket.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.notification.customer">Customer</Translate>
-          </dt>
-          <dd>{notificationEntity.customer ? notificationEntity.customer.code : ''}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.notification.survey">Survey</Translate>
-          </dt>
-          <dd>{notificationEntity.survey ? notificationEntity.survey.title : ''}</dd>
         </dl>
         <Button tag={Link} to="/notification" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

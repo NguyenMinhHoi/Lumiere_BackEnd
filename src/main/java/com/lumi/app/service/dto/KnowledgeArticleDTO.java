@@ -4,9 +4,7 @@ import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A DTO for the {@link com.lumi.app.domain.KnowledgeArticle} entity.
@@ -16,10 +14,13 @@ public class KnowledgeArticleDTO implements Serializable {
 
     private Long id;
 
+    private Long categoryId;
+
     @NotNull
     @Size(min = 5, max = 200)
     private String title;
 
+    @Lob
     private String content;
 
     @NotNull
@@ -31,16 +32,20 @@ public class KnowledgeArticleDTO implements Serializable {
 
     private Instant updatedAt;
 
-    private KnowledgeCategoryDTO category;
-
-    private Set<TagDTO> tags = new HashSet<>();
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getTitle() {
@@ -83,22 +88,6 @@ public class KnowledgeArticleDTO implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public KnowledgeCategoryDTO getCategory() {
-        return category;
-    }
-
-    public void setCategory(KnowledgeCategoryDTO category) {
-        this.category = category;
-    }
-
-    public Set<TagDTO> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<TagDTO> tags) {
-        this.tags = tags;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -125,13 +114,12 @@ public class KnowledgeArticleDTO implements Serializable {
     public String toString() {
         return "KnowledgeArticleDTO{" +
             "id=" + getId() +
+            ", categoryId=" + getCategoryId() +
             ", title='" + getTitle() + "'" +
             ", content='" + getContent() + "'" +
             ", published='" + getPublished() + "'" +
             ", views=" + getViews() +
             ", updatedAt='" + getUpdatedAt() + "'" +
-            ", category=" + getCategory() +
-            ", tags=" + getTags() +
             "}";
     }
 }

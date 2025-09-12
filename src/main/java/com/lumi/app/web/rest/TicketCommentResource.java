@@ -141,21 +141,12 @@ public class TicketCommentResource {
      * {@code GET  /ticket-comments} : get all the ticketComments.
      *
      * @param pageable the pagination information.
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ticketComments in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<TicketCommentDTO>> getAllTicketComments(
-        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
-        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
-    ) {
+    public ResponseEntity<List<TicketCommentDTO>> getAllTicketComments(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of TicketComments");
-        Page<TicketCommentDTO> page;
-        if (eagerload) {
-            page = ticketCommentService.findAllWithEagerRelationships(pageable);
-        } else {
-            page = ticketCommentService.findAll(pageable);
-        }
+        Page<TicketCommentDTO> page = ticketCommentService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

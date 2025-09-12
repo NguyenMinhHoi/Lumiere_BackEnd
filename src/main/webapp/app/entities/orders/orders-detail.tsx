@@ -33,6 +33,12 @@ export const OrdersDetail = () => {
           </dt>
           <dd>{ordersEntity.id}</dd>
           <dt>
+            <span id="customerId">
+              <Translate contentKey="lumiApp.orders.customerId">Customer Id</Translate>
+            </span>
+          </dt>
+          <dd>{ordersEntity.customerId}</dd>
+          <dt>
             <span id="code">
               <Translate contentKey="lumiApp.orders.code">Code</Translate>
             </span>
@@ -86,10 +92,6 @@ export const OrdersDetail = () => {
             </span>
           </dt>
           <dd>{ordersEntity.updatedAt ? <TextFormat value={ordersEntity.updatedAt} type="date" format={APP_DATE_FORMAT} /> : null}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.orders.customer">Customer</Translate>
-          </dt>
-          <dd>{ordersEntity.customer ? ordersEntity.customer.code : ''}</dd>
         </dl>
         <Button tag={Link} to="/orders" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

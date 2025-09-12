@@ -68,7 +68,8 @@ public class KnowledgeArticleGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"title\": \"SAMPLE_TEXT\"" +
+                                "\"categoryId\": 0" +
+                                ", \"title\": \"SAMPLE_TEXT\"" +
                                 ", \"content\": null" +
                                 ", \"published\": null" +
                                 ", \"views\": 0" +

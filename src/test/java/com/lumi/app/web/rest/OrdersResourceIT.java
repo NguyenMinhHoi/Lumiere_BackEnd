@@ -12,21 +12,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
-import com.lumi.app.domain.Customer;
 import com.lumi.app.domain.Orders;
 import com.lumi.app.domain.enumeration.FulfillmentStatus;
 import com.lumi.app.domain.enumeration.OrderStatus;
 import com.lumi.app.domain.enumeration.PaymentStatus;
 import com.lumi.app.repository.OrdersRepository;
 import com.lumi.app.repository.search.OrdersSearchRepository;
-import com.lumi.app.service.OrdersService;
 import com.lumi.app.service.dto.OrdersDTO;
 import com.lumi.app.service.mapper.OrdersMapper;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -35,13 +32,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -52,10 +44,13 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link OrdersResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class OrdersResourceIT {
+
+    private static final Long DEFAULT_CUSTOMER_ID = 1L;
+    private static final Long UPDATED_CUSTOMER_ID = 2L;
+    private static final Long SMALLER_CUSTOMER_ID = 1L - 1L;
 
     private static final String DEFAULT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_CODE = "BBBBBBBBBB";
@@ -98,14 +93,8 @@ class OrdersResourceIT {
     @Autowired
     private OrdersRepository ordersRepository;
 
-    @Mock
-    private OrdersRepository ordersRepositoryMock;
-
     @Autowired
     private OrdersMapper ordersMapper;
-
-    @Mock
-    private OrdersService ordersServiceMock;
 
     @Autowired
     private OrdersSearchRepository ordersSearchRepository;
@@ -128,6 +117,7 @@ class OrdersResourceIT {
      */
     public static Orders createEntity() {
         return new Orders()
+            .customerId(DEFAULT_CUSTOMER_ID)
             .code(DEFAULT_CODE)
             .status(DEFAULT_STATUS)
             .paymentStatus(DEFAULT_PAYMENT_STATUS)
@@ -147,6 +137,7 @@ class OrdersResourceIT {
      */
     public static Orders createUpdatedEntity() {
         return new Orders()
+            .customerId(UPDATED_CUSTOMER_ID)
             .code(UPDATED_CODE)
             .status(UPDATED_STATUS)
             .paymentStatus(UPDATED_PAYMENT_STATUS)
@@ -342,6 +333,7 @@ class OrdersResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orders.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].paymentStatus").value(hasItem(DEFAULT_PAYMENT_STATUS.toString())))
@@ -351,23 +343,6 @@ class OrdersResourceIT {
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE)))
             .andExpect(jsonPath("$.[*].placedAt").value(hasItem(DEFAULT_PLACED_AT.toString())))
             .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllOrdersWithEagerRelationshipsIsEnabled() throws Exception {
-        when(ordersServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restOrdersMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(ordersServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllOrdersWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(ordersServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restOrdersMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(ordersRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -382,6 +357,7 @@ class OrdersResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(orders.getId().intValue()))
+            .andExpect(jsonPath("$.customerId").value(DEFAULT_CUSTOMER_ID.intValue()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.paymentStatus").value(DEFAULT_PAYMENT_STATUS.toString()))
@@ -406,6 +382,79 @@ class OrdersResourceIT {
         defaultOrdersFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultOrdersFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrdersByCustomerIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrders = ordersRepository.saveAndFlush(orders);
+
+        // Get all the ordersList where customerId equals to
+        defaultOrdersFiltering("customerId.equals=" + DEFAULT_CUSTOMER_ID, "customerId.equals=" + UPDATED_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrdersByCustomerIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedOrders = ordersRepository.saveAndFlush(orders);
+
+        // Get all the ordersList where customerId in
+        defaultOrdersFiltering("customerId.in=" + DEFAULT_CUSTOMER_ID + "," + UPDATED_CUSTOMER_ID, "customerId.in=" + UPDATED_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrdersByCustomerIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedOrders = ordersRepository.saveAndFlush(orders);
+
+        // Get all the ordersList where customerId is not null
+        defaultOrdersFiltering("customerId.specified=true", "customerId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllOrdersByCustomerIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrders = ordersRepository.saveAndFlush(orders);
+
+        // Get all the ordersList where customerId is greater than or equal to
+        defaultOrdersFiltering(
+            "customerId.greaterThanOrEqual=" + DEFAULT_CUSTOMER_ID,
+            "customerId.greaterThanOrEqual=" + UPDATED_CUSTOMER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllOrdersByCustomerIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedOrders = ordersRepository.saveAndFlush(orders);
+
+        // Get all the ordersList where customerId is less than or equal to
+        defaultOrdersFiltering("customerId.lessThanOrEqual=" + DEFAULT_CUSTOMER_ID, "customerId.lessThanOrEqual=" + SMALLER_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrdersByCustomerIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedOrders = ordersRepository.saveAndFlush(orders);
+
+        // Get all the ordersList where customerId is less than
+        defaultOrdersFiltering("customerId.lessThan=" + UPDATED_CUSTOMER_ID, "customerId.lessThan=" + DEFAULT_CUSTOMER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllOrdersByCustomerIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedOrders = ordersRepository.saveAndFlush(orders);
+
+        // Get all the ordersList where customerId is greater than
+        defaultOrdersFiltering("customerId.greaterThan=" + SMALLER_CUSTOMER_ID, "customerId.greaterThan=" + DEFAULT_CUSTOMER_ID);
     }
 
     @Test
@@ -796,28 +845,6 @@ class OrdersResourceIT {
         defaultOrdersFiltering("updatedAt.specified=true", "updatedAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllOrdersByCustomerIsEqualToSomething() throws Exception {
-        Customer customer;
-        if (TestUtil.findAll(em, Customer.class).isEmpty()) {
-            ordersRepository.saveAndFlush(orders);
-            customer = CustomerResourceIT.createEntity();
-        } else {
-            customer = TestUtil.findAll(em, Customer.class).get(0);
-        }
-        em.persist(customer);
-        em.flush();
-        orders.setCustomer(customer);
-        ordersRepository.saveAndFlush(orders);
-        Long customerId = customer.getId();
-        // Get all the ordersList where customer equals to customerId
-        defaultOrdersShouldBeFound("customerId.equals=" + customerId);
-
-        // Get all the ordersList where customer equals to (customerId + 1)
-        defaultOrdersShouldNotBeFound("customerId.equals=" + (customerId + 1));
-    }
-
     private void defaultOrdersFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultOrdersShouldBeFound(shouldBeFound);
         defaultOrdersShouldNotBeFound(shouldNotBeFound);
@@ -832,6 +859,7 @@ class OrdersResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orders.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].paymentStatus").value(hasItem(DEFAULT_PAYMENT_STATUS.toString())))
@@ -891,6 +919,7 @@ class OrdersResourceIT {
         // Disconnect from session so that the updates on updatedOrders are not directly saved in db
         em.detach(updatedOrders);
         updatedOrders
+            .customerId(UPDATED_CUSTOMER_ID)
             .code(UPDATED_CODE)
             .status(UPDATED_STATUS)
             .paymentStatus(UPDATED_PAYMENT_STATUS)
@@ -1006,11 +1035,11 @@ class OrdersResourceIT {
         partialUpdatedOrders.setId(orders.getId());
 
         partialUpdatedOrders
+            .code(UPDATED_CODE)
             .status(UPDATED_STATUS)
             .paymentStatus(UPDATED_PAYMENT_STATUS)
             .fulfillmentStatus(UPDATED_FULFILLMENT_STATUS)
-            .totalAmount(UPDATED_TOTAL_AMOUNT)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .placedAt(UPDATED_PLACED_AT);
 
         restOrdersMockMvc
             .perform(
@@ -1039,6 +1068,7 @@ class OrdersResourceIT {
         partialUpdatedOrders.setId(orders.getId());
 
         partialUpdatedOrders
+            .customerId(UPDATED_CUSTOMER_ID)
             .code(UPDATED_CODE)
             .status(UPDATED_STATUS)
             .paymentStatus(UPDATED_PAYMENT_STATUS)
@@ -1170,6 +1200,7 @@ class OrdersResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(orders.getId().intValue())))
+            .andExpect(jsonPath("$.[*].customerId").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].paymentStatus").value(hasItem(DEFAULT_PAYMENT_STATUS.toString())))

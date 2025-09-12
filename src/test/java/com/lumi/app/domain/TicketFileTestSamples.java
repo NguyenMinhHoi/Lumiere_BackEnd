@@ -12,6 +12,8 @@ public class TicketFileTestSamples {
     public static TicketFile getTicketFileSample1() {
         return new TicketFile()
             .id(1L)
+            .ticketId(1L)
+            .uploaderId(1L)
             .fileName("fileName1")
             .originalName("originalName1")
             .contentType("contentType1")
@@ -24,6 +26,8 @@ public class TicketFileTestSamples {
     public static TicketFile getTicketFileSample2() {
         return new TicketFile()
             .id(2L)
+            .ticketId(2L)
+            .uploaderId(2L)
             .fileName("fileName2")
             .originalName("originalName2")
             .contentType("contentType2")
@@ -36,6 +40,8 @@ public class TicketFileTestSamples {
     public static TicketFile getTicketFileRandomSampleGenerator() {
         return new TicketFile()
             .id(longCount.incrementAndGet())
+            .ticketId(longCount.incrementAndGet())
+            .uploaderId(longCount.incrementAndGet())
             .fileName(UUID.randomUUID().toString())
             .originalName(UUID.randomUUID().toString())
             .contentType(UUID.randomUUID().toString())

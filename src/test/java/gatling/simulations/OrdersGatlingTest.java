@@ -68,7 +68,8 @@ public class OrdersGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"code\": \"SAMPLE_TEXT\"" +
+                                "\"customerId\": 0" +
+                                ", \"code\": \"SAMPLE_TEXT\"" +
                                 ", \"status\": \"DRAFT\"" +
                                 ", \"paymentStatus\": \"UNPAID\"" +
                                 ", \"fulfillmentStatus\": \"UNFULFILLED\"" +

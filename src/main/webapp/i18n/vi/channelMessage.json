@@ -19,12 +19,12 @@
         "title": "Channel Message"
       },
       "id": "ID",
+      "ticketId": "Ticket Id",
+      "authorId": "Author Id",
       "direction": "Direction",
       "content": "Content",
       "sentAt": "Sent At",
-      "externalMessageId": "External Message Id",
-      "ticket": "Ticket",
-      "author": "Author"
+      "externalMessageId": "External Message Id"
     }
   }
 }

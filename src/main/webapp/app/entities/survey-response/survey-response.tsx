@@ -177,6 +177,18 @@ export const SurveyResponse = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.surveyResponse.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('surveyId')}>
+                  <Translate contentKey="lumiApp.surveyResponse.surveyId">Survey Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('surveyId')} />
+                </th>
+                <th className="hand" onClick={sort('customerId')}>
+                  <Translate contentKey="lumiApp.surveyResponse.customerId">Customer Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('customerId')} />
+                </th>
+                <th className="hand" onClick={sort('ticketId')}>
+                  <Translate contentKey="lumiApp.surveyResponse.ticketId">Ticket Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('ticketId')} />
+                </th>
                 <th className="hand" onClick={sort('respondedAt')}>
                   <Translate contentKey="lumiApp.surveyResponse.respondedAt">Responded At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('respondedAt')} />
@@ -189,15 +201,6 @@ export const SurveyResponse = () => {
                   <Translate contentKey="lumiApp.surveyResponse.comment">Comment</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('comment')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.surveyResponse.survey">Survey</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.surveyResponse.customer">Customer</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.surveyResponse.ticket">Ticket</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -209,6 +212,9 @@ export const SurveyResponse = () => {
                       {surveyResponse.id}
                     </Button>
                   </td>
+                  <td>{surveyResponse.surveyId}</td>
+                  <td>{surveyResponse.customerId}</td>
+                  <td>{surveyResponse.ticketId}</td>
                   <td>
                     {surveyResponse.respondedAt ? (
                       <TextFormat type="date" value={surveyResponse.respondedAt} format={APP_DATE_FORMAT} />
@@ -216,19 +222,6 @@ export const SurveyResponse = () => {
                   </td>
                   <td>{surveyResponse.score}</td>
                   <td>{surveyResponse.comment}</td>
-                  <td>
-                    {surveyResponse.survey ? <Link to={`/survey/${surveyResponse.survey.id}`}>{surveyResponse.survey.title}</Link> : ''}
-                  </td>
-                  <td>
-                    {surveyResponse.customer ? (
-                      <Link to={`/customer/${surveyResponse.customer.id}`}>{surveyResponse.customer.code}</Link>
-                    ) : (
-                      ''
-                    )}
-                  </td>
-                  <td>
-                    {surveyResponse.ticket ? <Link to={`/ticket/${surveyResponse.ticket.id}`}>{surveyResponse.ticket.code}</Link> : ''}
-                  </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/survey-response/${surveyResponse.id}`} color="info" size="sm" data-cy="entityDetailsButton">

@@ -1,7 +1,6 @@
 package com.lumi.app.domain;
 
 import static com.lumi.app.domain.TicketCommentTestSamples.*;
-import static com.lumi.app.domain.TicketTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lumi.app.web.rest.TestUtil;
@@ -21,17 +20,5 @@ class TicketCommentTest {
 
         ticketComment2 = getTicketCommentSample2();
         assertThat(ticketComment1).isNotEqualTo(ticketComment2);
-    }
-
-    @Test
-    void ticketTest() {
-        TicketComment ticketComment = getTicketCommentRandomSampleGenerator();
-        Ticket ticketBack = getTicketRandomSampleGenerator();
-
-        ticketComment.setTicket(ticketBack);
-        assertThat(ticketComment.getTicket()).isEqualTo(ticketBack);
-
-        ticketComment.ticket(null);
-        assertThat(ticketComment.getTicket()).isNull();
     }
 }

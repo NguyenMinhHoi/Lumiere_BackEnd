@@ -19,11 +19,11 @@
         "title": "Ticket Comment"
       },
       "id": "ID",
+      "ticketId": "Ticket Id",
+      "authorId": "Author Id",
       "body": "Body",
       "visibility": "Visibility",
-      "createdAt": "Created At",
-      "ticket": "Ticket",
-      "author": "Author"
+      "createdAt": "Created At"
     }
   }
 }

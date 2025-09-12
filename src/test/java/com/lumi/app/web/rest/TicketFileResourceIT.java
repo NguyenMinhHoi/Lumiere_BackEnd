@@ -11,21 +11,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
-import com.lumi.app.domain.Ticket;
 import com.lumi.app.domain.TicketFile;
-import com.lumi.app.domain.User;
 import com.lumi.app.domain.enumeration.FileStatus;
 import com.lumi.app.domain.enumeration.StorageType;
 import com.lumi.app.repository.TicketFileRepository;
-import com.lumi.app.repository.UserRepository;
 import com.lumi.app.repository.search.TicketFileSearchRepository;
-import com.lumi.app.service.TicketFileService;
 import com.lumi.app.service.dto.TicketFileDTO;
 import com.lumi.app.service.mapper.TicketFileMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -34,13 +29,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -51,10 +41,17 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link TicketFileResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class TicketFileResourceIT {
+
+    private static final Long DEFAULT_TICKET_ID = 1L;
+    private static final Long UPDATED_TICKET_ID = 2L;
+    private static final Long SMALLER_TICKET_ID = 1L - 1L;
+
+    private static final Long DEFAULT_UPLOADER_ID = 1L;
+    private static final Long UPDATED_UPLOADER_ID = 2L;
+    private static final Long SMALLER_UPLOADER_ID = 1L - 1L;
 
     private static final String DEFAULT_FILE_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FILE_NAME = "BBBBBBBBBB";
@@ -101,16 +98,7 @@ class TicketFileResourceIT {
     private TicketFileRepository ticketFileRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Mock
-    private TicketFileRepository ticketFileRepositoryMock;
-
-    @Autowired
     private TicketFileMapper ticketFileMapper;
-
-    @Mock
-    private TicketFileService ticketFileServiceMock;
 
     @Autowired
     private TicketFileSearchRepository ticketFileSearchRepository;
@@ -133,6 +121,8 @@ class TicketFileResourceIT {
      */
     public static TicketFile createEntity() {
         return new TicketFile()
+            .ticketId(DEFAULT_TICKET_ID)
+            .uploaderId(DEFAULT_UPLOADER_ID)
             .fileName(DEFAULT_FILE_NAME)
             .originalName(DEFAULT_ORIGINAL_NAME)
             .contentType(DEFAULT_CONTENT_TYPE)
@@ -153,6 +143,8 @@ class TicketFileResourceIT {
      */
     public static TicketFile createUpdatedEntity() {
         return new TicketFile()
+            .ticketId(UPDATED_TICKET_ID)
+            .uploaderId(UPDATED_UPLOADER_ID)
             .fileName(UPDATED_FILE_NAME)
             .originalName(UPDATED_ORIGINAL_NAME)
             .contentType(UPDATED_CONTENT_TYPE)
@@ -228,6 +220,27 @@ class TicketFileResourceIT {
 
         // Validate the TicketFile in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(ticketFileSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkTicketIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(ticketFileSearchRepository.findAll());
+        // set the field null
+        ticketFile.setTicketId(null);
+
+        // Create the TicketFile, which fails.
+        TicketFileDTO ticketFileDTO = ticketFileMapper.toDto(ticketFile);
+
+        restTicketFileMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(ticketFileDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
         int searchDatabaseSizeAfter = IterableUtil.sizeOf(ticketFileSearchRepository.findAll());
         assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
     }
@@ -349,6 +362,8 @@ class TicketFileResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticketFile.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].uploaderId").value(hasItem(DEFAULT_UPLOADER_ID.intValue())))
             .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME)))
             .andExpect(jsonPath("$.[*].originalName").value(hasItem(DEFAULT_ORIGINAL_NAME)))
             .andExpect(jsonPath("$.[*].contentType").value(hasItem(DEFAULT_CONTENT_TYPE)))
@@ -359,23 +374,6 @@ class TicketFileResourceIT {
             .andExpect(jsonPath("$.[*].checksum").value(hasItem(DEFAULT_CHECKSUM)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].uploadedAt").value(hasItem(DEFAULT_UPLOADED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllTicketFilesWithEagerRelationshipsIsEnabled() throws Exception {
-        when(ticketFileServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restTicketFileMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(ticketFileServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllTicketFilesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(ticketFileServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restTicketFileMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(ticketFileRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -390,6 +388,8 @@ class TicketFileResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(ticketFile.getId().intValue()))
+            .andExpect(jsonPath("$.ticketId").value(DEFAULT_TICKET_ID.intValue()))
+            .andExpect(jsonPath("$.uploaderId").value(DEFAULT_UPLOADER_ID.intValue()))
             .andExpect(jsonPath("$.fileName").value(DEFAULT_FILE_NAME))
             .andExpect(jsonPath("$.originalName").value(DEFAULT_ORIGINAL_NAME))
             .andExpect(jsonPath("$.contentType").value(DEFAULT_CONTENT_TYPE))
@@ -415,6 +415,155 @@ class TicketFileResourceIT {
         defaultTicketFileFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultTicketFileFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByTicketIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where ticketId equals to
+        defaultTicketFileFiltering("ticketId.equals=" + DEFAULT_TICKET_ID, "ticketId.equals=" + UPDATED_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByTicketIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where ticketId in
+        defaultTicketFileFiltering("ticketId.in=" + DEFAULT_TICKET_ID + "," + UPDATED_TICKET_ID, "ticketId.in=" + UPDATED_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByTicketIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where ticketId is not null
+        defaultTicketFileFiltering("ticketId.specified=true", "ticketId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByTicketIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where ticketId is greater than or equal to
+        defaultTicketFileFiltering("ticketId.greaterThanOrEqual=" + DEFAULT_TICKET_ID, "ticketId.greaterThanOrEqual=" + UPDATED_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByTicketIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where ticketId is less than or equal to
+        defaultTicketFileFiltering("ticketId.lessThanOrEqual=" + DEFAULT_TICKET_ID, "ticketId.lessThanOrEqual=" + SMALLER_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByTicketIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where ticketId is less than
+        defaultTicketFileFiltering("ticketId.lessThan=" + UPDATED_TICKET_ID, "ticketId.lessThan=" + DEFAULT_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByTicketIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where ticketId is greater than
+        defaultTicketFileFiltering("ticketId.greaterThan=" + SMALLER_TICKET_ID, "ticketId.greaterThan=" + DEFAULT_TICKET_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByUploaderIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where uploaderId equals to
+        defaultTicketFileFiltering("uploaderId.equals=" + DEFAULT_UPLOADER_ID, "uploaderId.equals=" + UPDATED_UPLOADER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByUploaderIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where uploaderId in
+        defaultTicketFileFiltering(
+            "uploaderId.in=" + DEFAULT_UPLOADER_ID + "," + UPDATED_UPLOADER_ID,
+            "uploaderId.in=" + UPDATED_UPLOADER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByUploaderIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where uploaderId is not null
+        defaultTicketFileFiltering("uploaderId.specified=true", "uploaderId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByUploaderIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where uploaderId is greater than or equal to
+        defaultTicketFileFiltering(
+            "uploaderId.greaterThanOrEqual=" + DEFAULT_UPLOADER_ID,
+            "uploaderId.greaterThanOrEqual=" + UPDATED_UPLOADER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByUploaderIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where uploaderId is less than or equal to
+        defaultTicketFileFiltering(
+            "uploaderId.lessThanOrEqual=" + DEFAULT_UPLOADER_ID,
+            "uploaderId.lessThanOrEqual=" + SMALLER_UPLOADER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByUploaderIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where uploaderId is less than
+        defaultTicketFileFiltering("uploaderId.lessThan=" + UPDATED_UPLOADER_ID, "uploaderId.lessThan=" + DEFAULT_UPLOADER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllTicketFilesByUploaderIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTicketFile = ticketFileRepository.saveAndFlush(ticketFile);
+
+        // Get all the ticketFileList where uploaderId is greater than
+        defaultTicketFileFiltering("uploaderId.greaterThan=" + SMALLER_UPLOADER_ID, "uploaderId.greaterThan=" + DEFAULT_UPLOADER_ID);
     }
 
     @Test
@@ -895,50 +1044,6 @@ class TicketFileResourceIT {
         defaultTicketFileFiltering("uploadedAt.specified=true", "uploadedAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllTicketFilesByTicketIsEqualToSomething() throws Exception {
-        Ticket ticket;
-        if (TestUtil.findAll(em, Ticket.class).isEmpty()) {
-            ticketFileRepository.saveAndFlush(ticketFile);
-            ticket = TicketResourceIT.createEntity();
-        } else {
-            ticket = TestUtil.findAll(em, Ticket.class).get(0);
-        }
-        em.persist(ticket);
-        em.flush();
-        ticketFile.setTicket(ticket);
-        ticketFileRepository.saveAndFlush(ticketFile);
-        Long ticketId = ticket.getId();
-        // Get all the ticketFileList where ticket equals to ticketId
-        defaultTicketFileShouldBeFound("ticketId.equals=" + ticketId);
-
-        // Get all the ticketFileList where ticket equals to (ticketId + 1)
-        defaultTicketFileShouldNotBeFound("ticketId.equals=" + (ticketId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllTicketFilesByUploaderIsEqualToSomething() throws Exception {
-        User uploader;
-        if (TestUtil.findAll(em, User.class).isEmpty()) {
-            ticketFileRepository.saveAndFlush(ticketFile);
-            uploader = UserResourceIT.createEntity();
-        } else {
-            uploader = TestUtil.findAll(em, User.class).get(0);
-        }
-        em.persist(uploader);
-        em.flush();
-        ticketFile.setUploader(uploader);
-        ticketFileRepository.saveAndFlush(ticketFile);
-        Long uploaderId = uploader.getId();
-        // Get all the ticketFileList where uploader equals to uploaderId
-        defaultTicketFileShouldBeFound("uploaderId.equals=" + uploaderId);
-
-        // Get all the ticketFileList where uploader equals to (uploaderId + 1)
-        defaultTicketFileShouldNotBeFound("uploaderId.equals=" + (uploaderId + 1));
-    }
-
     private void defaultTicketFileFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultTicketFileShouldBeFound(shouldBeFound);
         defaultTicketFileShouldNotBeFound(shouldNotBeFound);
@@ -953,6 +1058,8 @@ class TicketFileResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticketFile.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].uploaderId").value(hasItem(DEFAULT_UPLOADER_ID.intValue())))
             .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME)))
             .andExpect(jsonPath("$.[*].originalName").value(hasItem(DEFAULT_ORIGINAL_NAME)))
             .andExpect(jsonPath("$.[*].contentType").value(hasItem(DEFAULT_CONTENT_TYPE)))
@@ -1013,6 +1120,8 @@ class TicketFileResourceIT {
         // Disconnect from session so that the updates on updatedTicketFile are not directly saved in db
         em.detach(updatedTicketFile);
         updatedTicketFile
+            .ticketId(UPDATED_TICKET_ID)
+            .uploaderId(UPDATED_UPLOADER_ID)
             .fileName(UPDATED_FILE_NAME)
             .originalName(UPDATED_ORIGINAL_NAME)
             .contentType(UPDATED_CONTENT_TYPE)
@@ -1132,7 +1241,7 @@ class TicketFileResourceIT {
         TicketFile partialUpdatedTicketFile = new TicketFile();
         partialUpdatedTicketFile.setId(ticketFile.getId());
 
-        partialUpdatedTicketFile.capacity(UPDATED_CAPACITY).checksum(UPDATED_CHECKSUM);
+        partialUpdatedTicketFile.originalName(UPDATED_ORIGINAL_NAME).path(UPDATED_PATH).status(UPDATED_STATUS);
 
         restTicketFileMockMvc
             .perform(
@@ -1164,6 +1273,8 @@ class TicketFileResourceIT {
         partialUpdatedTicketFile.setId(ticketFile.getId());
 
         partialUpdatedTicketFile
+            .ticketId(UPDATED_TICKET_ID)
+            .uploaderId(UPDATED_UPLOADER_ID)
             .fileName(UPDATED_FILE_NAME)
             .originalName(UPDATED_ORIGINAL_NAME)
             .contentType(UPDATED_CONTENT_TYPE)
@@ -1296,6 +1407,8 @@ class TicketFileResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(ticketFile.getId().intValue())))
+            .andExpect(jsonPath("$.[*].ticketId").value(hasItem(DEFAULT_TICKET_ID.intValue())))
+            .andExpect(jsonPath("$.[*].uploaderId").value(hasItem(DEFAULT_UPLOADER_ID.intValue())))
             .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME)))
             .andExpect(jsonPath("$.[*].originalName").value(hasItem(DEFAULT_ORIGINAL_NAME)))
             .andExpect(jsonPath("$.[*].contentType").value(hasItem(DEFAULT_CONTENT_TYPE)))

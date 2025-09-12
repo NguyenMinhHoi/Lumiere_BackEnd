@@ -19,15 +19,15 @@
         "title": "Supplement"
       },
       "id": "ID",
+      "productId": "Product Id",
+      "supplierId": "Supplier Id",
       "supplyPrice": "Supply Price",
       "currency": "Currency",
       "leadTimeDays": "Lead Time Days",
       "minOrderQty": "Min Order Qty",
       "isPreferred": "Is Preferred",
       "createdAt": "Created At",
-      "updatedAt": "Updated At",
-      "product": "Product",
-      "supplier": "Supplier"
+      "updatedAt": "Updated At"
     }
   }
 }

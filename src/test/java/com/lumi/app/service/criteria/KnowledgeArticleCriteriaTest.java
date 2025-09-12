@@ -76,12 +76,11 @@ class KnowledgeArticleCriteriaTest {
 
     private static void setAllFilters(KnowledgeArticleCriteria knowledgeArticleCriteria) {
         knowledgeArticleCriteria.id();
+        knowledgeArticleCriteria.categoryId();
         knowledgeArticleCriteria.title();
         knowledgeArticleCriteria.published();
         knowledgeArticleCriteria.views();
         knowledgeArticleCriteria.updatedAt();
-        knowledgeArticleCriteria.categoryId();
-        knowledgeArticleCriteria.tagsId();
         knowledgeArticleCriteria.distinct();
     }
 
@@ -89,12 +88,11 @@ class KnowledgeArticleCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
+                condition.apply(criteria.getCategoryId()) &&
                 condition.apply(criteria.getTitle()) &&
                 condition.apply(criteria.getPublished()) &&
                 condition.apply(criteria.getViews()) &&
                 condition.apply(criteria.getUpdatedAt()) &&
-                condition.apply(criteria.getCategoryId()) &&
-                condition.apply(criteria.getTagsId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -107,12 +105,11 @@ class KnowledgeArticleCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getCategoryId(), copy.getCategoryId()) &&
                 condition.apply(criteria.getTitle(), copy.getTitle()) &&
                 condition.apply(criteria.getPublished(), copy.getPublished()) &&
                 condition.apply(criteria.getViews(), copy.getViews()) &&
                 condition.apply(criteria.getUpdatedAt(), copy.getUpdatedAt()) &&
-                condition.apply(criteria.getCategoryId(), copy.getCategoryId()) &&
-                condition.apply(criteria.getTagsId(), copy.getTagsId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

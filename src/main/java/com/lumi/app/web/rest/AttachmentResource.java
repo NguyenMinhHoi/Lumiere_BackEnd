@@ -134,13 +134,10 @@ public class AttachmentResource {
     /**
      * {@code GET  /attachments} : get all the attachments.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of attachments in body.
      */
     @GetMapping("")
-    public List<AttachmentDTO> getAllAttachments(
-        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
-    ) {
+    public List<AttachmentDTO> getAllAttachments() {
         LOG.debug("REST request to get all Attachments");
         return attachmentService.findAll();
     }

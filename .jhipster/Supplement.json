@@ -6,6 +6,16 @@
   "dto": "mapstruct",
   "fields": [
     {
+      "fieldName": "productId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "supplierId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "supplyPrice",
       "fieldType": "BigDecimal",
       "fieldValidateRules": ["required", "min"],
@@ -47,21 +57,6 @@
   "jpaMetamodelFiltering": true,
   "name": "Supplement",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "product",
-      "relationshipName": "product",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "code",
-      "otherEntityName": "supplier",
-      "relationshipName": "supplier",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "serviceClass"
+  "relationships": [],
+  "service": "serviceImpl"
 }

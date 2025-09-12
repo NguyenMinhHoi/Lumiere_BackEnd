@@ -177,6 +177,14 @@ export const Supplement = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="lumiApp.supplement.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
+                <th className="hand" onClick={sort('productId')}>
+                  <Translate contentKey="lumiApp.supplement.productId">Product Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('productId')} />
+                </th>
+                <th className="hand" onClick={sort('supplierId')}>
+                  <Translate contentKey="lumiApp.supplement.supplierId">Supplier Id</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('supplierId')} />
+                </th>
                 <th className="hand" onClick={sort('supplyPrice')}>
                   <Translate contentKey="lumiApp.supplement.supplyPrice">Supply Price</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('supplyPrice')} />
@@ -205,12 +213,6 @@ export const Supplement = () => {
                   <Translate contentKey="lumiApp.supplement.updatedAt">Updated At</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('updatedAt')} />
                 </th>
-                <th>
-                  <Translate contentKey="lumiApp.supplement.product">Product</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="lumiApp.supplement.supplier">Supplier</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
                 <th />
               </tr>
             </thead>
@@ -222,6 +224,8 @@ export const Supplement = () => {
                       {supplement.id}
                     </Button>
                   </td>
+                  <td>{supplement.productId}</td>
+                  <td>{supplement.supplierId}</td>
                   <td>{supplement.supplyPrice}</td>
                   <td>{supplement.currency}</td>
                   <td>{supplement.leadTimeDays}</td>
@@ -229,8 +233,6 @@ export const Supplement = () => {
                   <td>{supplement.isPreferred ? 'true' : 'false'}</td>
                   <td>{supplement.createdAt ? <TextFormat type="date" value={supplement.createdAt} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{supplement.updatedAt ? <TextFormat type="date" value={supplement.updatedAt} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{supplement.product ? <Link to={`/product/${supplement.product.id}`}>{supplement.product.code}</Link> : ''}</td>
-                  <td>{supplement.supplier ? <Link to={`/supplier/${supplement.supplier.id}`}>{supplement.supplier.code}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/supplement/${supplement.id}`} color="info" size="sm" data-cy="entityDetailsButton">

@@ -19,6 +19,9 @@
         "title": "Notification"
       },
       "id": "ID",
+      "ticketId": "Ticket Id",
+      "customerId": "Customer Id",
+      "surveyId": "Survey Id",
       "type": "Type",
       "channel": "Channel",
       "subject": "Subject",
@@ -26,10 +29,7 @@
       "sendStatus": "Send Status",
       "retryCount": "Retry Count",
       "lastTriedAt": "Last Tried At",
-      "createdAt": "Created At",
-      "ticket": "Ticket",
-      "customer": "Customer",
-      "survey": "Survey"
+      "createdAt": "Created At"
     }
   }
 }

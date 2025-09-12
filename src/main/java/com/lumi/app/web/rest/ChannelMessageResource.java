@@ -141,21 +141,14 @@ public class ChannelMessageResource {
      * {@code GET  /channel-messages} : get all the channelMessages.
      *
      * @param pageable the pagination information.
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of channelMessages in body.
      */
     @GetMapping("")
     public ResponseEntity<List<ChannelMessageDTO>> getAllChannelMessages(
-        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
-        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         LOG.debug("REST request to get a page of ChannelMessages");
-        Page<ChannelMessageDTO> page;
-        if (eagerload) {
-            page = channelMessageService.findAllWithEagerRelationships(pageable);
-        } else {
-            page = channelMessageService.findAll(pageable);
-        }
+        Page<ChannelMessageDTO> page = channelMessageService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

@@ -19,13 +19,13 @@
         "title": "Order Item"
       },
       "id": "ID",
+      "orderId": "Order Id",
+      "variantId": "Variant Id",
       "quantity": "Quantity",
       "unitPrice": "Unit Price",
       "totalPrice": "Total Price",
       "nameSnapshot": "Name Snapshot",
-      "skuSnapshot": "Sku Snapshot",
-      "order": "Order",
-      "variant": "Variant"
+      "skuSnapshot": "Sku Snapshot"
     }
   }
 }

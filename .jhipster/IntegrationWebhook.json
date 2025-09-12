@@ -38,5 +38,5 @@
   ],
   "name": "IntegrationWebhook",
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }

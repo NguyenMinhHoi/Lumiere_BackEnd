@@ -1,15 +1,12 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
-import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
+import { Translate, ValidatedField, ValidatedForm, isNumber, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities as getSurveys } from 'app/entities/survey/survey.reducer';
-import { getEntities as getCustomers } from 'app/entities/customer/customer.reducer';
-import { getEntities as getTickets } from 'app/entities/ticket/ticket.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './survey-response.reducer';
 
 export const SurveyResponseUpdate = () => {
@@ -20,9 +17,6 @@ export const SurveyResponseUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
-  const surveys = useAppSelector(state => state.survey.entities);
-  const customers = useAppSelector(state => state.customer.entities);
-  const tickets = useAppSelector(state => state.ticket.entities);
   const surveyResponseEntity = useAppSelector(state => state.surveyResponse.entity);
   const loading = useAppSelector(state => state.surveyResponse.loading);
   const updating = useAppSelector(state => state.surveyResponse.updating);
@@ -38,10 +32,6 @@ export const SurveyResponseUpdate = () => {
     } else {
       dispatch(getEntity(id));
     }
-
-    dispatch(getSurveys({}));
-    dispatch(getCustomers({}));
-    dispatch(getTickets({}));
   }, []);
 
   useEffect(() => {
@@ -54,6 +44,15 @@ export const SurveyResponseUpdate = () => {
     if (values.id !== undefined && typeof values.id !== 'number') {
       values.id = Number(values.id);
     }
+    if (values.surveyId !== undefined && typeof values.surveyId !== 'number') {
+      values.surveyId = Number(values.surveyId);
+    }
+    if (values.customerId !== undefined && typeof values.customerId !== 'number') {
+      values.customerId = Number(values.customerId);
+    }
+    if (values.ticketId !== undefined && typeof values.ticketId !== 'number') {
+      values.ticketId = Number(values.ticketId);
+    }
     values.respondedAt = convertDateTimeToServer(values.respondedAt);
     if (values.score !== undefined && typeof values.score !== 'number') {
       values.score = Number(values.score);
@@ -62,9 +61,6 @@ export const SurveyResponseUpdate = () => {
     const entity = {
       ...surveyResponseEntity,
       ...values,
-      survey: surveys.find(it => it.id.toString() === values.survey?.toString()),
-      customer: customers.find(it => it.id.toString() === values.customer?.toString()),
-      ticket: tickets.find(it => it.id.toString() === values.ticket?.toString()),
     };
 
     if (isNew) {
@@ -82,9 +78,6 @@ export const SurveyResponseUpdate = () => {
       : {
           ...surveyResponseEntity,
           respondedAt: convertDateTimeFromServer(surveyResponseEntity.respondedAt),
-          survey: surveyResponseEntity?.survey?.id,
-          customer: surveyResponseEntity?.customer?.id,
-          ticket: surveyResponseEntity?.ticket?.id,
         };
 
   return (
@@ -113,6 +106,31 @@ export const SurveyResponseUpdate = () => {
                 />
               ) : null}
               <ValidatedField
+                label={translate('lumiApp.surveyResponse.surveyId')}
+                id="survey-response-surveyId"
+                name="surveyId"
+                data-cy="surveyId"
+                type="text"
+                validate={{
+                  required: { value: true, message: translate('entity.validation.required') },
+                  validate: v => isNumber(v) || translate('entity.validation.number'),
+                }}
+              />
+              <ValidatedField
+                label={translate('lumiApp.surveyResponse.customerId')}
+                id="survey-response-customerId"
+                name="customerId"
+                data-cy="customerId"
+                type="text"
+              />
+              <ValidatedField
+                label={translate('lumiApp.surveyResponse.ticketId')}
+                id="survey-response-ticketId"
+                name="ticketId"
+                data-cy="ticketId"
+                type="text"
+              />
+              <ValidatedField
                 label={translate('lumiApp.surveyResponse.respondedAt')}
                 id="survey-response-respondedAt"
                 name="respondedAt"
@@ -137,54 +155,6 @@ export const SurveyResponseUpdate = () => {
                 data-cy="comment"
                 type="textarea"
               />
-              <ValidatedField
-                id="survey-response-survey"
-                name="survey"
-                data-cy="survey"
-                label={translate('lumiApp.surveyResponse.survey')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {surveys
-                  ? surveys.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.title}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="survey-response-customer"
-                name="customer"
-                data-cy="customer"
-                label={translate('lumiApp.surveyResponse.customer')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {customers
-                  ? customers.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
-              <ValidatedField
-                id="survey-response-ticket"
-                name="ticket"
-                data-cy="ticket"
-                label={translate('lumiApp.surveyResponse.ticket')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {tickets
-                  ? tickets.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.code}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/survey-response" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

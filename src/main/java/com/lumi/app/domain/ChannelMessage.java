@@ -1,6 +1,5 @@
 package com.lumi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lumi.app.domain.enumeration.MessageDirection;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -28,11 +27,19 @@ public class ChannelMessage implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId;
+
+    @Column(name = "author_id")
+    private Long authorId;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "direction", nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Keyword)
     private MessageDirection direction;
 
+    @Lob
     @Column(name = "content", nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String content;
@@ -45,13 +52,6 @@ public class ChannelMessage implements Serializable {
     @Column(name = "external_message_id", length = 128)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String externalMessageId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "customer", "assignee", "slaPlan", "order", "tags" }, allowSetters = true)
-    private Ticket ticket;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User author;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -66,6 +66,32 @@ public class ChannelMessage implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTicketId() {
+        return this.ticketId;
+    }
+
+    public ChannelMessage ticketId(Long ticketId) {
+        this.setTicketId(ticketId);
+        return this;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getAuthorId() {
+        return this.authorId;
+    }
+
+    public ChannelMessage authorId(Long authorId) {
+        this.setAuthorId(authorId);
+        return this;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
     public MessageDirection getDirection() {
@@ -120,32 +146,6 @@ public class ChannelMessage implements Serializable {
         this.externalMessageId = externalMessageId;
     }
 
-    public Ticket getTicket() {
-        return this.ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public ChannelMessage ticket(Ticket ticket) {
-        this.setTicket(ticket);
-        return this;
-    }
-
-    public User getAuthor() {
-        return this.author;
-    }
-
-    public void setAuthor(User user) {
-        this.author = user;
-    }
-
-    public ChannelMessage author(User user) {
-        this.setAuthor(user);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -170,6 +170,8 @@ public class ChannelMessage implements Serializable {
     public String toString() {
         return "ChannelMessage{" +
             "id=" + getId() +
+            ", ticketId=" + getTicketId() +
+            ", authorId=" + getAuthorId() +
             ", direction='" + getDirection() + "'" +
             ", content='" + getContent() + "'" +
             ", sentAt='" + getSentAt() + "'" +

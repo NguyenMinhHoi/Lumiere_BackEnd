@@ -57,7 +57,7 @@ class SupplementSearchRepositoryInternalImpl implements SupplementSearchReposito
 
     @Override
     public void index(Supplement entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

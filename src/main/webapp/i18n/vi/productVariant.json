@@ -19,6 +19,7 @@
         "title": "Product Variant"
       },
       "id": "ID",
+      "productId": "Product Id",
       "sku": "Sku",
       "name": "Name",
       "price": "Price",
@@ -31,8 +32,7 @@
       "height": "Height",
       "isDefault": "Is Default",
       "createdAt": "Created At",
-      "updatedAt": "Updated At",
-      "product": "Product"
+      "updatedAt": "Updated At"
     }
   }
 }

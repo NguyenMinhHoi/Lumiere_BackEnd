@@ -19,12 +19,12 @@
         "title": "Survey Response"
       },
       "id": "ID",
+      "surveyId": "Survey Id",
+      "customerId": "Customer Id",
+      "ticketId": "Ticket Id",
       "respondedAt": "Responded At",
       "score": "Score",
-      "comment": "Comment",
-      "survey": "Survey",
-      "customer": "Customer",
-      "ticket": "Ticket"
+      "comment": "Comment"
     }
   }
 }

@@ -68,7 +68,9 @@ public class SupplementGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"supplyPrice\": 0" +
+                                "\"productId\": 0" +
+                                ", \"supplierId\": 0" +
+                                ", \"supplyPrice\": 0" +
                                 ", \"currency\": \"SAMPLE_TEXT\"" +
                                 ", \"leadTimeDays\": 0" +
                                 ", \"minOrderQty\": 0" +

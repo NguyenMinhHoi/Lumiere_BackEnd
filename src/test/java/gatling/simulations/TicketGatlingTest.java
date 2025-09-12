@@ -68,7 +68,11 @@ public class TicketGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"code\": \"SAMPLE_TEXT\"" +
+                                "\"customerId\": 0" +
+                                ", \"slaPlanId\": 0" +
+                                ", \"orderId\": 0" +
+                                ", \"assigneeEmployeeId\": 0" +
+                                ", \"code\": \"SAMPLE_TEXT\"" +
                                 ", \"subject\": \"SAMPLE_TEXT\"" +
                                 ", \"description\": null" +
                                 ", \"status\": \"OPEN\"" +

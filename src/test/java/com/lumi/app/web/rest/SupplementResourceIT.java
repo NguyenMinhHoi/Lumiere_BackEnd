@@ -12,19 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumi.app.IntegrationTest;
-import com.lumi.app.domain.Product;
 import com.lumi.app.domain.Supplement;
-import com.lumi.app.domain.Supplier;
 import com.lumi.app.repository.SupplementRepository;
 import com.lumi.app.repository.search.SupplementSearchRepository;
-import com.lumi.app.service.SupplementService;
 import com.lumi.app.service.dto.SupplementDTO;
 import com.lumi.app.service.mapper.SupplementMapper;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -33,13 +29,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -50,10 +41,17 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link SupplementResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class SupplementResourceIT {
+
+    private static final Long DEFAULT_PRODUCT_ID = 1L;
+    private static final Long UPDATED_PRODUCT_ID = 2L;
+    private static final Long SMALLER_PRODUCT_ID = 1L - 1L;
+
+    private static final Long DEFAULT_SUPPLIER_ID = 1L;
+    private static final Long UPDATED_SUPPLIER_ID = 2L;
+    private static final Long SMALLER_SUPPLIER_ID = 1L - 1L;
 
     private static final BigDecimal DEFAULT_SUPPLY_PRICE = new BigDecimal(0);
     private static final BigDecimal UPDATED_SUPPLY_PRICE = new BigDecimal(1);
@@ -92,14 +90,8 @@ class SupplementResourceIT {
     @Autowired
     private SupplementRepository supplementRepository;
 
-    @Mock
-    private SupplementRepository supplementRepositoryMock;
-
     @Autowired
     private SupplementMapper supplementMapper;
-
-    @Mock
-    private SupplementService supplementServiceMock;
 
     @Autowired
     private SupplementSearchRepository supplementSearchRepository;
@@ -122,6 +114,8 @@ class SupplementResourceIT {
      */
     public static Supplement createEntity() {
         return new Supplement()
+            .productId(DEFAULT_PRODUCT_ID)
+            .supplierId(DEFAULT_SUPPLIER_ID)
             .supplyPrice(DEFAULT_SUPPLY_PRICE)
             .currency(DEFAULT_CURRENCY)
             .leadTimeDays(DEFAULT_LEAD_TIME_DAYS)
@@ -139,6 +133,8 @@ class SupplementResourceIT {
      */
     public static Supplement createUpdatedEntity() {
         return new Supplement()
+            .productId(UPDATED_PRODUCT_ID)
+            .supplierId(UPDATED_SUPPLIER_ID)
             .supplyPrice(UPDATED_SUPPLY_PRICE)
             .currency(UPDATED_CURRENCY)
             .leadTimeDays(UPDATED_LEAD_TIME_DAYS)
@@ -211,6 +207,48 @@ class SupplementResourceIT {
 
         // Validate the Supplement in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(supplementSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkProductIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(supplementSearchRepository.findAll());
+        // set the field null
+        supplement.setProductId(null);
+
+        // Create the Supplement, which fails.
+        SupplementDTO supplementDTO = supplementMapper.toDto(supplement);
+
+        restSupplementMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(supplementDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(supplementSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkSupplierIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(supplementSearchRepository.findAll());
+        // set the field null
+        supplement.setSupplierId(null);
+
+        // Create the Supplement, which fails.
+        SupplementDTO supplementDTO = supplementMapper.toDto(supplement);
+
+        restSupplementMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(supplementDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
         int searchDatabaseSizeAfter = IterableUtil.sizeOf(supplementSearchRepository.findAll());
         assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
     }
@@ -290,6 +328,8 @@ class SupplementResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(supplement.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].supplierId").value(hasItem(DEFAULT_SUPPLIER_ID.intValue())))
             .andExpect(jsonPath("$.[*].supplyPrice").value(hasItem(sameNumber(DEFAULT_SUPPLY_PRICE))))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY)))
             .andExpect(jsonPath("$.[*].leadTimeDays").value(hasItem(DEFAULT_LEAD_TIME_DAYS)))
@@ -297,23 +337,6 @@ class SupplementResourceIT {
             .andExpect(jsonPath("$.[*].isPreferred").value(hasItem(DEFAULT_IS_PREFERRED)))
             .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
             .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSupplementsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(supplementServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSupplementMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(supplementServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSupplementsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(supplementServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSupplementMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(supplementRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -328,6 +351,8 @@ class SupplementResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(supplement.getId().intValue()))
+            .andExpect(jsonPath("$.productId").value(DEFAULT_PRODUCT_ID.intValue()))
+            .andExpect(jsonPath("$.supplierId").value(DEFAULT_SUPPLIER_ID.intValue()))
             .andExpect(jsonPath("$.supplyPrice").value(sameNumber(DEFAULT_SUPPLY_PRICE)))
             .andExpect(jsonPath("$.currency").value(DEFAULT_CURRENCY))
             .andExpect(jsonPath("$.leadTimeDays").value(DEFAULT_LEAD_TIME_DAYS))
@@ -350,6 +375,158 @@ class SupplementResourceIT {
         defaultSupplementFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
 
         defaultSupplementFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsByProductIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where productId equals to
+        defaultSupplementFiltering("productId.equals=" + DEFAULT_PRODUCT_ID, "productId.equals=" + UPDATED_PRODUCT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsByProductIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where productId in
+        defaultSupplementFiltering("productId.in=" + DEFAULT_PRODUCT_ID + "," + UPDATED_PRODUCT_ID, "productId.in=" + UPDATED_PRODUCT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsByProductIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where productId is not null
+        defaultSupplementFiltering("productId.specified=true", "productId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsByProductIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where productId is greater than or equal to
+        defaultSupplementFiltering(
+            "productId.greaterThanOrEqual=" + DEFAULT_PRODUCT_ID,
+            "productId.greaterThanOrEqual=" + UPDATED_PRODUCT_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsByProductIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where productId is less than or equal to
+        defaultSupplementFiltering("productId.lessThanOrEqual=" + DEFAULT_PRODUCT_ID, "productId.lessThanOrEqual=" + SMALLER_PRODUCT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsByProductIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where productId is less than
+        defaultSupplementFiltering("productId.lessThan=" + UPDATED_PRODUCT_ID, "productId.lessThan=" + DEFAULT_PRODUCT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsByProductIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where productId is greater than
+        defaultSupplementFiltering("productId.greaterThan=" + SMALLER_PRODUCT_ID, "productId.greaterThan=" + DEFAULT_PRODUCT_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsBySupplierIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where supplierId equals to
+        defaultSupplementFiltering("supplierId.equals=" + DEFAULT_SUPPLIER_ID, "supplierId.equals=" + UPDATED_SUPPLIER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsBySupplierIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where supplierId in
+        defaultSupplementFiltering(
+            "supplierId.in=" + DEFAULT_SUPPLIER_ID + "," + UPDATED_SUPPLIER_ID,
+            "supplierId.in=" + UPDATED_SUPPLIER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsBySupplierIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where supplierId is not null
+        defaultSupplementFiltering("supplierId.specified=true", "supplierId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsBySupplierIdIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where supplierId is greater than or equal to
+        defaultSupplementFiltering(
+            "supplierId.greaterThanOrEqual=" + DEFAULT_SUPPLIER_ID,
+            "supplierId.greaterThanOrEqual=" + UPDATED_SUPPLIER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsBySupplierIdIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where supplierId is less than or equal to
+        defaultSupplementFiltering(
+            "supplierId.lessThanOrEqual=" + DEFAULT_SUPPLIER_ID,
+            "supplierId.lessThanOrEqual=" + SMALLER_SUPPLIER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsBySupplierIdIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where supplierId is less than
+        defaultSupplementFiltering("supplierId.lessThan=" + UPDATED_SUPPLIER_ID, "supplierId.lessThan=" + DEFAULT_SUPPLIER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllSupplementsBySupplierIdIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedSupplement = supplementRepository.saveAndFlush(supplement);
+
+        // Get all the supplementList where supplierId is greater than
+        defaultSupplementFiltering("supplierId.greaterThan=" + SMALLER_SUPPLIER_ID, "supplierId.greaterThan=" + DEFAULT_SUPPLIER_ID);
     }
 
     @Test
@@ -735,50 +912,6 @@ class SupplementResourceIT {
         defaultSupplementFiltering("updatedAt.specified=true", "updatedAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllSupplementsByProductIsEqualToSomething() throws Exception {
-        Product product;
-        if (TestUtil.findAll(em, Product.class).isEmpty()) {
-            supplementRepository.saveAndFlush(supplement);
-            product = ProductResourceIT.createEntity();
-        } else {
-            product = TestUtil.findAll(em, Product.class).get(0);
-        }
-        em.persist(product);
-        em.flush();
-        supplement.setProduct(product);
-        supplementRepository.saveAndFlush(supplement);
-        Long productId = product.getId();
-        // Get all the supplementList where product equals to productId
-        defaultSupplementShouldBeFound("productId.equals=" + productId);
-
-        // Get all the supplementList where product equals to (productId + 1)
-        defaultSupplementShouldNotBeFound("productId.equals=" + (productId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllSupplementsBySupplierIsEqualToSomething() throws Exception {
-        Supplier supplier;
-        if (TestUtil.findAll(em, Supplier.class).isEmpty()) {
-            supplementRepository.saveAndFlush(supplement);
-            supplier = SupplierResourceIT.createEntity();
-        } else {
-            supplier = TestUtil.findAll(em, Supplier.class).get(0);
-        }
-        em.persist(supplier);
-        em.flush();
-        supplement.setSupplier(supplier);
-        supplementRepository.saveAndFlush(supplement);
-        Long supplierId = supplier.getId();
-        // Get all the supplementList where supplier equals to supplierId
-        defaultSupplementShouldBeFound("supplierId.equals=" + supplierId);
-
-        // Get all the supplementList where supplier equals to (supplierId + 1)
-        defaultSupplementShouldNotBeFound("supplierId.equals=" + (supplierId + 1));
-    }
-
     private void defaultSupplementFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultSupplementShouldBeFound(shouldBeFound);
         defaultSupplementShouldNotBeFound(shouldNotBeFound);
@@ -793,6 +926,8 @@ class SupplementResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(supplement.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].supplierId").value(hasItem(DEFAULT_SUPPLIER_ID.intValue())))
             .andExpect(jsonPath("$.[*].supplyPrice").value(hasItem(sameNumber(DEFAULT_SUPPLY_PRICE))))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY)))
             .andExpect(jsonPath("$.[*].leadTimeDays").value(hasItem(DEFAULT_LEAD_TIME_DAYS)))
@@ -850,6 +985,8 @@ class SupplementResourceIT {
         // Disconnect from session so that the updates on updatedSupplement are not directly saved in db
         em.detach(updatedSupplement);
         updatedSupplement
+            .productId(UPDATED_PRODUCT_ID)
+            .supplierId(UPDATED_SUPPLIER_ID)
             .supplyPrice(UPDATED_SUPPLY_PRICE)
             .currency(UPDATED_CURRENCY)
             .leadTimeDays(UPDATED_LEAD_TIME_DAYS)
@@ -967,10 +1104,11 @@ class SupplementResourceIT {
         partialUpdatedSupplement.setId(supplement.getId());
 
         partialUpdatedSupplement
+            .supplyPrice(UPDATED_SUPPLY_PRICE)
+            .currency(UPDATED_CURRENCY)
             .leadTimeDays(UPDATED_LEAD_TIME_DAYS)
-            .minOrderQty(UPDATED_MIN_ORDER_QTY)
             .isPreferred(UPDATED_IS_PREFERRED)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .createdAt(UPDATED_CREATED_AT);
 
         restSupplementMockMvc
             .perform(
@@ -1002,6 +1140,8 @@ class SupplementResourceIT {
         partialUpdatedSupplement.setId(supplement.getId());
 
         partialUpdatedSupplement
+            .productId(UPDATED_PRODUCT_ID)
+            .supplierId(UPDATED_SUPPLIER_ID)
             .supplyPrice(UPDATED_SUPPLY_PRICE)
             .currency(UPDATED_CURRENCY)
             .leadTimeDays(UPDATED_LEAD_TIME_DAYS)
@@ -1131,6 +1271,8 @@ class SupplementResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(supplement.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].supplierId").value(hasItem(DEFAULT_SUPPLIER_ID.intValue())))
             .andExpect(jsonPath("$.[*].supplyPrice").value(hasItem(sameNumber(DEFAULT_SUPPLY_PRICE))))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY)))
             .andExpect(jsonPath("$.[*].leadTimeDays").value(hasItem(DEFAULT_LEAD_TIME_DAYS)))

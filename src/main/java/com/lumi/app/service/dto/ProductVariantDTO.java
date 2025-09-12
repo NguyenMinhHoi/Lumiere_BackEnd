@@ -15,6 +15,9 @@ public class ProductVariantDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private Long productId;
+
+    @NotNull
     @Size(min = 3, max = 64)
     private String sku;
 
@@ -51,14 +54,20 @@ public class ProductVariantDTO implements Serializable {
 
     private Instant updatedAt;
 
-    private ProductDTO product;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public String getSku() {
@@ -165,14 +174,6 @@ public class ProductVariantDTO implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public ProductDTO getProduct() {
-        return product;
-    }
-
-    public void setProduct(ProductDTO product) {
-        this.product = product;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -199,6 +200,7 @@ public class ProductVariantDTO implements Serializable {
     public String toString() {
         return "ProductVariantDTO{" +
             "id=" + getId() +
+            ", productId=" + getProductId() +
             ", sku='" + getSku() + "'" +
             ", name='" + getName() + "'" +
             ", price=" + getPrice() +
@@ -212,7 +214,6 @@ public class ProductVariantDTO implements Serializable {
             ", isDefault='" + getIsDefault() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
             ", updatedAt='" + getUpdatedAt() + "'" +
-            ", product=" + getProduct() +
             "}";
     }
 }

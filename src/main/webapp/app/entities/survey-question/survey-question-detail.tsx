@@ -32,6 +32,12 @@ export const SurveyQuestionDetail = () => {
           </dt>
           <dd>{surveyQuestionEntity.id}</dd>
           <dt>
+            <span id="surveyId">
+              <Translate contentKey="lumiApp.surveyQuestion.surveyId">Survey Id</Translate>
+            </span>
+          </dt>
+          <dd>{surveyQuestionEntity.surveyId}</dd>
+          <dt>
             <span id="text">
               <Translate contentKey="lumiApp.surveyQuestion.text">Text</Translate>
             </span>
@@ -67,10 +73,6 @@ export const SurveyQuestionDetail = () => {
             </span>
           </dt>
           <dd>{surveyQuestionEntity.orderNo}</dd>
-          <dt>
-            <Translate contentKey="lumiApp.surveyQuestion.survey">Survey</Translate>
-          </dt>
-          <dd>{surveyQuestionEntity.survey ? surveyQuestionEntity.survey.title : ''}</dd>
         </dl>
         <Button tag={Link} to="/survey-question" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

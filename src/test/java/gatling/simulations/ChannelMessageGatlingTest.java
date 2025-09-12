@@ -68,7 +68,9 @@ public class ChannelMessageGatlingTest extends Simulation {
                         .body(
                             StringBody(
                                 "{" +
-                                "\"direction\": \"INBOUND\"" +
+                                "\"ticketId\": 0" +
+                                ", \"authorId\": 0" +
+                                ", \"direction\": \"INBOUND\"" +
                                 ", \"content\": null" +
                                 ", \"sentAt\": \"2020-01-01T00:00:00.000Z\"" +
                                 ", \"externalMessageId\": \"SAMPLE_TEXT\"" +

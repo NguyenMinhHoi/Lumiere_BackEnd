@@ -19,12 +19,12 @@
         "title": "Survey"
       },
       "id": "ID",
+      "customerId": "Customer Id",
       "surveyType": "Survey Type",
       "title": "Title",
       "sentAt": "Sent At",
       "dueAt": "Due At",
-      "isActive": "Is Active",
-      "customer": "Customer"
+      "isActive": "Is Active"
     }
   }
 }

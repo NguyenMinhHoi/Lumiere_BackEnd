@@ -24,6 +24,8 @@ public class KnowledgeArticleCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private LongFilter categoryId;
+
     private StringFilter title;
 
     private BooleanFilter published;
@@ -32,22 +34,17 @@ public class KnowledgeArticleCriteria implements Serializable, Criteria {
 
     private InstantFilter updatedAt;
 
-    private LongFilter categoryId;
-
-    private LongFilter tagsId;
-
     private Boolean distinct;
 
     public KnowledgeArticleCriteria() {}
 
     public KnowledgeArticleCriteria(KnowledgeArticleCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.categoryId = other.optionalCategoryId().map(LongFilter::copy).orElse(null);
         this.title = other.optionalTitle().map(StringFilter::copy).orElse(null);
         this.published = other.optionalPublished().map(BooleanFilter::copy).orElse(null);
         this.views = other.optionalViews().map(LongFilter::copy).orElse(null);
         this.updatedAt = other.optionalUpdatedAt().map(InstantFilter::copy).orElse(null);
-        this.categoryId = other.optionalCategoryId().map(LongFilter::copy).orElse(null);
-        this.tagsId = other.optionalTagsId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -73,6 +70,25 @@ public class KnowledgeArticleCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public LongFilter getCategoryId() {
+        return categoryId;
+    }
+
+    public Optional<LongFilter> optionalCategoryId() {
+        return Optional.ofNullable(categoryId);
+    }
+
+    public LongFilter categoryId() {
+        if (categoryId == null) {
+            setCategoryId(new LongFilter());
+        }
+        return categoryId;
+    }
+
+    public void setCategoryId(LongFilter categoryId) {
+        this.categoryId = categoryId;
     }
 
     public StringFilter getTitle() {
@@ -151,44 +167,6 @@ public class KnowledgeArticleCriteria implements Serializable, Criteria {
         this.updatedAt = updatedAt;
     }
 
-    public LongFilter getCategoryId() {
-        return categoryId;
-    }
-
-    public Optional<LongFilter> optionalCategoryId() {
-        return Optional.ofNullable(categoryId);
-    }
-
-    public LongFilter categoryId() {
-        if (categoryId == null) {
-            setCategoryId(new LongFilter());
-        }
-        return categoryId;
-    }
-
-    public void setCategoryId(LongFilter categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public LongFilter getTagsId() {
-        return tagsId;
-    }
-
-    public Optional<LongFilter> optionalTagsId() {
-        return Optional.ofNullable(tagsId);
-    }
-
-    public LongFilter tagsId() {
-        if (tagsId == null) {
-            setTagsId(new LongFilter());
-        }
-        return tagsId;
-    }
-
-    public void setTagsId(LongFilter tagsId) {
-        this.tagsId = tagsId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -219,19 +197,18 @@ public class KnowledgeArticleCriteria implements Serializable, Criteria {
         final KnowledgeArticleCriteria that = (KnowledgeArticleCriteria) o;
         return (
             Objects.equals(id, that.id) &&
+            Objects.equals(categoryId, that.categoryId) &&
             Objects.equals(title, that.title) &&
             Objects.equals(published, that.published) &&
             Objects.equals(views, that.views) &&
             Objects.equals(updatedAt, that.updatedAt) &&
-            Objects.equals(categoryId, that.categoryId) &&
-            Objects.equals(tagsId, that.tagsId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, published, views, updatedAt, categoryId, tagsId, distinct);
+        return Objects.hash(id, categoryId, title, published, views, updatedAt, distinct);
     }
 
     // prettier-ignore
@@ -239,12 +216,11 @@ public class KnowledgeArticleCriteria implements Serializable, Criteria {
     public String toString() {
         return "KnowledgeArticleCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalCategoryId().map(f -> "categoryId=" + f + ", ").orElse("") +
             optionalTitle().map(f -> "title=" + f + ", ").orElse("") +
             optionalPublished().map(f -> "published=" + f + ", ").orElse("") +
             optionalViews().map(f -> "views=" + f + ", ").orElse("") +
             optionalUpdatedAt().map(f -> "updatedAt=" + f + ", ").orElse("") +
-            optionalCategoryId().map(f -> "categoryId=" + f + ", ").orElse("") +
-            optionalTagsId().map(f -> "tagsId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

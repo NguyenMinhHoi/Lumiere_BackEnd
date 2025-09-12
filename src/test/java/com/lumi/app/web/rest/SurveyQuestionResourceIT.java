@@ -15,11 +15,9 @@ import com.lumi.app.domain.SurveyQuestion;
 import com.lumi.app.domain.enumeration.QuestionType;
 import com.lumi.app.repository.SurveyQuestionRepository;
 import com.lumi.app.repository.search.SurveyQuestionSearchRepository;
-import com.lumi.app.service.SurveyQuestionService;
 import com.lumi.app.service.dto.SurveyQuestionDTO;
 import com.lumi.app.service.mapper.SurveyQuestionMapper;
 import jakarta.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -28,13 +26,8 @@ import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -45,10 +38,12 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link SurveyQuestionResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class SurveyQuestionResourceIT {
+
+    private static final Long DEFAULT_SURVEY_ID = 1L;
+    private static final Long UPDATED_SURVEY_ID = 2L;
 
     private static final String DEFAULT_TEXT = "AAAAAAAAAA";
     private static final String UPDATED_TEXT = "BBBBBBBBBB";
@@ -81,14 +76,8 @@ class SurveyQuestionResourceIT {
     @Autowired
     private SurveyQuestionRepository surveyQuestionRepository;
 
-    @Mock
-    private SurveyQuestionRepository surveyQuestionRepositoryMock;
-
     @Autowired
     private SurveyQuestionMapper surveyQuestionMapper;
-
-    @Mock
-    private SurveyQuestionService surveyQuestionServiceMock;
 
     @Autowired
     private SurveyQuestionSearchRepository surveyQuestionSearchRepository;
@@ -111,6 +100,7 @@ class SurveyQuestionResourceIT {
      */
     public static SurveyQuestion createEntity() {
         return new SurveyQuestion()
+            .surveyId(DEFAULT_SURVEY_ID)
             .text(DEFAULT_TEXT)
             .questionType(DEFAULT_QUESTION_TYPE)
             .scaleMin(DEFAULT_SCALE_MIN)
@@ -127,6 +117,7 @@ class SurveyQuestionResourceIT {
      */
     public static SurveyQuestion createUpdatedEntity() {
         return new SurveyQuestion()
+            .surveyId(UPDATED_SURVEY_ID)
             .text(UPDATED_TEXT)
             .questionType(UPDATED_QUESTION_TYPE)
             .scaleMin(UPDATED_SCALE_MIN)
@@ -198,6 +189,27 @@ class SurveyQuestionResourceIT {
 
         // Validate the SurveyQuestion in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
+        int searchDatabaseSizeAfter = IterableUtil.sizeOf(surveyQuestionSearchRepository.findAll());
+        assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
+    }
+
+    @Test
+    @Transactional
+    void checkSurveyIdIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        int searchDatabaseSizeBefore = IterableUtil.sizeOf(surveyQuestionSearchRepository.findAll());
+        // set the field null
+        surveyQuestion.setSurveyId(null);
+
+        // Create the SurveyQuestion, which fails.
+        SurveyQuestionDTO surveyQuestionDTO = surveyQuestionMapper.toDto(surveyQuestion);
+
+        restSurveyQuestionMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(surveyQuestionDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+
         int searchDatabaseSizeAfter = IterableUtil.sizeOf(surveyQuestionSearchRepository.findAll());
         assertThat(searchDatabaseSizeAfter).isEqualTo(searchDatabaseSizeBefore);
     }
@@ -298,29 +310,13 @@ class SurveyQuestionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(surveyQuestion.getId().intValue())))
+            .andExpect(jsonPath("$.[*].surveyId").value(hasItem(DEFAULT_SURVEY_ID.intValue())))
             .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT)))
             .andExpect(jsonPath("$.[*].questionType").value(hasItem(DEFAULT_QUESTION_TYPE.toString())))
             .andExpect(jsonPath("$.[*].scaleMin").value(hasItem(DEFAULT_SCALE_MIN)))
             .andExpect(jsonPath("$.[*].scaleMax").value(hasItem(DEFAULT_SCALE_MAX)))
             .andExpect(jsonPath("$.[*].isNeed").value(hasItem(DEFAULT_IS_NEED)))
             .andExpect(jsonPath("$.[*].orderNo").value(hasItem(DEFAULT_ORDER_NO)));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSurveyQuestionsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(surveyQuestionServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSurveyQuestionMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(surveyQuestionServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllSurveyQuestionsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(surveyQuestionServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restSurveyQuestionMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
-        verify(surveyQuestionRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -335,6 +331,7 @@ class SurveyQuestionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(surveyQuestion.getId().intValue()))
+            .andExpect(jsonPath("$.surveyId").value(DEFAULT_SURVEY_ID.intValue()))
             .andExpect(jsonPath("$.text").value(DEFAULT_TEXT))
             .andExpect(jsonPath("$.questionType").value(DEFAULT_QUESTION_TYPE.toString()))
             .andExpect(jsonPath("$.scaleMin").value(DEFAULT_SCALE_MIN))
@@ -365,6 +362,7 @@ class SurveyQuestionResourceIT {
         // Disconnect from session so that the updates on updatedSurveyQuestion are not directly saved in db
         em.detach(updatedSurveyQuestion);
         updatedSurveyQuestion
+            .surveyId(UPDATED_SURVEY_ID)
             .text(UPDATED_TEXT)
             .questionType(UPDATED_QUESTION_TYPE)
             .scaleMin(UPDATED_SCALE_MIN)
@@ -480,7 +478,7 @@ class SurveyQuestionResourceIT {
         SurveyQuestion partialUpdatedSurveyQuestion = new SurveyQuestion();
         partialUpdatedSurveyQuestion.setId(surveyQuestion.getId());
 
-        partialUpdatedSurveyQuestion.questionType(UPDATED_QUESTION_TYPE).scaleMin(UPDATED_SCALE_MIN);
+        partialUpdatedSurveyQuestion.text(UPDATED_TEXT).questionType(UPDATED_QUESTION_TYPE).orderNo(UPDATED_ORDER_NO);
 
         restSurveyQuestionMockMvc
             .perform(
@@ -512,6 +510,7 @@ class SurveyQuestionResourceIT {
         partialUpdatedSurveyQuestion.setId(surveyQuestion.getId());
 
         partialUpdatedSurveyQuestion
+            .surveyId(UPDATED_SURVEY_ID)
             .text(UPDATED_TEXT)
             .questionType(UPDATED_QUESTION_TYPE)
             .scaleMin(UPDATED_SCALE_MIN)
@@ -640,6 +639,7 @@ class SurveyQuestionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(surveyQuestion.getId().intValue())))
+            .andExpect(jsonPath("$.[*].surveyId").value(hasItem(DEFAULT_SURVEY_ID.intValue())))
             .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT)))
             .andExpect(jsonPath("$.[*].questionType").value(hasItem(DEFAULT_QUESTION_TYPE.toString())))
             .andExpect(jsonPath("$.[*].scaleMin").value(hasItem(DEFAULT_SCALE_MIN)))

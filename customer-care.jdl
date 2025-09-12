@@ -32,6 +32,15 @@ enum DeliveryChannel { EMAIL, SMS, PUSH, WEBHOOK }
 enum SendStatus { PENDING, SENT, FAILED, RETRYING }
 enum CustomerTier { BRONZE, SILVER, GOLD, PLATINUM }
 enum MessageDirection { INBOUND, OUTBOUND }
+enum StorageType { LOCAL, S3, GCS, AZURE }
+enum FileStatus { ACTIVE, ARCHIVED, DELETED }
+enum OrderStatus { DRAFT, PENDING, CONFIRMED, CANCELED, COMPLETED, REFUNDED }
+enum PaymentStatus { UNPAID, PAID, PARTIALLY_REFUNDED, REFUNDED }
+enum FulfillmentStatus { UNFULFILLED, PARTIALLY_FULFILLED, FULFILLED, RETURNED }
+enum ProductStatus { ACTIVE, INACTIVE, ARCHIVED }
+enum SupplierStatus { ACTIVE, INACTIVE, SUSPENDED }
+enum AuditAction { CREATE, UPDATE, DELETE, LOGIN, LOGOUT }
+enum AppType { SHOPEE, TIKTOK, ZALO }
 
 /* ========== CORE ENTITIES ========== */
 entity Customer {
@@ -52,6 +61,10 @@ service Customer with serviceClass
 filter Customer
 
 entity Ticket {
+  customerId Long required
+  slaPlanId Long
+  orderId Long
+  assigneeEmployeeId Long
   code String required unique minlength(6) maxlength(32)
   subject String required minlength(3) maxlength(200)
   description TextBlob
@@ -69,6 +82,8 @@ service Ticket with serviceClass
 filter Ticket
 
 entity TicketComment {
+  ticketId Long required
+  authorId Long required
   body TextBlob required
   visibility Visibility required
   createdAt Instant required
@@ -78,6 +93,8 @@ service TicketComment with serviceClass
 paginate TicketComment with pagination
 
 entity Attachment {
+  ticketId Long
+  commentId Long
   name String required maxlength(200)
   url String required maxlength(512)
   contentType String maxlength(128)
@@ -88,6 +105,8 @@ dto Attachment with mapstruct
 service Attachment with serviceClass
 
 entity ChannelMessage {
+  ticketId Long required
+  authorId Long
   direction MessageDirection required
   content TextBlob required
   sentAt Instant required
@@ -105,6 +124,7 @@ dto KnowledgeCategory with mapstruct
 service KnowledgeCategory with serviceClass
 
 entity KnowledgeArticle {
+  categoryId Long
   title String required minlength(5) maxlength(200)
   content TextBlob required
   published Boolean required
@@ -122,6 +142,16 @@ entity Tag {
 dto Tag with mapstruct
 service Tag with serviceClass
 
+entity TicketTag {
+  ticketId Long required
+  tagId Long required
+}
+
+entity ArticleTag {
+  articleId Long required
+  tagId Long required
+}
+
 entity SlaPlan {
   name String required unique minlength(2) maxlength(128)
   firstResponseMins Integer required min(1)
@@ -132,6 +162,7 @@ dto SlaPlan with mapstruct
 service SlaPlan with serviceClass
 
 entity Survey {
+  customerId Long
   surveyType SurveyType required
   title String required minlength(3) maxlength(200)
   sentAt Instant
@@ -143,6 +174,7 @@ service Survey with serviceClass
 paginate Survey with pagination
 
 entity SurveyQuestion {
+  surveyId Long required
   text String required minlength(3) maxlength(300)
   questionType QuestionType required
   scaleMin Integer
@@ -154,6 +186,9 @@ dto SurveyQuestion with mapstruct
 service SurveyQuestion with serviceClass
 
 entity SurveyResponse {
+  surveyId Long required
+  customerId Long
+  ticketId Long
   respondedAt Instant required
   score Integer
   comment TextBlob
@@ -163,6 +198,9 @@ service SurveyResponse with serviceClass
 paginate SurveyResponse with pagination
 
 entity Notification {
+  ticketId Long
+  customerId Long
+  surveyId Long
   type NotificationType required
   channel DeliveryChannel required
   subject String maxlength(200)
@@ -187,68 +225,17 @@ entity IntegrationWebhook {
 dto IntegrationWebhook with mapstruct
 service IntegrationWebhook with serviceClass
 
-/* ========== RELATIONSHIPS ========== */
-/* ========== RELATIONSHIPS ========== */
-relationship ManyToOne {
-  Ticket{customer(code)} to Customer
-  Ticket{assignee(login)} to User with builtInEntity
-  Ticket{slaPlan(name)} to SlaPlan
-}
-
-relationship ManyToOne {
-  TicketComment{ticket(code)} to Ticket
-  TicketComment{author(login)} to User with builtInEntity
-}
-
-relationship ManyToOne {
-  Attachment{ticket(code)} to Ticket
-  Attachment{comment(id)} to TicketComment
-}
-
-relationship ManyToOne {
-  ChannelMessage{ticket(code)} to Ticket
-  ChannelMessage{author(login)} to User with builtInEntity
-}
-
-relationship ManyToOne {
-  KnowledgeArticle{category(name)} to KnowledgeCategory
-}
-
-relationship ManyToMany {
-  Ticket{tags(name)} to Tag{tickets}
-  KnowledgeArticle{tags(name)} to Tag{articles}
-}
-
-relationship ManyToOne {
-  Survey{customer(code)} to Customer
-  SurveyQuestion{survey(title)} to Survey
-  SurveyResponse{survey(title)} to Survey
-  SurveyResponse{customer(code)} to Customer
-  SurveyResponse{ticket(code)} to Ticket
-}
-
-relationship ManyToOne {
-  Notification{ticket(code)} to Ticket
-  Notification{customer(code)} to Customer
-  Notification{survey(title)} to Survey
-}
-
-/* ========== END ========== */
-
-/* ===== Extra enums for ticket files ===== */
-enum StorageType { LOCAL, S3, GCS, AZURE }
-enum FileStatus { ACTIVE, ARCHIVED, DELETED }
-
-/* ===== TicketFile entity (files directly attached to a Ticket) ===== */
 entity TicketFile {
-  fileName String required maxlength(255)          /* tên file lưu trong hệ thống */
-  originalName String maxlength(255)               /* tên gốc khi upload */
-  contentType String maxlength(128)                /* MIME type */
-  capacity Long required min(0)                        /* bytes */
-  storageType StorageType required                 /* nơi lưu trữ */
-  path String maxlength(512)                       /* path/key nội bộ (ví dụ S3 key) */
-  url String maxlength(1024)                       /* URL public (nếu có) */
-  checksum String maxlength(128)                   /* ví dụ SHA-256/MD5 */
+  ticketId Long required
+  uploaderId Long
+  fileName String required maxlength(255)
+  originalName String maxlength(255)
+  contentType String maxlength(128)
+  capacity Long required min(0)
+  storageType StorageType required
+  path String maxlength(512)
+  url String maxlength(1024)
+  checksum String maxlength(128)
   status FileStatus required
   uploadedAt Instant required
 }
@@ -257,19 +244,6 @@ service TicketFile with serviceClass
 paginate TicketFile with pagination
 filter TicketFile
 
-/* ===== Relationships ===== */
-relationship ManyToOne {
-  TicketFile{ticket(code)} to Ticket
-  TicketFile{uploader(login)} to User with builtInEntity
-}
-
-/* ===== E-commerce enums ===== */
-enum OrderStatus { DRAFT, PENDING, CONFIRMED, CANCELED, COMPLETED, REFUNDED }
-enum PaymentStatus { UNPAID, PAID, PARTIALLY_REFUNDED, REFUNDED }
-enum FulfillmentStatus { UNFULFILLED, PARTIALLY_FULFILLED, FULFILLED, RETURNED }
-enum ProductStatus { ACTIVE, INACTIVE, ARCHIVED }
-
-/* ===== Product catalog ===== */
 entity Product {
   code String required unique minlength(3) maxlength(64)
   name String required minlength(2) maxlength(200)
@@ -285,6 +259,7 @@ paginate Product with pagination
 filter Product
 
 entity ProductVariant {
+  productId Long required
   sku String required unique minlength(3) maxlength(64)
   name String required minlength(2) maxlength(200)
   price BigDecimal required min(0)
@@ -304,8 +279,8 @@ service ProductVariant with serviceClass
 paginate ProductVariant with pagination
 filter ProductVariant
 
-/* ===== Order & line items ===== */
 entity Orders {
+  customerId Long
   code String required unique minlength(6) maxlength(32)
   status OrderStatus required
   paymentStatus PaymentStatus required
@@ -322,39 +297,18 @@ paginate Orders with pagination
 filter Orders
 
 entity OrderItem {
+  orderId Long required
+  variantId Long required
   quantity Long required min(1)
   unitPrice BigDecimal required min(0)
   totalPrice BigDecimal required min(0)
-  nameSnapshot String maxlength(200)     /* tên variant tại thời điểm đặt */
-  skuSnapshot String maxlength(64)       /* SKU tại thời điểm đặt */
+  nameSnapshot String maxlength(200)
+  skuSnapshot String maxlength(64)
 }
 dto OrderItem with mapstruct
 service OrderItem with serviceClass
 paginate OrderItem with pagination
 filter OrderItem
-
-/* ===== Relationships (catalog & order) ===== */
-relationship ManyToOne {
-  ProductVariant{product(code)} to Product
-}
-
-relationship ManyToOne {
-  Orders{customer(code)} to Customer
-}
-
-relationship ManyToOne {
-  OrderItem{order(code)} to Orders
-  OrderItem{variant(sku)} to ProductVariant
-}
-
-/* Optional: link Ticket -> Order (ticket liên quan đến một đơn hàng) */
-relationship ManyToOne {
-  Ticket{order(code)} to Orders
-}
-
-
-/* ===== Supplier & supplement ===== */
-enum SupplierStatus { ACTIVE, INACTIVE, SUSPENDED }
 
 entity Supplier {
   code String required unique minlength(3) maxlength(64)
@@ -371,13 +325,14 @@ service Supplier with serviceClass
 paginate Supplier with pagination
 filter Supplier
 
-/* Supplement = quan hệ giữa Product (ví dụ Cloth) và Supplier */
 entity Supplement {
-  supplyPrice BigDecimal required min(0)        /* giá cung ứng */
+  productId Long required
+  supplierId Long required
+  supplyPrice BigDecimal required min(0)
   currency String maxlength(3)
-  leadTimeDays Integer min(0)                   /* thời gian giao hàng */
-  minOrderQty Integer min(1)                    /* số lượng tối thiểu */
-  isPreferred Boolean required                  /* nhà cung cấp chính */
+  leadTimeDays Integer min(0)
+  minOrderQty Integer min(1)
+  isPreferred Boolean required
   createdAt Instant required
   updatedAt Instant
 }
@@ -386,16 +341,13 @@ service Supplement with serviceClass
 paginate Supplement with pagination
 filter Supplement
 
-/* ===== Audit history ===== */
-enum AuditAction { CREATE, UPDATE, DELETE, LOGIN, LOGOUT }
-
 entity AuditHistory {
-  entityName String required maxlength(128)       /* tên entity bị tác động */
-  entityId String required maxlength(64)          /* ID hoặc code entity */
+  entityName String required maxlength(128)
+  entityId String required maxlength(64)
   action AuditAction required
-  oldValue TextBlob                                /* JSON snapshot cũ */
-  newValue TextBlob                                /* JSON snapshot mới */
-  performedBy String maxlength(64)                 /* user login */
+  oldValue TextBlob
+  newValue TextBlob
+  performedBy String maxlength(64)
   performedAt Instant required
   ipAddress String maxlength(45)
 }
@@ -404,10 +356,237 @@ service AuditHistory with serviceClass
 paginate AuditHistory with pagination
 filter AuditHistory
 
-/* ===== Relationships ===== */
-relationship ManyToOne {
-  Supplement{product(code)} to Product,
-  Supplement{supplier(code)} to Supplier
+/* ===== Integration tables ===== */
+entity AppConfig {
+  appCode AppType required
+  configKey String required
+  configValue String
+  createdAt Instant
+  updatedAt Instant
+}
+dto AppConfig with mapstruct
+service AppConfig with serviceClass
+
+entity CompanyConfig {
+  companyId Long required
+  appId Long required
+  isActive Boolean
+  createdAt Instant
+  updatedAt Instant
+}
+dto CompanyConfig with mapstruct
+service CompanyConfig with serviceClass
+
+entity CompanyConfigAdditional {
+  companyConfigId Long required
+  configKey String required
+  configValue String
+  createdAt Instant
+  updatedAt Instant
+}
+dto CompanyConfigAdditional with mapstruct
+service CompanyConfigAdditional with serviceClass
+
+
+entity AppConfig {
+  appCode String required,         // Shopee, TikTok, Zalo
+  configKey String required,
+  configValue String,
+  createdAt Instant,
+  updatedAt Instant
 }
 
+entity CompanyConfig {
+  companyId Long required,         // chỉ lưu id của company
+  appId Long required,             // id tham chiếu sang AppConfig
+  isActive Boolean,
+  createdAt Instant,
+  updatedAt Instant
+}
 
+entity CompanyConfigAdditional {
+  companyConfigId Long required,   // id tham chiếu sang CompanyConfig
+  configKey String required,
+  configValue String,
+  createdAt Instant,
+  updatedAt Instant
+}
+
+/* ===== VOUCHER SYSTEM ===== */
+enum VoucherType { PERCENT, FIXED }
+enum VoucherStatus { ACTIVE, EXPIRED, DISABLED }
+
+entity Voucher {
+  code String required unique minlength(3) maxlength(64)
+  discountType VoucherType required
+  discountValue BigDecimal required min(0)
+  minOrderValue BigDecimal
+  maxDiscountValue BigDecimal
+  usageLimit Integer
+  usedCount Integer required min(0)
+  validFrom Instant required
+  validTo Instant required
+  status VoucherStatus required
+  createdAt Instant required
+  updatedAt Instant
+}
+dto Voucher with mapstruct
+service Voucher with serviceClass
+paginate Voucher with pagination
+filter Voucher
+
+entity VoucherRedemption {
+  voucherId Long required
+  orderId Long required
+  customerId Long required
+  redeemedAt Instant required
+}
+dto VoucherRedemption with mapstruct
+service VoucherRedemption with serviceClass
+paginate VoucherRedemption with pagination
+
+/* ===== CART SYSTEM ===== */
+entity Cart {
+  customerId Long required
+  createdAt Instant required
+  updatedAt Instant
+}
+dto Cart with mapstruct
+service Cart with serviceClass
+paginate Cart with pagination
+
+entity CartItem {
+  cartId Long required
+  productVariantId Long required
+  quantity Integer required min(1)
+  addedAt Instant required
+}
+dto CartItem with mapstruct
+service CartItem with serviceClass
+paginate CartItem with pagination
+
+/* ===== INVENTORY SYSTEM ===== */
+enum StockMovementReason { PURCHASE, SALE, RETURN, ADJUSTMENT, TRANSFER }
+
+entity Warehouse {
+  code String required unique minlength(3) maxlength(64)
+  name String required minlength(2) maxlength(128)
+  address String maxlength(255)
+  createdAt Instant required
+  updatedAt Instant
+}
+dto Warehouse with mapstruct
+service Warehouse with serviceClass
+paginate Warehouse with pagination
+
+entity Inventory {
+  productVariantId Long required
+  warehouseId Long required
+  quantity Long required min(0)
+  updatedAt Instant required
+}
+dto Inventory with mapstruct
+service Inventory with serviceClass
+paginate Inventory with pagination
+
+entity StockMovement {
+  productVariantId Long required
+  warehouseId Long required
+  delta Long required
+  reason StockMovementReason required
+  refOrderId Long
+  createdAt Instant required
+}
+dto StockMovement with mapstruct
+service StockMovement with serviceClass
+paginate StockMovement with pagination
+
+/* ===== MARKETING / CAMPAIGN ===== */
+entity Campaign {
+  name String required minlength(3) maxlength(128)
+  description TextBlob
+  channel DeliveryChannel required
+  budget BigDecimal min(0)
+  startDate Instant required
+  endDate Instant required
+  isActive Boolean required
+  createdAt Instant required
+  updatedAt Instant
+}
+dto Campaign with mapstruct
+service Campaign with serviceClass
+paginate Campaign with pagination
+
+/* ===== INTEGRATION LOG ===== */
+enum IntegrationStatus { PENDING, SUCCESS, FAILED, RETRYING }
+
+entity IntegrationLog {
+  sourceApp AppType required
+  targetApp AppType required
+  payload TextBlob required
+  response TextBlob
+  status IntegrationStatus required
+  retries Integer required min(0)
+  createdAt Instant required
+  updatedAt Instant
+}
+dto IntegrationLog with mapstruct
+service IntegrationLog with serviceClass
+paginate IntegrationLog with pagination
+filter IntegrationLog
+
+enum EmployeeRole { AGENT, SUPERVISOR, ADMIN, SALES, SUPPORT }
+enum EmployeeStatus { ACTIVE, INACTIVE, SUSPENDED }
+
+entity Employee {
+  code String required unique minlength(3) maxlength(64)   // Mã nhân viên
+  fullName String required minlength(2) maxlength(128)
+  email String required pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+  phone String pattern(/^[0-9+()\-\s]{6,20}$/)
+  role EmployeeRole required
+  status EmployeeStatus required
+  department String maxlength(128)
+  joinedAt Instant
+  createdAt Instant required
+  updatedAt Instant
+}
+dto Employee with mapstruct
+service Employee with serviceClass
+paginate Employee with pagination
+filter Employee
+
+service Ticket with serviceImpl
+service TicketComment with serviceImpl
+service Attachment with serviceImpl
+service ChannelMessage with serviceImpl
+service KnowledgeCategory with serviceImpl
+service KnowledgeArticle with serviceImpl
+service Tag with serviceImpl
+service SlaPlan with serviceImpl
+service Survey with serviceImpl
+service SurveyQuestion with serviceImpl
+service SurveyResponse with serviceImpl
+service Notification with serviceImpl
+service IntegrationWebhook with serviceImpl
+service TicketFile with serviceImpl
+service Product with serviceImpl
+service ProductVariant with serviceImpl
+service Orders with serviceImpl
+service OrderItem with serviceImpl
+service Supplier with serviceImpl
+service Supplement with serviceImpl
+service AuditHistory with serviceImpl
+service AppConfig with serviceImpl
+service CompanyConfig with serviceImpl
+service CompanyConfigAdditional with serviceImpl
+service Voucher with serviceImpl
+service VoucherRedemption with serviceImpl
+service Cart with serviceImpl
+service CartItem with serviceImpl
+service Warehouse with serviceImpl
+service Inventory with serviceImpl
+service StockMovement with serviceImpl
+service Campaign with serviceImpl
+service IntegrationLog with serviceImpl
+service Employee with serviceImpl
+service Customer with serviceImpl

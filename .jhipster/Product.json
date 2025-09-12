@@ -50,5 +50,5 @@
   "name": "Product",
   "pagination": "pagination",
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }

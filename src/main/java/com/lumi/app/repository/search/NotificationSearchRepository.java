@@ -57,7 +57,7 @@ class NotificationSearchRepositoryInternalImpl implements NotificationSearchRepo
 
     @Override
     public void index(Notification entity) {
-        repository.findOneWithEagerRelationships(entity.getId()).ifPresent(elasticsearchTemplate::save);
+        repository.findById(entity.getId()).ifPresent(elasticsearchTemplate::save);
     }
 
     @Override

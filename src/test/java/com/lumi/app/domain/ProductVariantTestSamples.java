@@ -10,16 +10,17 @@ public class ProductVariantTestSamples {
     private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     public static ProductVariant getProductVariantSample1() {
-        return new ProductVariant().id(1L).sku("sku1").name("name1").currency("currency1").stockQuantity(1L);
+        return new ProductVariant().id(1L).productId(1L).sku("sku1").name("name1").currency("currency1").stockQuantity(1L);
     }
 
     public static ProductVariant getProductVariantSample2() {
-        return new ProductVariant().id(2L).sku("sku2").name("name2").currency("currency2").stockQuantity(2L);
+        return new ProductVariant().id(2L).productId(2L).sku("sku2").name("name2").currency("currency2").stockQuantity(2L);
     }
 
     public static ProductVariant getProductVariantRandomSampleGenerator() {
         return new ProductVariant()
             .id(longCount.incrementAndGet())
+            .productId(longCount.incrementAndGet())
             .sku(UUID.randomUUID().toString())
             .name(UUID.randomUUID().toString())
             .currency(UUID.randomUUID().toString())
