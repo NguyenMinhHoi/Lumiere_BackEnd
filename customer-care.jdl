@@ -240,7 +240,6 @@ entity TicketFile {
   uploadedAt Instant required
 }
 dto TicketFile with mapstruct
-service TicketFile with serviceClass
 paginate TicketFile with pagination
 filter TicketFile
 
@@ -254,7 +253,6 @@ entity Product {
   updatedAt Instant
 }
 dto Product with mapstruct
-service Product with serviceClass
 paginate Product with pagination
 filter Product
 
@@ -275,7 +273,6 @@ entity ProductVariant {
   updatedAt Instant
 }
 dto ProductVariant with mapstruct
-service ProductVariant with serviceClass
 paginate ProductVariant with pagination
 filter ProductVariant
 
@@ -292,7 +289,6 @@ entity Orders {
   updatedAt Instant
 }
 dto Orders with mapstruct
-service Orders with serviceClass
 paginate Orders with pagination
 filter Orders
 
@@ -306,7 +302,6 @@ entity OrderItem {
   skuSnapshot String maxlength(64)
 }
 dto OrderItem with mapstruct
-service OrderItem with serviceClass
 paginate OrderItem with pagination
 filter OrderItem
 
@@ -321,7 +316,6 @@ entity Supplier {
   updatedAt Instant
 }
 dto Supplier with mapstruct
-service Supplier with serviceClass
 paginate Supplier with pagination
 filter Supplier
 
@@ -337,7 +331,6 @@ entity Supplement {
   updatedAt Instant
 }
 dto Supplement with mapstruct
-service Supplement with serviceClass
 paginate Supplement with pagination
 filter Supplement
 
@@ -352,7 +345,6 @@ entity AuditHistory {
   ipAddress String maxlength(45)
 }
 dto AuditHistory with mapstruct
-service AuditHistory with serviceClass
 paginate AuditHistory with pagination
 filter AuditHistory
 
@@ -365,7 +357,6 @@ entity AppConfig {
   updatedAt Instant
 }
 dto AppConfig with mapstruct
-service AppConfig with serviceClass
 
 entity CompanyConfig {
   companyId Long required
@@ -375,7 +366,6 @@ entity CompanyConfig {
   updatedAt Instant
 }
 dto CompanyConfig with mapstruct
-service CompanyConfig with serviceClass
 
 entity CompanyConfigAdditional {
   companyConfigId Long required
@@ -385,7 +375,6 @@ entity CompanyConfigAdditional {
   updatedAt Instant
 }
 dto CompanyConfigAdditional with mapstruct
-service CompanyConfigAdditional with serviceClass
 
 
 entity AppConfig {
@@ -431,7 +420,6 @@ entity Voucher {
   updatedAt Instant
 }
 dto Voucher with mapstruct
-service Voucher with serviceClass
 paginate Voucher with pagination
 filter Voucher
 
@@ -442,7 +430,6 @@ entity VoucherRedemption {
   redeemedAt Instant required
 }
 dto VoucherRedemption with mapstruct
-service VoucherRedemption with serviceClass
 paginate VoucherRedemption with pagination
 
 /* ===== CART SYSTEM ===== */
@@ -452,7 +439,6 @@ entity Cart {
   updatedAt Instant
 }
 dto Cart with mapstruct
-service Cart with serviceClass
 paginate Cart with pagination
 
 entity CartItem {
@@ -462,7 +448,6 @@ entity CartItem {
   addedAt Instant required
 }
 dto CartItem with mapstruct
-service CartItem with serviceClass
 paginate CartItem with pagination
 
 /* ===== INVENTORY SYSTEM ===== */
@@ -476,7 +461,6 @@ entity Warehouse {
   updatedAt Instant
 }
 dto Warehouse with mapstruct
-service Warehouse with serviceClass
 paginate Warehouse with pagination
 
 entity Inventory {
@@ -486,7 +470,6 @@ entity Inventory {
   updatedAt Instant required
 }
 dto Inventory with mapstruct
-service Inventory with serviceClass
 paginate Inventory with pagination
 
 entity StockMovement {
@@ -498,7 +481,6 @@ entity StockMovement {
   createdAt Instant required
 }
 dto StockMovement with mapstruct
-service StockMovement with serviceClass
 paginate StockMovement with pagination
 
 /* ===== MARKETING / CAMPAIGN ===== */
@@ -514,7 +496,6 @@ entity Campaign {
   updatedAt Instant
 }
 dto Campaign with mapstruct
-service Campaign with serviceClass
 paginate Campaign with pagination
 
 /* ===== INTEGRATION LOG ===== */
@@ -531,7 +512,6 @@ entity IntegrationLog {
   updatedAt Instant
 }
 dto IntegrationLog with mapstruct
-service IntegrationLog with serviceClass
 paginate IntegrationLog with pagination
 filter IntegrationLog
 
@@ -551,7 +531,6 @@ entity Employee {
   updatedAt Instant
 }
 dto Employee with mapstruct
-service Employee with serviceClass
 paginate Employee with pagination
 filter Employee
 
