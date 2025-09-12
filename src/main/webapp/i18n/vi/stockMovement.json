@@ -1,0 +1,30 @@
+{
+  "lumiApp": {
+    "stockMovement": {
+      "home": {
+        "title": "Stock Movements",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Stock Movement",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Stock Movement",
+        "search": "Tìm Stock Movement",
+        "notFound": "No Stock Movements found"
+      },
+      "created": "Một Stock Movement mới được tạo với định danh {{ param }}",
+      "updated": "Một Stock Movement cập nhật với định danh {{ param }}",
+      "deleted": "Một Stock Movement đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Stock Movement {{ id }}?"
+      },
+      "detail": {
+        "title": "Stock Movement"
+      },
+      "id": "ID",
+      "productVariantId": "Product Variant Id",
+      "warehouseId": "Warehouse Id",
+      "delta": "Delta",
+      "reason": "Reason",
+      "refOrderId": "Ref Order Id",
+      "createdAt": "Created At"
+    }
+  }
+}

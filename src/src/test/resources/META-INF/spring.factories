@@ -1,0 +1,4 @@
+org.springframework.test.context.ContextCustomizerFactory = \
+    com.lumi.app.config.SqlTestContainersSpringContextCustomizerFactory,com.\
+    lumi.app.config.TestContainersSpringContextCustomizerFactory,com.lumi.app.\
+    config.KafkaTestContainersSpringContextCustomizerFactory

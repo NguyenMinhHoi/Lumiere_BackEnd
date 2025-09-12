@@ -1,0 +1,36 @@
+{
+  "lumiApp": {
+    "voucher": {
+      "home": {
+        "title": "Vouchers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Voucher",
+        "createOrEditLabel": "Create or edit a Voucher",
+        "search": "Search for Voucher",
+        "notFound": "No Vouchers found"
+      },
+      "created": "A new Voucher is created with identifier {{ param }}",
+      "updated": "A Voucher is updated with identifier {{ param }}",
+      "deleted": "A Voucher is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Voucher {{ id }}?"
+      },
+      "detail": {
+        "title": "Voucher"
+      },
+      "id": "ID",
+      "code": "Code",
+      "discountType": "Discount Type",
+      "discountValue": "Discount Value",
+      "minOrderValue": "Min Order Value",
+      "maxDiscountValue": "Max Discount Value",
+      "usageLimit": "Usage Limit",
+      "usedCount": "Used Count",
+      "validFrom": "Valid From",
+      "validTo": "Valid To",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

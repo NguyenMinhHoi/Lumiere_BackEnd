@@ -1,0 +1,56 @@
+{
+  "annotations": {
+    "changelogDate": "20250912044635"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "sourceApp",
+      "fieldType": "AppType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "SHOPEE,TIKTOK,ZALO"
+    },
+    {
+      "fieldName": "targetApp",
+      "fieldType": "AppType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "SHOPEE,TIKTOK,ZALO"
+    },
+    {
+      "fieldName": "payload",
+      "fieldType": "TextBlob",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "response",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "IntegrationStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PENDING,SUCCESS,FAILED,RETRYING"
+    },
+    {
+      "fieldName": "retries",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "IntegrationLog",
+  "pagination": "pagination",
+  "relationships": [],
+  "service": "serviceImpl"
+}

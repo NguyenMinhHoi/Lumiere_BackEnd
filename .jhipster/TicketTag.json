@@ -1,0 +1,20 @@
+{
+  "annotations": {
+    "changelogDate": "20250912044622"
+  },
+  "applications": ["lumiApp"],
+  "fields": [
+    {
+      "fieldName": "ticketId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "tagId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "TicketTag",
+  "relationships": []
+}

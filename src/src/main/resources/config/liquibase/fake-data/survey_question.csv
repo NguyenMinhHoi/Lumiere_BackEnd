@@ -1,0 +1,11 @@
+id;survey_id;text;question_type;scale_min;scale_max;is_need;order_no
+1;21824;surface woot;TEXT;5527;27816;false;23071
+2;23288;bide yowza;TEXT;7562;3739;false;31907
+3;6573;fiddle;SCALE;27451;31587;true;4247
+4;29845;pfft;TEXT;15996;12881;false;433
+5;3975;incidentally whoa;SCALE;27446;18571;false;363
+6;18612;wonderfully;MULTI_CHOICE;2280;16505;false;9077
+7;21477;pfft cripple;MULTI_CHOICE;32356;22461;true;1104
+8;10294;duh little how;TEXT;9083;13202;false;15700
+9;15330;till;SCALE;25172;23394;true;32404
+10;5921;license likable;TEXT;9347;2140;true;20757

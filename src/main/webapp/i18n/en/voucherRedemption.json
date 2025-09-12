@@ -1,0 +1,28 @@
+{
+  "lumiApp": {
+    "voucherRedemption": {
+      "home": {
+        "title": "Voucher Redemptions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Voucher Redemption",
+        "createOrEditLabel": "Create or edit a Voucher Redemption",
+        "search": "Search for Voucher Redemption",
+        "notFound": "No Voucher Redemptions found"
+      },
+      "created": "A new Voucher Redemption is created with identifier {{ param }}",
+      "updated": "A Voucher Redemption is updated with identifier {{ param }}",
+      "deleted": "A Voucher Redemption is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Voucher Redemption {{ id }}?"
+      },
+      "detail": {
+        "title": "Voucher Redemption"
+      },
+      "id": "ID",
+      "voucherId": "Voucher Id",
+      "orderId": "Order Id",
+      "customerId": "Customer Id",
+      "redeemedAt": "Redeemed At"
+    }
+  }
+}

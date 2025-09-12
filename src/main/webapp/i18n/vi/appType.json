@@ -1,0 +1,10 @@
+{
+  "lumiApp": {
+    "AppType": {
+      "null": "",
+      "SHOPEE": "SHOPEE",
+      "TIKTOK": "TIKTOK",
+      "ZALO": "ZALO"
+    }
+  }
+}

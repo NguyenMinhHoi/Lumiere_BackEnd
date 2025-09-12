@@ -1,0 +1,30 @@
+{
+  "lumiApp": {
+    "survey": {
+      "home": {
+        "title": "Surveys",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Survey",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Survey",
+        "search": "Tìm Survey",
+        "notFound": "No Surveys found"
+      },
+      "created": "Một Survey mới được tạo với định danh {{ param }}",
+      "updated": "Một Survey cập nhật với định danh {{ param }}",
+      "deleted": "Một Survey đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Survey {{ id }}?"
+      },
+      "detail": {
+        "title": "Survey"
+      },
+      "id": "ID",
+      "customerId": "Customer Id",
+      "surveyType": "Survey Type",
+      "title": "Title",
+      "sentAt": "Sent At",
+      "dueAt": "Due At",
+      "isActive": "Is Active"
+    }
+  }
+}

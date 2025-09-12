@@ -1,0 +1,10 @@
+{
+  "lumiApp": {
+    "SupplierStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "INACTIVE": "INACTIVE",
+      "SUSPENDED": "SUSPENDED"
+    }
+  }
+}

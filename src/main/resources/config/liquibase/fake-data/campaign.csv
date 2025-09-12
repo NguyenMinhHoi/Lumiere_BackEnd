@@ -1,0 +1,11 @@
+id;name;description;channel;budget;start_date;end_date;is_active;created_at;updated_at
+1;rebound;../fake-data/blob/hipster.txt;SMS;19358.79;2025-09-11T18:03:50;2025-09-11T08:38:05;false;2025-09-12T00:48:39;2025-09-11T19:04:56
+2;rule past comestible;../fake-data/blob/hipster.txt;WEBHOOK;4975.64;2025-09-11T23:34:15;2025-09-12T01:03:02;true;2025-09-11T20:00:15;2025-09-11T19:33:56
+3;duh venom jogging;../fake-data/blob/hipster.txt;EMAIL;9596.77;2025-09-11T04:50:27;2025-09-11T22:56:22;false;2025-09-11T18:13:06;2025-09-11T18:31:23
+4;worthwhile anenst equate;../fake-data/blob/hipster.txt;WEBHOOK;21692.35;2025-09-11T05:15:42;2025-09-12T03:21:59;false;2025-09-11T13:51:00;2025-09-12T00:29:14
+5;tune;../fake-data/blob/hipster.txt;SMS;26150.25;2025-09-11T11:27:30;2025-09-11T19:49:24;false;2025-09-11T23:00:52;2025-09-11T21:07:28
+6;monthly;../fake-data/blob/hipster.txt;SMS;19777.08;2025-09-11T23:28:28;2025-09-11T21:04:05;true;2025-09-11T07:08:27;2025-09-11T15:28:18
+7;below overreact buttery;../fake-data/blob/hipster.txt;EMAIL;3790.35;2025-09-12T03:33:02;2025-09-11T06:12:41;true;2025-09-11T05:28:16;2025-09-12T01:13:42
+8;sniff zowie rural;../fake-data/blob/hipster.txt;EMAIL;21211.3;2025-09-11T05:05:31;2025-09-12T03:18:06;false;2025-09-11T17:42:08;2025-09-12T00:53:14
+9;supposing;../fake-data/blob/hipster.txt;SMS;12078.83;2025-09-12T01:27:15;2025-09-11T22:00:45;true;2025-09-11T18:55:34;2025-09-11T16:14:40
+10;bootleg;../fake-data/blob/hipster.txt;PUSH;1894.98;2025-09-11T08:45:29;2025-09-11T14:05:08;false;2025-09-12T01:03:35;2025-09-11T09:15:54

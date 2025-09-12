@@ -1,0 +1,29 @@
+{
+  "lumiApp": {
+    "warehouse": {
+      "home": {
+        "title": "Warehouses",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Warehouse",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Warehouse",
+        "search": "Tìm Warehouse",
+        "notFound": "No Warehouses found"
+      },
+      "created": "Một Warehouse mới được tạo với định danh {{ param }}",
+      "updated": "Một Warehouse cập nhật với định danh {{ param }}",
+      "deleted": "Một Warehouse đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Warehouse {{ id }}?"
+      },
+      "detail": {
+        "title": "Warehouse"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "address": "Address",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

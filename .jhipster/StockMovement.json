@@ -1,0 +1,43 @@
+{
+  "annotations": {
+    "changelogDate": "20250912044633"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "productVariantId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "warehouseId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "delta",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "reason",
+      "fieldType": "StockMovementReason",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PURCHASE,SALE,RETURN,ADJUSTMENT,TRANSFER"
+    },
+    {
+      "fieldName": "refOrderId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "StockMovement",
+  "pagination": "pagination",
+  "relationships": [],
+  "service": "serviceImpl"
+}

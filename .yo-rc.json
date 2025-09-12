@@ -59,7 +59,7 @@
     "jhipsterVersion": "8.11.0",
     "jwtSecretKey": "YjkyYTNlYzIzMzViNDMyYjc2ODA4ZDBhYWI4Y2E5ZGUxM2Q1YzA5YmE5MDk2YTUxYjFjMGMyM2RhYjZhNDI3NjQwNjM1MDgxNmY4Mjg0Mjc1Mzg3ODNmMjhlNzg1OWJjODQ1Yjc4YmYwNDdhNTY0ZmM2ZTY3NzY2NDJlM2E3NTg=",
     "languages": ["en", "vi"],
-    "lastLiquibaseTimestamp": 1757650237000,
+    "lastLiquibaseTimestamp": 1757652396000,
     "messageBroker": "kafka",
     "monorepository": true,
     "nativeLanguage": "en",

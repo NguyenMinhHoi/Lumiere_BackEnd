@@ -1,0 +1,10 @@
+{
+  "lumiApp": {
+    "ProductStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "INACTIVE": "INACTIVE",
+      "ARCHIVED": "ARCHIVED"
+    }
+  }
+}

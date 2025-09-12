@@ -1,0 +1,71 @@
+{
+  "annotations": {
+    "changelogDate": "20250912044636"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "64",
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "fullName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "128",
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "pattern"],
+      "fieldValidateRulesPattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+    },
+    {
+      "fieldName": "phone",
+      "fieldType": "String",
+      "fieldValidateRules": ["pattern"],
+      "fieldValidateRulesPattern": "^[0-9+()\\-\\s]{6,20}$"
+    },
+    {
+      "fieldName": "role",
+      "fieldType": "EmployeeRole",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "AGENT,SUPERVISOR,ADMIN,SALES,SUPPORT"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "EmployeeStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ACTIVE,INACTIVE,SUSPENDED"
+    },
+    {
+      "fieldName": "department",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "128"
+    },
+    {
+      "fieldName": "joinedAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Employee",
+  "pagination": "pagination",
+  "relationships": [],
+  "service": "serviceImpl"
+}

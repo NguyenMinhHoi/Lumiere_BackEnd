@@ -1,0 +1,27 @@
+{
+  "annotations": {
+    "changelogDate": "20250912044629"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "customerId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "Cart",
+  "pagination": "pagination",
+  "relationships": [],
+  "service": "serviceImpl"
+}

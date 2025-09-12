@@ -1,0 +1,29 @@
+{
+  "lumiApp": {
+    "companyConfig": {
+      "home": {
+        "title": "Company Configs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Company Config",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Company Config",
+        "search": "Tìm Company Config",
+        "notFound": "No Company Configs found"
+      },
+      "created": "Một Company Config mới được tạo với định danh {{ param }}",
+      "updated": "Một Company Config cập nhật với định danh {{ param }}",
+      "deleted": "Một Company Config đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Company Config {{ id }}?"
+      },
+      "detail": {
+        "title": "Company Config"
+      },
+      "id": "ID",
+      "companyId": "Company Id",
+      "appId": "App Id",
+      "isActive": "Is Active",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

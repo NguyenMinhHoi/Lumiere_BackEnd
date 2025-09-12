@@ -1,0 +1,29 @@
+{
+  "lumiApp": {
+    "companyConfig": {
+      "home": {
+        "title": "Company Configs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Company Config",
+        "createOrEditLabel": "Create or edit a Company Config",
+        "search": "Search for Company Config",
+        "notFound": "No Company Configs found"
+      },
+      "created": "A new Company Config is created with identifier {{ param }}",
+      "updated": "A Company Config is updated with identifier {{ param }}",
+      "deleted": "A Company Config is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Company Config {{ id }}?"
+      },
+      "detail": {
+        "title": "Company Config"
+      },
+      "id": "ID",
+      "companyId": "Company Id",
+      "appId": "App Id",
+      "isActive": "Is Active",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

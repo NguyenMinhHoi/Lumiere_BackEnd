@@ -1,0 +1,20 @@
+{
+  "annotations": {
+    "changelogDate": "20250912044623"
+  },
+  "applications": ["lumiApp"],
+  "fields": [
+    {
+      "fieldName": "articleId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "tagId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "ArticleTag",
+  "relationships": []
+}

@@ -1,0 +1,26 @@
+{
+  "lumiApp": {
+    "knowledgeCategory": {
+      "home": {
+        "title": "Knowledge Categories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Knowledge Category",
+        "createOrEditLabel": "Create or edit a Knowledge Category",
+        "search": "Search for Knowledge Category",
+        "notFound": "No Knowledge Categories found"
+      },
+      "created": "A new Knowledge Category is created with identifier {{ param }}",
+      "updated": "A Knowledge Category is updated with identifier {{ param }}",
+      "deleted": "A Knowledge Category is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Knowledge Category {{ id }}?"
+      },
+      "detail": {
+        "title": "Knowledge Category"
+      },
+      "id": "ID",
+      "name": "Name",
+      "slug": "Slug"
+    }
+  }
+}

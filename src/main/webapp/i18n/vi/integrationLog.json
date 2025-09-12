@@ -1,0 +1,32 @@
+{
+  "lumiApp": {
+    "integrationLog": {
+      "home": {
+        "title": "Integration Logs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Integration Log",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Integration Log",
+        "search": "Tìm Integration Log",
+        "notFound": "No Integration Logs found"
+      },
+      "created": "Một Integration Log mới được tạo với định danh {{ param }}",
+      "updated": "Một Integration Log cập nhật với định danh {{ param }}",
+      "deleted": "Một Integration Log đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Integration Log {{ id }}?"
+      },
+      "detail": {
+        "title": "Integration Log"
+      },
+      "id": "ID",
+      "sourceApp": "Source App",
+      "targetApp": "Target App",
+      "payload": "Payload",
+      "response": "Response",
+      "status": "Status",
+      "retries": "Retries",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

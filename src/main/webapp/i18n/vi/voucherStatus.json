@@ -1,0 +1,10 @@
+{
+  "lumiApp": {
+    "VoucherStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "EXPIRED": "EXPIRED",
+      "DISABLED": "DISABLED"
+    }
+  }
+}

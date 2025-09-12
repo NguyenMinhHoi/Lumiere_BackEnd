@@ -1,0 +1,9 @@
+{
+  "lumiApp": {
+    "VoucherType": {
+      "null": "",
+      "PERCENT": "PERCENT",
+      "FIXED": "FIXED"
+    }
+  }
+}

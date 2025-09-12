@@ -204,7 +204,13 @@ server:
         http-only: true
 
 springdoc:
-  show-actuator: true
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui/index.html
+
 
 # Properties to be exposed on the /info management endpoint
 info:

@@ -1,0 +1,11 @@
+{
+  "lumiApp": {
+    "DeliveryChannel": {
+      "null": "",
+      "EMAIL": "EMAIL",
+      "SMS": "SMS",
+      "PUSH": "PUSH",
+      "WEBHOOK": "WEBHOOK"
+    }
+  }
+}

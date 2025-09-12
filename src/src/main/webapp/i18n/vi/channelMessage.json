@@ -1,0 +1,30 @@
+{
+  "lumiApp": {
+    "channelMessage": {
+      "home": {
+        "title": "Channel Messages",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Channel Message",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Channel Message",
+        "search": "Tìm Channel Message",
+        "notFound": "No Channel Messages found"
+      },
+      "created": "Một Channel Message mới được tạo với định danh {{ param }}",
+      "updated": "Một Channel Message cập nhật với định danh {{ param }}",
+      "deleted": "Một Channel Message đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Channel Message {{ id }}?"
+      },
+      "detail": {
+        "title": "Channel Message"
+      },
+      "id": "ID",
+      "ticketId": "Ticket Id",
+      "authorId": "Author Id",
+      "direction": "Direction",
+      "content": "Content",
+      "sentAt": "Sent At",
+      "externalMessageId": "External Message Id"
+    }
+  }
+}

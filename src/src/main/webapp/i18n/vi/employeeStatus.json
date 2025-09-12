@@ -1,0 +1,10 @@
+{
+  "lumiApp": {
+    "EmployeeStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "INACTIVE": "INACTIVE",
+      "SUSPENDED": "SUSPENDED"
+    }
+  }
+}

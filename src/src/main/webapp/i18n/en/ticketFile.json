@@ -1,0 +1,36 @@
+{
+  "lumiApp": {
+    "ticketFile": {
+      "home": {
+        "title": "Ticket Files",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ticket File",
+        "createOrEditLabel": "Create or edit a Ticket File",
+        "search": "Search for Ticket File",
+        "notFound": "No Ticket Files found"
+      },
+      "created": "A new Ticket File is created with identifier {{ param }}",
+      "updated": "A Ticket File is updated with identifier {{ param }}",
+      "deleted": "A Ticket File is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ticket File {{ id }}?"
+      },
+      "detail": {
+        "title": "Ticket File"
+      },
+      "id": "ID",
+      "ticketId": "Ticket Id",
+      "uploaderId": "Uploader Id",
+      "fileName": "File Name",
+      "originalName": "Original Name",
+      "contentType": "Content Type",
+      "capacity": "Capacity",
+      "storageType": "Storage Type",
+      "path": "Path",
+      "url": "Url",
+      "checksum": "Checksum",
+      "status": "Status",
+      "uploadedAt": "Uploaded At"
+    }
+  }
+}

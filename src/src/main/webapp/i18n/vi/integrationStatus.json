@@ -1,0 +1,11 @@
+{
+  "lumiApp": {
+    "IntegrationStatus": {
+      "null": "",
+      "PENDING": "PENDING",
+      "SUCCESS": "SUCCESS",
+      "FAILED": "FAILED",
+      "RETRYING": "RETRYING"
+    }
+  }
+}

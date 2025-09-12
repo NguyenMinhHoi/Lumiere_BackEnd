@@ -1,0 +1,76 @@
+{
+  "annotations": {
+    "changelogDate": "20250912044627"
+  },
+  "applications": ["lumiApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "64",
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "discountType",
+      "fieldType": "VoucherType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PERCENT,FIXED"
+    },
+    {
+      "fieldName": "discountValue",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "minOrderValue",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "maxDiscountValue",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "usageLimit",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "usedCount",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "validFrom",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "validTo",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "VoucherStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ACTIVE,EXPIRED,DISABLED"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Voucher",
+  "pagination": "pagination",
+  "relationships": [],
+  "service": "serviceImpl"
+}

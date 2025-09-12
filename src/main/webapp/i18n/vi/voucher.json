@@ -1,0 +1,36 @@
+{
+  "lumiApp": {
+    "voucher": {
+      "home": {
+        "title": "Vouchers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Voucher",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Voucher",
+        "search": "Tìm Voucher",
+        "notFound": "No Vouchers found"
+      },
+      "created": "Một Voucher mới được tạo với định danh {{ param }}",
+      "updated": "Một Voucher cập nhật với định danh {{ param }}",
+      "deleted": "Một Voucher đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Voucher {{ id }}?"
+      },
+      "detail": {
+        "title": "Voucher"
+      },
+      "id": "ID",
+      "code": "Code",
+      "discountType": "Discount Type",
+      "discountValue": "Discount Value",
+      "minOrderValue": "Min Order Value",
+      "maxDiscountValue": "Max Discount Value",
+      "usageLimit": "Usage Limit",
+      "usedCount": "Used Count",
+      "validFrom": "Valid From",
+      "validTo": "Valid To",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

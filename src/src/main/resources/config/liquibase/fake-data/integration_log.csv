@@ -1,0 +1,11 @@
+id;source_app;target_app;payload;response;status;retries;created_at;updated_at
+1;ZALO;SHOPEE;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;RETRYING;23940;2025-09-11T19:30:47;2025-09-12T00:36:48
+2;TIKTOK;SHOPEE;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;RETRYING;19431;2025-09-11T11:25:54;2025-09-11T09:46:28
+3;TIKTOK;ZALO;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;SUCCESS;71;2025-09-11T11:48:27;2025-09-11T14:51:10
+4;SHOPEE;TIKTOK;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;FAILED;5312;2025-09-11T16:54:13;2025-09-11T09:38:49
+5;TIKTOK;SHOPEE;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;FAILED;10651;2025-09-12T03:21:49;2025-09-12T01:38:42
+6;SHOPEE;ZALO;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;FAILED;8688;2025-09-12T02:57:19;2025-09-11T21:00:32
+7;SHOPEE;SHOPEE;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;FAILED;5892;2025-09-11T04:05:28;2025-09-11T05:40:10
+8;TIKTOK;ZALO;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;FAILED;30526;2025-09-12T00:27:34;2025-09-11T08:17:31
+9;TIKTOK;SHOPEE;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;RETRYING;11312;2025-09-11T04:21:51;2025-09-11T12:25:25
+10;ZALO;ZALO;../fake-data/blob/hipster.txt;../fake-data/blob/hipster.txt;FAILED;25827;2025-09-11T10:07:08;2025-09-11T06:43:41

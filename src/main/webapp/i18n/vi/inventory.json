@@ -1,0 +1,28 @@
+{
+  "lumiApp": {
+    "inventory": {
+      "home": {
+        "title": "Inventories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Inventory",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Inventory",
+        "search": "Tìm Inventory",
+        "notFound": "No Inventories found"
+      },
+      "created": "Một Inventory mới được tạo với định danh {{ param }}",
+      "updated": "Một Inventory cập nhật với định danh {{ param }}",
+      "deleted": "Một Inventory đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Inventory {{ id }}?"
+      },
+      "detail": {
+        "title": "Inventory"
+      },
+      "id": "ID",
+      "productVariantId": "Product Variant Id",
+      "warehouseId": "Warehouse Id",
+      "quantity": "Quantity",
+      "updatedAt": "Updated At"
+    }
+  }
+}
