@@ -44,7 +44,13 @@
         "stockMovement": "Stock Movement",
         "campaign": "Campaign",
         "integrationLog": "Integration Log",
-        "employee": "Employee"
+        "employee": "Employee",
+        "cloth": "Cloth",
+        "clothInventory": "Cloth Inventory",
+        "clothStockMovement": "Cloth Stock Movement",
+        "clothSupplement": "Cloth Supplement",
+        "clothProductMap": "Cloth Product Map",
+        "clothAudit": "Cloth Audit"
       },
       "account": {
         "main": "Tài khoản",

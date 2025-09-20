@@ -1,0 +1,33 @@
+{
+  "lumiApp": {
+    "clothAudit": {
+      "home": {
+        "title": "Cloth Audits",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cloth Audit",
+        "createOrEditLabel": "Create or edit a Cloth Audit",
+        "search": "Search for Cloth Audit",
+        "notFound": "No Cloth Audits found"
+      },
+      "created": "A new Cloth Audit is created with identifier {{ param }}",
+      "updated": "A Cloth Audit is updated with identifier {{ param }}",
+      "deleted": "A Cloth Audit is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cloth Audit {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Audit"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "supplierId": "Supplier Id",
+      "productId": "Product Id",
+      "action": "Action",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "sentAt": "Sent At",
+      "note": "Note",
+      "createdAt": "Created At"
+    }
+  }
+}

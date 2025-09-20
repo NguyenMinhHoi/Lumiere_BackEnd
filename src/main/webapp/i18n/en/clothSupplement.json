@@ -1,0 +1,33 @@
+{
+  "lumiApp": {
+    "clothSupplement": {
+      "home": {
+        "title": "Cloth Supplements",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cloth Supplement",
+        "createOrEditLabel": "Create or edit a Cloth Supplement",
+        "search": "Search for Cloth Supplement",
+        "notFound": "No Cloth Supplements found"
+      },
+      "created": "A new Cloth Supplement is created with identifier {{ param }}",
+      "updated": "A Cloth Supplement is updated with identifier {{ param }}",
+      "deleted": "A Cloth Supplement is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cloth Supplement {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Supplement"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "supplierId": "Supplier Id",
+      "supplyPrice": "Supply Price",
+      "currency": "Currency",
+      "leadTimeDays": "Lead Time Days",
+      "minOrderQty": "Min Order Qty",
+      "isPreferred": "Is Preferred",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "lumiApp": {
+    "clothProductMap": {
+      "home": {
+        "title": "Cloth Product Maps",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Cloth Product Map",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Cloth Product Map",
+        "search": "Tìm Cloth Product Map",
+        "notFound": "No Cloth Product Maps found"
+      },
+      "created": "Một Cloth Product Map mới được tạo với định danh {{ param }}",
+      "updated": "Một Cloth Product Map cập nhật với định danh {{ param }}",
+      "deleted": "Một Cloth Product Map đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Cloth Product Map {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Product Map"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "productId": "Product Id",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "note": "Note",
+      "createdAt": "Created At"
+    }
+  }
+}

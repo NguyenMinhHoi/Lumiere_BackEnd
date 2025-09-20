@@ -51,7 +51,13 @@
       "StockMovement",
       "Campaign",
       "IntegrationLog",
-      "Employee"
+      "Employee",
+      "Cloth",
+      "ClothInventory",
+      "ClothStockMovement",
+      "ClothSupplement",
+      "ClothProductMap",
+      "ClothAudit"
     ],
     "gitCompany": "",
     "iaCTools": ["bicep", "terraform"],

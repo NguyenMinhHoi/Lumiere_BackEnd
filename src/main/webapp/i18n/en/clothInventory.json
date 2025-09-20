@@ -1,0 +1,28 @@
+{
+  "lumiApp": {
+    "clothInventory": {
+      "home": {
+        "title": "Cloth Inventories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cloth Inventory",
+        "createOrEditLabel": "Create or edit a Cloth Inventory",
+        "search": "Search for Cloth Inventory",
+        "notFound": "No Cloth Inventories found"
+      },
+      "created": "A new Cloth Inventory is created with identifier {{ param }}",
+      "updated": "A Cloth Inventory is updated with identifier {{ param }}",
+      "deleted": "A Cloth Inventory is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cloth Inventory {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Inventory"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "warehouseId": "Warehouse Id",
+      "quantity": "Quantity",
+      "updatedAt": "Updated At"
+    }
+  }
+}

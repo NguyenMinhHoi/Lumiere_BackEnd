@@ -1,11 +1,7 @@
 export enum AuditAction {
-  CREATE = 'CREATE',
+  SEND = 'SEND',
 
-  UPDATE = 'UPDATE',
+  RETURN = 'RETURN',
 
-  DELETE = 'DELETE',
-
-  LOGIN = 'LOGIN',
-
-  LOGOUT = 'LOGOUT',
+  CANCEL = 'CANCEL',
 }

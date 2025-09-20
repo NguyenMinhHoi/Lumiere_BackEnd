@@ -1,0 +1,30 @@
+{
+  "lumiApp": {
+    "clothStockMovement": {
+      "home": {
+        "title": "Cloth Stock Movements",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cloth Stock Movement",
+        "createOrEditLabel": "Create or edit a Cloth Stock Movement",
+        "search": "Search for Cloth Stock Movement",
+        "notFound": "No Cloth Stock Movements found"
+      },
+      "created": "A new Cloth Stock Movement is created with identifier {{ param }}",
+      "updated": "A Cloth Stock Movement is updated with identifier {{ param }}",
+      "deleted": "A Cloth Stock Movement is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cloth Stock Movement {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Stock Movement"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "warehouseId": "Warehouse Id",
+      "delta": "Delta",
+      "reason": "Reason",
+      "refOrderId": "Ref Order Id",
+      "createdAt": "Created At"
+    }
+  }
+}

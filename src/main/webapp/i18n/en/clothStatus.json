@@ -1,0 +1,11 @@
+{
+  "lumiApp": {
+    "ClothStatus": {
+      "null": "",
+      "AVAILABLE": "AVAILABLE",
+      "RESERVED": "RESERVED",
+      "SENT": "SENT",
+      "USED": "USED"
+    }
+  }
+}

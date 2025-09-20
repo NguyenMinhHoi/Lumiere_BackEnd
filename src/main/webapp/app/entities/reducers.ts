@@ -35,6 +35,12 @@ import stockMovement from 'app/entities/stock-movement/stock-movement.reducer';
 import campaign from 'app/entities/campaign/campaign.reducer';
 import integrationLog from 'app/entities/integration-log/integration-log.reducer';
 import employee from 'app/entities/employee/employee.reducer';
+import cloth from 'app/entities/cloth/cloth.reducer';
+import clothInventory from 'app/entities/cloth-inventory/cloth-inventory.reducer';
+import clothStockMovement from 'app/entities/cloth-stock-movement/cloth-stock-movement.reducer';
+import clothSupplement from 'app/entities/cloth-supplement/cloth-supplement.reducer';
+import clothProductMap from 'app/entities/cloth-product-map/cloth-product-map.reducer';
+import clothAudit from 'app/entities/cloth-audit/cloth-audit.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const entitiesReducers = {
@@ -75,6 +81,12 @@ const entitiesReducers = {
   campaign,
   integrationLog,
   employee,
+  cloth,
+  clothInventory,
+  clothStockMovement,
+  clothSupplement,
+  clothProductMap,
+  clothAudit,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
 };
 

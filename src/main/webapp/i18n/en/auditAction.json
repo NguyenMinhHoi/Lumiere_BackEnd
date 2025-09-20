@@ -2,11 +2,9 @@
   "lumiApp": {
     "AuditAction": {
       "null": "",
-      "CREATE": "CREATE",
-      "UPDATE": "UPDATE",
-      "DELETE": "DELETE",
-      "LOGIN": "LOGIN",
-      "LOGOUT": "LOGOUT"
+      "SEND": "SEND",
+      "RETURN": "RETURN",
+      "CANCEL": "CANCEL"
     }
   }
 }

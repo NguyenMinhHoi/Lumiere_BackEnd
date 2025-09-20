@@ -40,6 +40,12 @@ import StockMovement from './stock-movement';
 import Campaign from './campaign';
 import IntegrationLog from './integration-log';
 import Employee from './employee';
+import Cloth from './cloth';
+import ClothInventory from './cloth-inventory';
+import ClothStockMovement from './cloth-stock-movement';
+import ClothSupplement from './cloth-supplement';
+import ClothProductMap from './cloth-product-map';
+import ClothAudit from './cloth-audit';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -84,6 +90,12 @@ export default () => {
         <Route path="campaign/*" element={<Campaign />} />
         <Route path="integration-log/*" element={<IntegrationLog />} />
         <Route path="employee/*" element={<Employee />} />
+        <Route path="cloth/*" element={<Cloth />} />
+        <Route path="cloth-inventory/*" element={<ClothInventory />} />
+        <Route path="cloth-stock-movement/*" element={<ClothStockMovement />} />
+        <Route path="cloth-supplement/*" element={<ClothSupplement />} />
+        <Route path="cloth-product-map/*" element={<ClothProductMap />} />
+        <Route path="cloth-audit/*" element={<ClothAudit />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}
       </ErrorBoundaryRoutes>
     </div>

@@ -1,0 +1,33 @@
+{
+  "lumiApp": {
+    "clothSupplement": {
+      "home": {
+        "title": "Cloth Supplements",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Cloth Supplement",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Cloth Supplement",
+        "search": "Tìm Cloth Supplement",
+        "notFound": "No Cloth Supplements found"
+      },
+      "created": "Một Cloth Supplement mới được tạo với định danh {{ param }}",
+      "updated": "Một Cloth Supplement cập nhật với định danh {{ param }}",
+      "deleted": "Một Cloth Supplement đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Cloth Supplement {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Supplement"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "supplierId": "Supplier Id",
+      "supplyPrice": "Supply Price",
+      "currency": "Currency",
+      "leadTimeDays": "Lead Time Days",
+      "minOrderQty": "Min Order Qty",
+      "isPreferred": "Is Preferred",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}

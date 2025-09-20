@@ -1,0 +1,30 @@
+{
+  "lumiApp": {
+    "clothProductMap": {
+      "home": {
+        "title": "Cloth Product Maps",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cloth Product Map",
+        "createOrEditLabel": "Create or edit a Cloth Product Map",
+        "search": "Search for Cloth Product Map",
+        "notFound": "No Cloth Product Maps found"
+      },
+      "created": "A new Cloth Product Map is created with identifier {{ param }}",
+      "updated": "A Cloth Product Map is updated with identifier {{ param }}",
+      "deleted": "A Cloth Product Map is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cloth Product Map {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Product Map"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "productId": "Product Id",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "note": "Note",
+      "createdAt": "Created At"
+    }
+  }
+}

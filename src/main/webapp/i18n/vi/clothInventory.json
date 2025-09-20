@@ -1,0 +1,28 @@
+{
+  "lumiApp": {
+    "clothInventory": {
+      "home": {
+        "title": "Cloth Inventories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Cloth Inventory",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Cloth Inventory",
+        "search": "Tìm Cloth Inventory",
+        "notFound": "No Cloth Inventories found"
+      },
+      "created": "Một Cloth Inventory mới được tạo với định danh {{ param }}",
+      "updated": "Một Cloth Inventory cập nhật với định danh {{ param }}",
+      "deleted": "Một Cloth Inventory đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Cloth Inventory {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth Inventory"
+      },
+      "id": "ID",
+      "clothId": "Cloth Id",
+      "warehouseId": "Warehouse Id",
+      "quantity": "Quantity",
+      "updatedAt": "Updated At"
+    }
+  }
+}

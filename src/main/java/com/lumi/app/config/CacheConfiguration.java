@@ -83,6 +83,12 @@ public class CacheConfiguration {
             createCache(cm, com.lumi.app.domain.Campaign.class.getName());
             createCache(cm, com.lumi.app.domain.IntegrationLog.class.getName());
             createCache(cm, com.lumi.app.domain.Employee.class.getName());
+            createCache(cm, com.lumi.app.domain.Cloth.class.getName());
+            createCache(cm, com.lumi.app.domain.ClothInventory.class.getName());
+            createCache(cm, com.lumi.app.domain.ClothStockMovement.class.getName());
+            createCache(cm, com.lumi.app.domain.ClothSupplement.class.getName());
+            createCache(cm, com.lumi.app.domain.ClothProductMap.class.getName());
+            createCache(cm, com.lumi.app.domain.ClothAudit.class.getName());
             // jhipster-needle-caffeine-add-entry
         };
     }

@@ -1,0 +1,34 @@
+{
+  "lumiApp": {
+    "cloth": {
+      "home": {
+        "title": "Cloths",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cloth",
+        "createOrEditLabel": "Create or edit a Cloth",
+        "search": "Search for Cloth",
+        "notFound": "No Cloths found"
+      },
+      "created": "A new Cloth is created with identifier {{ param }}",
+      "updated": "A Cloth is updated with identifier {{ param }}",
+      "deleted": "A Cloth is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cloth {{ id }}?"
+      },
+      "detail": {
+        "title": "Cloth"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "material": "Material",
+      "color": "Color",
+      "width": "Width",
+      "length": "Length",
+      "unit": "Unit",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At"
+    }
+  }
+}
