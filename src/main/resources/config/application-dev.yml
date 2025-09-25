@@ -39,7 +39,7 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/lumiApp
+    url: jdbc:mysql://localhost:3306/lumiApp?useSSL=false&serverTimezone=UTC
     username: postgres
     password: 1
     hikari:
